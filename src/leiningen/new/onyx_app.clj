@@ -13,7 +13,7 @@
               :sanitized path}]
     (main/info "Generating fresh 'lein new' onyx project.")
     (->files data
-             ["README.md" (render "README.md" {})]
+             ["README.md" (render "README.md" data)]
              [".gitignore" (render "gitignore" data)]
              ["LICENSE" (render "LICENSE" data)]
              ["project.clj" (render "project.clj" data)]
