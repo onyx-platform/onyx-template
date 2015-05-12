@@ -30,24 +30,4 @@
    {:name "Rona" :age 16}
    {:name "Cary" :age 8}
    {:name "Fausto" :age 10}
-   {:name "Gabriel" :age 70}
-   {:name "Gavin" :age 62}
-   {:name "Mercy" :age 35}
-   {:name "Eliana" :age 27}
-   {:name "Matha" :age 73}
-   {:name "Alanna" :age 25}
-   {:name "Erika" :age 21}
-   {:name "Tambra" :age 22}
-   {:name "Tonia" :age 43}
-   {:name "Fredricka" :age 81}
-   {:name "Bryant" :age 4}
-   {:name "Zulema" :age 11}
-   {:name "Savanna" :age 14}
-   {:name "Rosette" :age 56}
-   {:name "Wanda" :age 26}
-   {:name "Suk" :age 38}
-   {:name "Janean" :age 47}
-   {:name "Kimberli" :age 49}
-   {:name "Ailene" :age 12}
-   {:name "Jan" :age 19}
-   {:name "Arie" :age 24}])
+   {:name "Gavin" :age 62}])

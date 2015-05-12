@@ -7,12 +7,12 @@
             [onyx.plugin.core-async :refer [take-segments!]]
             [onyx.api]))
 
-(defn -main [onyx-id & args])
-(let [peer-config (assoc (read-string (slurp (resource "prod-peer-config.edn"))) :onyx/id onyx-id)
-      ;; TODO: Transfer dev catalog entries and lifecycles into prod IO streams.
-      lifecycles (sample-lifecycle/build-lifecycles)]
-  (let [job {:workflow workflow
-             :catalog catalog
-             :lifecycles lifecycles
-             :task-scheduler :onyx.task-scheduler/balanced}]
-    (onyx.api/submit-job peer-config job)))
+(defn -main [onyx-id & args]
+  (let [peer-config (assoc (read-string (slurp (resource "prod-peer-config.edn"))) :onyx/id onyx-id)
+        ;; TODO: Transfer dev catalog entries and lifecycles into prod IO streams.
+        lifecycles (sample-lifecycle/build-lifecycles)]
+    (let [job {:workflow workflow
+               :catalog catalog
+               :lifecycles lifecycles
+               :task-scheduler :onyx.task-scheduler/balanced}]
+      (onyx.api/submit-job peer-config job))))

@@ -4,7 +4,7 @@
             [fipp.edn :refer (pprint) :rename {pprint fipp}]
             [{{app-name}}.workflows.sample-workflow :refer [workflow]]
             [{{app-name}}.catalogs.sample-catalog :refer [catalog]]
-            [{{app-name}}.dev-inputs.sample-inputs :refer [dev-input-segments]]
+            [{{app-name}}.dev-inputs.sample-input :refer [dev-input-segments]]
             [{{app-name}}.lifecycles.sample-lifecycle :as sample-lifecycle]
             [{{app-name}}.functions.sample-functions]
             [onyx.plugin.core-async :refer [take-segments!]]

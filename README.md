@@ -2,9 +2,11 @@
 
 A Leiningen template for creating Onyx 0.6.0 apps.
 
-## Usage
+### Usage
 
-FIXME
+```text
+lein new onyx-app my-app-name
+```
 
 ## License
 
