@@ -16,12 +16,15 @@
   (start [component]
     (println "Starting Onyx development environment")
     (let [onyx-id (java.util.UUID/randomUUID)
-          env-config (assoc (read-string (slurp (resource "env-config.edn"))) :onyx/id onyx-id)
-          peer-config (assoc (read-string (slurp (resource "dev-peer-config.edn"))) :onyx/id onyx-id)
+          env-config (assoc (-> "env-config.edn" resource slurp read-string)
+                            :onyx/id onyx-id)
+          peer-config (assoc (-> "dev-peer-config.edn"
+                                 resource slurp read-string) :onyx/id onyx-id)
           env (onyx.api/start-env env-config)
           peer-group (onyx.api/start-peer-group peer-config)
           peers (onyx.api/start-peers n-peers peer-group)]
-      (assoc component :env env :peer-group peer-group :peers peers :onyx-id onyx-id)))
+      (assoc component :env env :peer-group peer-group
+             :peers peers :onyx-id onyx-id)))
 
   (stop [component]
     (println "Stopping Onyx development environment")
@@ -31,7 +34,7 @@
 
     (onyx.api/shutdown-peer-group (:peer-group component))
     (onyx.api/shutdown-env (:env component))
-    
+
     (assoc component :env nil :peer-group nil :peers nil)))
 
 (defn onyx-dev-env [n-peers]

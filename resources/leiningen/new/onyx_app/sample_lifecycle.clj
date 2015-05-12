@@ -16,7 +16,8 @@
      (chan (sliding-buffer output-channel-capacity)))))
 
 (defn channel-id-for [lifecycles task-name]
-  (:core.async/id (first (filter #(= task-name (:lifecycle/task %)) lifecycles))))
+  (:core.async/id (first (filter #(= task-name (:lifecycle/task %))
+                                 lifecycles))))
 
 (defn inject-in-ch [event lifecycle]
   {:core.async/chan (get-input-channel (:core.async/id lifecycle))})
