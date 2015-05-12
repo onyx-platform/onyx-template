@@ -11,10 +11,13 @@
             [onyx.api]))
 
 (defn test-job []
-  (let [peer-config (assoc (read-string (slurp (resource "dev-peer-config.edn"))) :onyx/id (:onyx-id user/system))
+  (let [peer-config (assoc (-> "dev-peer-config.edn" resource slurp read-string)
+                           :onyx/id (:onyx-id user/system))
         lifecycles (sample-lifecycle/build-lifecycles)
-        in-ch (sample-lifecycle/get-input-channel (sample-lifecycle/channel-id-for lifecycles :read-input))
-        out-ch (sample-lifecycle/get-output-channel (sample-lifecycle/channel-id-for lifecycles :write-output))]
+        in-ch (sample-lifecycle/get-input-channel
+               (sample-lifecycle/channel-id-for lifecycles :read-input))
+        out-ch (sample-lifecycle/get-output-channel
+                (sample-lifecycle/channel-id-for lifecycles :write-output))]
     (doseq [segment dev-input-segments]
       (>!! in-ch segment))
     (>!! in-ch :done)

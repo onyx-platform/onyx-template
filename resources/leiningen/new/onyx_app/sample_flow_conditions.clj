@@ -1,1 +1,1 @@
-(ns {{app-name}}.lifecycles.sample-flow-conditions)
+(ns {{app-name}}.flow-conditions.sample-flow-conditions)

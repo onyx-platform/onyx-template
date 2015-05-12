@@ -8,7 +8,8 @@
 
 (defn -main [onyx-id n & args]
   (let [n-peers (Integer/parseInt n)
-        peer-config (assoc (read-string (slurp (resource "prod-peer-config.edn"))) :onyx/id onyx-id)
+        peer-config (assoc (-> "prod-peer-config.edn"
+                               resource slurp read-string) :onyx/id onyx-id)
         peer-group (onyx.api/start-peer-group peer-config)
         peers (onyx.api/start-peers n-peers peer-group)]
     (.addShutdownHook (Runtime/getRuntime)
