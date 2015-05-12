@@ -4,9 +4,13 @@ A Leiningen template for creating Onyx 0.6.0 apps.
 
 ### Usage
 
+Run:
+
 ```text
 lein new onyx-app my-app-name
 ```
+
+Then read the instructions on the `README.md` in your fresh project.
 
 ## License
 
