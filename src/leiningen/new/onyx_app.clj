@@ -4,7 +4,7 @@
 
 (def render (renderer "onyx-app"))
 
-(defn onyx
+(defn onyx-app
   "Creates a new Onyx application template"
   [name]
   (let [path (name-to-path name)
