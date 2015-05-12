@@ -1,29 +1,24 @@
 (ns {{app-name}}.jobs.sample-job-test
-  (:require [clojure.core.async :refer [>!!]]
+  (:require [clojure.test :refer [deftest is]]
+            [clojure.core.async :refer [>!!]]
             [clojure.java.io :refer [resource]]
-            [fipp.edn :refer (pprint) :rename {pprint fipp}]
             [{{app-name}}.workflows.sample-workflow :refer [workflow]]
             [{{app-name}}.catalogs.sample-catalog :refer [catalog]]
-            [{{app-name}}.dev-inputs.sample-input :refer [dev-input-segments]]
-            [{{app-name}}.lifecycles.sample-lifecycle :as sample-lifecycle]
+            [{{app-name}}.lifecycles.sample-lifecycle :as lc]
+            [{{app-name}}.dev-inputs.sample-input :as dev-inputs]
             [{{app-name}}.functions.sample-functions]
-            [onyx.plugin.core-async :refer [take-segments!]]
-            [onyx.api]))
+            [onyx.api]
+            [user]))
 
-(defn test-job []
-  (let [peer-config (assoc (-> "dev-peer-config.edn" resource slurp read-string)
-                           :onyx/id (:onyx-id user/system))
-        lifecycles (sample-lifecycle/build-lifecycles)
-        in-ch (sample-lifecycle/get-input-channel
-               (sample-lifecycle/channel-id-for lifecycles :read-input))
-        out-ch (sample-lifecycle/get-output-channel
-                (sample-lifecycle/channel-id-for lifecycles :write-output))]
-    (doseq [segment dev-input-segments]
-      (>!! in-ch segment))
-    (>!! in-ch :done)
+(deftest test-sample-job
+  (let [dev-cfg (-> "dev-peer-config.edn" resource slurp read-string)
+        peer-config (assoc dev-cfg :onyx/id (:onyx-id user/system))
+        lifecycles (lc/build-lifecycles)]
+    (lc/bind-inputs! lifecycles {:read-input dev-inputs/name-segments})
     (let [job {:workflow workflow
                :catalog catalog
                :lifecycles lifecycles
                :task-scheduler :onyx.task-scheduler/balanced}]
       (onyx.api/submit-job peer-config job)
-      (fipp (take-segments! out-ch)))))
+      (let [[results] (lc/collect-outputs! lifecycles [:write-output])]
+        (is (= 31 (count results)))))))

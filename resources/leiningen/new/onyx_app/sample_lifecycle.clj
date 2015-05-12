@@ -1,5 +1,6 @@
 (ns {{app-name}}.lifecycles.sample-lifecycle
-  (:require [clojure.core.async :refer [chan sliding-buffer]]))
+  (:require [clojure.core.async :refer [chan sliding-buffer >!!]]
+            [onyx.plugin.core-async :refer [take-segments!]]))
 
 (def input-channel-capacity 10000)
 
@@ -16,8 +17,22 @@
      (chan (sliding-buffer output-channel-capacity)))))
 
 (defn channel-id-for [lifecycles task-name]
-  (:core.async/id (first (filter #(= task-name (:lifecycle/task %))
-                                 lifecycles))))
+  (:core.async/id
+   (->> lifecycles
+        (filter #(= task-name (:lifecycle/task %)))
+        (first))))
+
+(defn bind-inputs! [lifecycles mapping]
+  (doseq [[task segments] mapping]
+    (let [in-ch (get-input-channel (channel-id-for lifecycles task))]
+      (doseq [segment segments]
+        (>!! in-ch segment))
+      (>!! in-ch :done))))
+
+(defn collect-outputs! [lifecycles output-tasks]
+  (->> output-tasks
+       (map #(get-output-channel (channel-id-for lifecycles %)))
+       (map #(take-segments! %))))
 
 (defn inject-in-ch [event lifecycle]
   {:core.async/chan (get-input-channel (:core.async/id lifecycle))})

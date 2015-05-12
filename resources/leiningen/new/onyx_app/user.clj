@@ -3,8 +3,6 @@
             [clojure.core.async :refer [chan <!!]]
             [clojure.java.io :refer [resource]]
             [com.stuartsierra.component :as component]
-            [{{app-name}}.lifecycles.sample-lifecycle]
-            [{{app-name}}.functions.sample-functions]
             [onyx.plugin.core-async]
             [onyx.api]))
 

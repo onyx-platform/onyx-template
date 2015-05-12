@@ -1,6 +1,6 @@
 (ns {{app-name}}.dev-inputs.sample-input)
 
-(def dev-input-segments
+(def name-segments
   [{:name "Alberto" :age 20}
    {:name "Amee" :age 22}
    {:name "Stephani" :age 50}

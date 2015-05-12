@@ -17,8 +17,13 @@
              [".gitignore" (render "gitignore" data)]
              ["LICENSE" (render "LICENSE" data)]
              ["project.clj" (render "project.clj" data)]
+             ["Dockerfile" (render "Dockerfile" data)]
+
+             ["script/run-app.sh" (render "run-app.sh" data)]
+             ["script/build.sh" (render "build.sh" data)]
 
              ["env/dev/user.clj" (render "user.clj" data)]
+             [(str "env/dev/" path "/dev_inputs/sample_input.clj") (render "sample_input.clj" data)]
 
              ["resources/env-config.edn" (render "env-config.edn" data)]
              ["resources/dev-peer-config.edn" (render "dev-peer-config.edn" data)]
@@ -32,6 +37,5 @@
              [(str "src/" path "/flow_conditions/sample_flow_conditions.clj") (render "sample_flow_conditions.clj" data)]
              [(str "src/" path "/functions/sample_functions.clj") (render "sample_functions.clj" data)]
              [(str "src/" path "/lifecycles/sample_lifecycle.clj") (render "sample_lifecycle.clj" data)]
-             [(str "src/" path "/dev_inputs/sample_input.clj") (render "sample_input.clj" data)]
 
              [(str "test/" path "/jobs/sample_job_test.clj") (render "sample_job_test.clj" data)])))
