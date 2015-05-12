@@ -2,7 +2,7 @@
   (:require [leiningen.new.templates :refer [renderer name-to-path ->files]]
             [leiningen.core.main :as main]))
 
-(def render (renderer "onyx-app"))
+(def render (renderer "onyx_app"))
 
 (defn onyx-app
   "Creates a new Onyx application template"
@@ -13,7 +13,7 @@
               :sanitized path}]
     (main/info "Generating fresh 'lein new' onyx project.")
     (->files data
-             ["README.md" (render "README.md" data)]
+             ["README.md" (render "README.md" {})]
              [".gitignore" (render "gitignore" data)]
              ["LICENSE" (render "LICENSE" data)]
              ["project.clj" (render "project.clj" data)]
