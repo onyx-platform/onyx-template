@@ -1,0 +1,10 @@
+test:
+  override:
+          - lein set-version 99.99.99 
+          - lein new onyx-app test-app
+          - cd test-app
+          - lein test
+
+machine:
+  java:
+    version: oraclejdk8
