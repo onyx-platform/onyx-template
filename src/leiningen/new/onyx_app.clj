@@ -7,7 +7,7 @@
 (defn onyx-app
   "Creates a new Onyx application template"
   ([name]
-     (let [path (name-to-path name)
+     (let [path (name-to-path (first name))
            data {:name name
                  :app-name name
                  :sanitized path}]
@@ -39,39 +39,39 @@
                 [(str "src/" path "/lifecycles/sample_lifecycle.clj") (render "sample_lifecycle.clj" data)]
                 [(str "src/" path "/plugins/http_reader.clj") (render "http_reader.clj" data)]
 
-                [(str "test/" path "/jobs/sample_job_test.clj") (render "sample_job_test.clj" data)]))
-     ([name arg]
-        (if (= arg "--bare")
-          (let [path (name-to-path name)
-           data {:name name
-                 :app-name name
-                 :sanitized path}]
-       (main/info "Generating fresh Onyx app.")
-       (->files data
-                ["README.md" (render "README-bare.md" data)]
-                [".gitignore" (render "gitignore" data)]
-                ["LICENSE" (render "LICENSE" data)]
-                ["project.clj" (render "project.clj" data)]
-                ["Dockerfile" (render "Dockerfile" data)]
+                [(str "test/" path "/jobs/sample_job_test.clj") (render "sample_job_test.clj" data)])))
+  ([name arg]
+     (if (= arg "bare")
+       (let [path (name-to-path name)
+             data {:name name
+                   :app-name name
+                   :sanitized path}]
+         (main/info "Generating a fresh Onyx app.")
+         (->files data
+                  ["README.md" (render "README-bare.md" data)]
+                  [".gitignore" (render "gitignore" data)]
+                  ["LICENSE" (render "LICENSE" data)]
+                  ["project.clj" (render "project.clj" data)]
+                  ["Dockerfile" (render "Dockerfile" data)]
 
-                ["script/run-app.sh" (render "run-app.sh" data)]
-                ["script/build.sh" (render "build.sh" data)]
+                  ["script/run-app.sh" (render "run-app.sh" data)]
+                  ["script/build.sh" (render "build.sh" data)]
 
-                ["env/dev/user.clj" (render "user.clj" data)]
-                [(str "env/dev/" path "/dev_inputs/.gitkeep") (render "gitkeep" data)]
+                  ["env/dev/user.clj" (render "user.clj" data)]
+                  [(str "env/dev/" path "/dev_inputs/.gitkeep") (render "gitkeep" data)]
 
-                ["resources/env-config.edn" (render "env-config.edn" data)]
-                ["resources/dev-peer-config.edn" (render "dev-peer-config.edn" data)]
-                ["resources/prod-peer-config.edn" (render "prod-peer-config.edn" data)]
+                  ["resources/env-config.edn" (render "env-config.edn" data)]
+                  ["resources/dev-peer-config.edn" (render "dev-peer-config.edn" data)]
+                  ["resources/prod-peer-config.edn" (render "prod-peer-config.edn" data)]
 
-                [(str "src/" path "/launcher/launch_prod_peers.clj") (render "launch_prod_peers.clj" data)]
+                  [(str "src/" path "/launcher/launch_prod_peers.clj") (render "launch_prod_peers.clj" data)]
 
-                [(str "src/" path "/workflows/.gitkeep") (render "gitkeep" data)]
-                [(str "src/" path "/catalogs/.gitkeep") (render "gitkeep" data)]
-                [(str "src/" path "/flow_conditions/.gitkeep") (render "gitkeep" data)]
-                [(str "src/" path "/functions/.gitkeep") (render "gitkeep" data)]
-                [(str "src/" path "/lifecycles/.gitkeep") (render "gitkeep" data)]
-                [(str "src/" path "/plugins/.gitkeep") (render "gitkeep" data)]
+                  [(str "src/" path "/workflows/.gitkeep") (render "gitkeep" data)]
+                  [(str "src/" path "/catalogs/.gitkeep") (render "gitkeep" data)]
+                  [(str "src/" path "/flow_conditions/.gitkeep") (render "gitkeep" data)]
+                  [(str "src/" path "/functions/.gitkeep") (render "gitkeep" data)]
+                  [(str "src/" path "/lifecycles/.gitkeep") (render "gitkeep" data)]
+                  [(str "src/" path "/plugins/.gitkeep") (render "gitkeep" data)]
 
-                [(str "test/" path "/jobs/.gitkeep") (render "gitkeep" data)]))
-          (println "Only argument allowed after app-name is --bare")))))
+                  [(str "test/" path "/jobs/.gitkeep") (render "gitkeep" data)]))
+       (println "Only argument allowed after app-name is 'bare'"))))

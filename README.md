@@ -4,10 +4,16 @@ A Leiningen template for creating Onyx 0.6.0 apps.
 
 ### Usage
 
-Run:
+To get an application template with a sample job:
 
 ```text
 lein new onyx-app my-app-name
+```
+
+Or to skip the sample job:
+
+```text
+lein new onyx-app my-app-name bare
 ```
 
 Then read the instructions on the `README.md` in your fresh project.
