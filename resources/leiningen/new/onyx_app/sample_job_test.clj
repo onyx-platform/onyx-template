@@ -3,22 +3,42 @@
             [clojure.core.async :refer [>!!]]
             [clojure.java.io :refer [resource]]
             [{{app-name}}.workflows.sample-workflow :refer [workflow]]
-            [{{app-name}}.catalogs.sample-catalog :refer [catalog]]
-            [{{app-name}}.lifecycles.sample-lifecycle :as lc]
-            [{{app-name}}.dev-inputs.sample-input :as dev-inputs]
+            [{{app-name}}.catalogs.sample-catalog :refer [build-catalog] :as sc]
+            [{{app-name}}.lifecycles.sample-lifecycle :refer [build-lifecycles] :as sl]
+            [{{app-name}}.flow-conditions.sample-flow-conditions :as sf]
+            [{{app-name}}.plugins.http-reader]
             [{{app-name}}.functions.sample-functions]
+            [{{app-name}}.dev-inputs.sample-input :as dev-inputs]
             [onyx.api]
             [user]))
 
-(deftest test-sample-job
+(deftest test-sample-dev-job
   (let [dev-cfg (-> "dev-peer-config.edn" resource slurp read-string)
         peer-config (assoc dev-cfg :onyx/id (:onyx-id user/system))
-        lifecycles (lc/build-lifecycles)]
-    (lc/bind-inputs! lifecycles {:read-input dev-inputs/name-segments})
+        stubs [:read-lines :write-lines]
+        dev-catalog (sc/in-memory-catalog (build-catalog 20) stubs)
+        dev-lifecycles (sl/in-memory-lifecycles (build-lifecycles) dev-catalog stubs)]
+    (sl/bind-inputs! dev-lifecycles {:read-lines dev-inputs/lines})
+    (let [job {:workflow workflow
+               :catalog dev-catalog
+               :lifecycles dev-lifecycles
+               :flow-conditions sf/flow-conditions
+               :task-scheduler :onyx.task-scheduler/balanced}]
+      (onyx.api/submit-job peer-config job)
+      (let [[results] (sl/collect-outputs! dev-lifecycles [:write-lines])]
+        (is (= 16 (count results)))))))
+
+(deftest test-sample-prod-job
+  (let [dev-cfg (-> "dev-peer-config.edn" resource slurp read-string)
+        peer-config (assoc dev-cfg :onyx/id (:onyx-id user/system))
+        catalog (build-catalog 20)
+        lifecycles (build-lifecycles)
+        out-ch (sl/get-output-channel (sl/channel-id-for lifecycles :write-lines))]
     (let [job {:workflow workflow
                :catalog catalog
                :lifecycles lifecycles
+               :flow-conditions sf/flow-conditions
                :task-scheduler :onyx.task-scheduler/balanced}]
       (onyx.api/submit-job peer-config job)
-      (let [[results] (lc/collect-outputs! lifecycles [:write-output])]
-        (is (= 31 (count results)))))))
+      (let [segments (onyx.plugin.core-async/take-segments! out-ch)]
+        (is (= :done (last segments)))))))

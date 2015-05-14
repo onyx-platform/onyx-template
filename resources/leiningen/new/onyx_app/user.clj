@@ -6,7 +6,7 @@
             [onyx.plugin.core-async]
             [onyx.api]))
 
-(def n-peers 10)
+(def n-peers 4)
 
 (defrecord OnyxDevEnv [n-peers]
   component/Lifecycle

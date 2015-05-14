@@ -37,5 +37,6 @@
              [(str "src/" path "/flow_conditions/sample_flow_conditions.clj") (render "sample_flow_conditions.clj" data)]
              [(str "src/" path "/functions/sample_functions.clj") (render "sample_functions.clj" data)]
              [(str "src/" path "/lifecycles/sample_lifecycle.clj") (render "sample_lifecycle.clj" data)]
+             [(str "src/" path "/plugins/http_reader.clj") (render "http_reader.clj" data)]
 
              [(str "test/" path "/jobs/sample_job_test.clj") (render "sample_job_test.clj" data)])))

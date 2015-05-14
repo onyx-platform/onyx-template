@@ -1,5 +1,6 @@
 (ns {{app-name}}.workflows.sample-workflow)
 
 (def workflow
-  [[:read-input :increment-age]
-   [:increment-age :write-output]])
+  [[:read-lines :format-line]
+   [:format-line :upper-case]
+   [:upper-case :write-lines]])
