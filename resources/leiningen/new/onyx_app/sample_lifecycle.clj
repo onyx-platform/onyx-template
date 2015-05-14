@@ -85,10 +85,11 @@
     :lifecycle/doc "Lifecycle for reading from a core.async chan"}
    {:lifecycle/task :write-lines
     :lifecycle/calls :{{app-name}}.lifecycles.sample-lifecycle/out-calls
-    :core.async/id (java.util.UUID/randomUUID)}
+    :core.async/id (java.util.UUID/randomUUID)
+    :lifecycle/doc "Lifecycle for writing to a core.async chan"}
    {:lifecycle/task :write-lines
     :lifecycle/calls :onyx.plugin.core-async/writer-calls
-    :lifecycle/doc "Lifecycle for printing the output of a task's batch"}
+    :lifecycle/doc "Lifecycle for injecting a core.async writer chan"}
    {:lifecycle/task :write-lines
     :lifecycle/calls :{{app-name}}.lifecycles.sample-lifecycle/log-calls
     :lifecycle/doc "Lifecycle for printing the output of a task's batch"}])
