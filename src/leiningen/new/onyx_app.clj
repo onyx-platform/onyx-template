@@ -7,7 +7,7 @@
 (defn onyx-app
   "Creates a new Onyx application template"
   ([name]
-     (let [path (name-to-path (first name))
+     (let [path (name-to-path name)
            data {:name name
                  :app-name name
                  :sanitized path}]
