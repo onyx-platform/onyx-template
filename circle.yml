@@ -1,6 +1,7 @@
 test:
   override:
           - lein set-version 99.99.99 
+          - lein install
           - lein new onyx-app test-app
           - cd test-app
           - lein test
