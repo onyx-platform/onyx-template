@@ -22,7 +22,7 @@
      :http/pending-messages (atom {})}))
 
 (def reader-calls
-  {:lifecycle/before-task inject-reader})
+  {:lifecycle/before-task-start inject-reader})
 
 (defmethod p-ext/read-batch :http/read-lines
   [{:keys [onyx.core/task-map http/chan http/retry-ch 
