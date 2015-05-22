@@ -50,8 +50,6 @@
                    :lifecycles lifecycles
                    :flow-conditions sf/flow-conditions
                    :task-scheduler :onyx.task-scheduler/balanced}]
-          (println "In memory catalog " catalog)
-          (println "In memory catalog " lifecycles)
           (onyx.api/submit-job peer-config job)
           (let [segments (onyx.plugin.core-async/take-segments! out-ch)]
             (is (= :done (last segments))))))

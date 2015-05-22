@@ -4,13 +4,13 @@ An Onyx 0.6.0 application that does distributed things. This project has been po
 
 ## Usage
 
+### Launch the Sample Job in Development
+
+Run the `deftest`s in `test/jobs/{{app-name}}/sample_job_test.clj`. The tests automatically start and stop the development environment, so make sure don't already have the dev environment (explained below) running - otherwise you'd get a port conflict.
+
 ### Start the Development Mode
 
 Load up `env/dev/user.clj`. Evaluate the `go` function.
-
-### Launch the Sample Job in Development
-
-Run the `deftest`s in `test/{{app-name}}/sample_job_test.clj`. Be sure to have evaluated the `go` function beforehand to start your development environment.
 
 ### Reset the Development Mode
 

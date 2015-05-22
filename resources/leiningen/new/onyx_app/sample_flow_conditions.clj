@@ -7,7 +7,7 @@
     :flow/thrown-exception? true
     :flow/post-transform :{{app-name}}.flow-conditions.sample-flow-conditions/substitute-segment
     :flow/predicate :{{app-name}}.flow-conditions.sample-flow-conditions/npe?
-    :flow/doc "Send a canned value if this segment through a NullPointerException."}
+    :flow/doc "Send a canned value if this segment threw a NullPointerException."}
    {:flow/from :format-line
     :flow/to [:upper-case]
     :param/disallow-char \B
