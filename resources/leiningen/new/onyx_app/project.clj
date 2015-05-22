@@ -8,4 +8,4 @@
                  [com.mdrogalis/onyx "0.6.0-beta1"]
                  [com.stuartsierra/component "0.2.3"]
   :profiles {:dev {:dependencies [[org.clojure/tools.namespace "0.2.10"]]
-                   :source-paths ["env/dev" "src"]}}u)
+                   :source-paths ["env/dev" "src"]}})
