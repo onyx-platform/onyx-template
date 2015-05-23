@@ -16,15 +16,12 @@
 
 (deftest test-sample-dev-job
   (let [dev-env (component/start (onyx-dev-env 4))]
-    (println "done starting")
     (try 
       (let [dev-cfg (-> "dev-peer-config.edn" resource slurp read-string)
             peer-config (assoc dev-cfg :onyx/id (:onyx-id dev-env))
             stubs [:read-lines :write-lines]
             dev-catalog (sc/in-memory-catalog (build-catalog 20) stubs)
-            _ (println "In memory catalog " dev-catalog)
-            dev-lifecycles (sl/in-memory-lifecycles (build-lifecycles) dev-catalog stubs)
-            _ (println "Dev lifecycles " dev-lifecycles)]
+            dev-lifecycles (sl/in-memory-lifecycles (build-lifecycles) dev-catalog stubs)]
         (sl/bind-inputs! dev-lifecycles {:read-lines dev-inputs/lines})
         (let [job {:workflow workflow
                    :catalog dev-catalog
