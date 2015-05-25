@@ -26,7 +26,7 @@ Launch the `src/{{app-name}}/launcher/launch_prod_peers.clj` main function, givi
 
 ### Launch the Sample Job in Production
 
-Launch the `src/{{app-name}}/launcher/submit_prod_sample_job.clj` main function, giving it an Onyx ID.
+Launch the `src/{{app-name}}/launcher/submit_prod_sample_job.clj` main function, giving it an Onyx ID and ZooKeeper address.
 
 ## License
 

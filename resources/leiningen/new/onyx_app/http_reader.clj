@@ -3,6 +3,11 @@
             [onyx.peer.pipeline-extensions :as p-ext]
             [onyx.static.default-vals :refer [defaults]]))
 
+;;; A custom input plugin allows us to read from an HTTP plugin. This
+;;; input plugin doesn't checkpoint its progress, so it's not fault tolerant.
+;;; Use this plugin to get familiar with the basics, but don't rely on it for
+;;; fault tolerancy.
+
 (defn inject-reader
   [{:keys [onyx.core/task-map]} lifecycle]
   (let [ch (chan 10000)
