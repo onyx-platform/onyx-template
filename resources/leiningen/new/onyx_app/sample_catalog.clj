@@ -1,5 +1,9 @@
 (ns {{app-name}}.catalogs.sample-catalog)
 
+;;; Catalogs describe each task in a workflow. We use
+;;; them for describing input and output sources, injecting parameters,
+;;; and adjusting performance settings.
+
 (defn in-memory-catalog
   "Takes a catalog and a set of input/output task names,
    returning a new catalog with all I/O catalog entries

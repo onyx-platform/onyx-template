@@ -3,9 +3,17 @@
             [onyx.plugin.core-async :refer [take-segments!]]
             [onyx.static.planning :refer [find-task]]))
 
+;;; Lifecycles are hooks to add in extra code between predefined
+;;; points in the execution of a task on a peer.
+
 (def input-channel-capacity 10000)
 
 (def output-channel-capacity (inc input-channel-capacity))
+
+;;; A pair of functions to get channels from a memoized reference.
+;;; We memoize it by requested ID because we want to get a reference
+;;; to read and write segments, and also so that peers can locate a reference
+;;; when they use the channel in the job.
 
 (def get-input-channel
   (memoize
@@ -37,8 +45,6 @@
        (map #(take-segments! %))))
 
 (defn inject-in-ch [event lifecycle]
-  (println "Inject in " (get-input-channel (:core.async/id lifecycle)))
-  (println "Lifecycle is " lifecycle)
   {:core.async/chan (get-input-channel (:core.async/id lifecycle))})
 
 (defn inject-out-ch [event lifecycle]
@@ -50,6 +56,7 @@
 (def out-calls
   {:lifecycle/before-task-start inject-out-ch})
 
+;;; Stubs lifecycles to use core.async IO, instead of, say, Kafka or Datomic.
 (defn in-memory-lifecycles
   [lifecycles catalog tasks]
   (vec
@@ -73,6 +80,7 @@
               :else [lifecycle])))
     lifecycles)))
 
+;;;; Lifecycle hook to debug segments by logging them to the console.
 (defn log-batch [event lifecycle]
   (doseq [m (map :message (mapcat :leaves (:onyx.core/results event)))]
     (prn "Logging segment: " m))

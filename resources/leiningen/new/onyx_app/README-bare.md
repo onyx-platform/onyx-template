@@ -10,7 +10,7 @@ Load up `env/dev/user.clj`. Evaluate the `go` function.
 
 ### Launch the Sample Job in Development
 
-Create tests in `test/{{app-name}}/`. Be sure to have evaluated the `go` function beforehand to start your development environment before running tests.
+Create tests in `test/jobs/{{app-name}}/`. Be sure to have evaluated the `go` function beforehand to start your development environment before running tests.
 
 ### Reset the Development Mode
 
