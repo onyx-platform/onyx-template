@@ -34,7 +34,7 @@
                    :flow-conditions sf/flow-conditions
                    :task-scheduler :onyx.task-scheduler/balanced}]
           (onyx.api/submit-job peer-config job)
-          ;; Autoamtically grab output from the stubbed core.async channels,
+          ;; Automatically grab output from the stubbed core.async channels,
           ;; returning a vector of the results with data structures representing
           ;; the output.
           (let [[results] (sl/collect-outputs! dev-lifecycles [:write-lines])]
