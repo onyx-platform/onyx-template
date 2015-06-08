@@ -22,7 +22,7 @@
       (let [{:keys [write-lines]} (submit-job/submit-job dev-env)]
         (is (= 16 (count write-lines))))
       (finally 
-        (component/stop dev-env))))))
+        (component/stop dev-env)))))
 
 (deftest test-sample-prod-job
   (let [dev-env (component/start (onyx-dev-env 4))]

@@ -30,4 +30,3 @@
       ;; returning a vector of the results with data structures representing
       ;; the output.
       (sl/collect-outputs! dev-lifecycles [:write-lines]))))
-      
