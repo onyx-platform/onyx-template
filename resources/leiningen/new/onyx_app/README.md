@@ -20,6 +20,14 @@ Load up `env/dev/user.clj`. Evaluate the `reset` function.
 
 Load up `env/dev/user.clj`. Evaluate the `stop` function.
 
+### Launch the Development Sample Job in a REPL
+
+```clojure
+(user/go)
+(require '{{app-name}}.jobs.sample-submit-job)
+({{app-name}}.jobs.sample-submit-job/submit-job user/system)
+```
+
 ### Production Mode Peers
 
 Launch the `src/{{app-name}}/launcher/launch_prod_peers.clj` main function, giving it an Onyx ID. Optionally, a Dockerfile has been created at the root of the project to package this up into an uberjar for a Java 8 Ubuntu 14 environment.
