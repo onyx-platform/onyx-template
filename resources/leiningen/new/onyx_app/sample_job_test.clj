@@ -23,7 +23,7 @@
             ;; Turn :read-lines and :write-lines into core.async I/O channels
             stubs [:read-lines :write-lines]
             ;; Stubs the catalog entries for core.async I/O
-            dev-catalog (sc/in-memory-catalog (build-catalog 20) stubs)
+            dev-catalog (sc/in-memory-catalog (build-catalog 20 50) stubs)
             ;; Stubs the lifecycles for core.async I/O
             dev-lifecycles (sl/in-memory-lifecycles (build-lifecycles) dev-catalog stubs)]
         ;; Automatically pipes the data structure into the channel, attaching :done at the end
@@ -47,7 +47,7 @@
     (try 
       (let [dev-cfg (-> "dev-peer-config.edn" resource slurp read-string)
             peer-config (assoc dev-cfg :onyx/id (:onyx-id dev-env))
-            catalog (build-catalog 20)
+            catalog (build-catalog 20 50)
             lifecycles (build-lifecycles)
             ;; Uses a utility function to locate the channel for output by
             ;; its lifecycle ID.
