@@ -37,7 +37,7 @@
           ;; Automatically grab output from the stubbed core.async channels,
           ;; returning a vector of the results with data structures representing
           ;; the output.
-          (let [(:write-lines (sl/collect-outputs! dev-lifecycles [:write-lines]))]
+          (let [results (:write-lines (sl/collect-outputs! dev-lifecycles [:write-lines]))]
             (is (= 16 (count results))))))
       (finally 
         (component/stop dev-env)))))
