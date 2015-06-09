@@ -18,7 +18,6 @@
 (def get-input-channel
   (memoize
    (fn [id]
-     (println "Get channel for " id)
      (chan input-channel-capacity))))
 
 (def get-output-channel
@@ -42,7 +41,8 @@
 (defn collect-outputs! [lifecycles output-tasks]
   (->> output-tasks
        (map #(get-output-channel (channel-id-for lifecycles %)))
-       (map #(take-segments! %))))
+       (map take-segments!)
+       (zipmap output-tasks)))
 
 (defn inject-in-ch [event lifecycle]
   {:core.async/chan (get-input-channel (:core.async/id lifecycle))})
