@@ -66,6 +66,7 @@
                   ["resources/dev-peer-config.edn" (render "dev-peer-config.edn" data)]
                   ["resources/prod-peer-config.edn" (render "prod-peer-config.edn" data)]
 
+                  [(str "src/" path "/launcher/dev_system.clj") (render "dev_system.clj" data)]
                   [(str "src/" path "/launcher/launch_prod_peers.clj") (render "launch_prod_peers.clj" data)]
 
                   [(str "src/" path "/workflows/.gitkeep") (render "gitkeep" data)]
