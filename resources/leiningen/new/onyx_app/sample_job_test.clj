@@ -12,8 +12,7 @@
             [{{app-name}}.plugins.http-reader]
             [{{app-name}}.functions.sample-functions]
             [{{app-name}}.dev-inputs.sample-input :as dev-inputs]
-            [onyx.api]
-            [user]))
+            [onyx.api]))
 
 (deftest test-sample-dev-job
   ;; Start the development environment with 4 peers.

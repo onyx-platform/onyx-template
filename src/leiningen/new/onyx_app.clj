@@ -19,7 +19,7 @@
                 ["project.clj" (render "project.clj" data)]
                 ["Dockerfile" (render "Dockerfile" data)]
 
-                ["script/run-app.sh" (render "run-app.sh" data)]
+                [(str "script/run-" name ".sh") (render "run-app.sh" data)]
                 ["script/build.sh" (render "build.sh" data)]
 
                 ["env/dev/user.clj" (render "user.clj" data)]
@@ -56,7 +56,7 @@
                   ["project.clj" (render "project.clj" data)]
                   ["Dockerfile" (render "Dockerfile" data)]
 
-                  ["script/run-app.sh" (render "run-app.sh" data)]
+                  [(str "script/run-" name ".sh") (render "run-app.sh" data)]
                   ["script/build.sh" (render "build.sh" data)]
 
                   ["env/dev/user.clj" (render "user.clj" data)]
