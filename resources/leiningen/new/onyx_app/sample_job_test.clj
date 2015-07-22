@@ -34,7 +34,7 @@
      (user/stop))))
 
 (deftest test-sample-prod-job
-  (try 
+  (try
     (let [catalog (build-catalog 20 500)
           lifecycles (build-lifecycles)]
       (user/go (u/n-peers catalog workflow))

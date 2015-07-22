@@ -10,6 +10,6 @@
 
 (defn upper-case [{:keys [line] :as segment}]
   (if (seq line)
-    (let [upper-cased (apply str (capitalize (first line)) (rest line))]    
+    (let [upper-cased (apply str (capitalize (first line)) (rest line))]
       (assoc-in segment [:line] upper-cased))
     segment))
