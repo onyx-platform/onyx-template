@@ -1,54 +1,14 @@
 (ns {{app-name}}.lifecycles.sample-lifecycle
   (:require [clojure.core.async :refer [chan sliding-buffer >!!]]
             [onyx.plugin.core-async :refer [take-segments!]]
-            [onyx.static.planning :refer [find-task]]))
-
-;;; Lifecycles are hooks to add in extra code between predefined
-;;; points in the execution of a task on a peer.
-
-(def input-channel-capacity 10000)
-
-(def output-channel-capacity (inc input-channel-capacity))
-
-;;; A pair of functions to get channels from a memoized reference.
-;;; We memoize it by requested ID because we want to get a reference
-;;; to read and write segments, and also so that peers can locate a reference
-;;; when they use the channel in the job.
-
-(def get-input-channel
-  (memoize
-   (fn [id]
-     (chan input-channel-capacity))))
-
-(def get-output-channel
-  (memoize
-   (fn [id]
-     (chan (sliding-buffer output-channel-capacity)))))
-
-(defn channel-id-for [lifecycles task-name]
-  (:core.async/id
-   (->> lifecycles
-        (filter #(= task-name (:lifecycle/task %)))
-        (first))))
-
-(defn bind-inputs! [lifecycles mapping]
-  (doseq [[task segments] mapping]
-    (let [in-ch (get-input-channel (channel-id-for lifecycles task))]
-      (doseq [segment segments]
-        (>!! in-ch segment))
-      (>!! in-ch :done))))
-
-(defn collect-outputs! [lifecycles output-tasks]
-  (->> output-tasks
-       (map #(get-output-channel (channel-id-for lifecycles %)))
-       (map take-segments!)
-       (zipmap output-tasks)))
+            [onyx.static.planning :refer [find-task]]
+            [{{app-name}}.utils :as u]))
 
 (defn inject-in-ch [event lifecycle]
-  {:core.async/chan (get-input-channel (:core.async/id lifecycle))})
+  {:core.async/chan (u/get-input-channel (:core.async/id lifecycle))})
 
 (defn inject-out-ch [event lifecycle]
-  {:core.async/chan (get-output-channel (:core.async/id lifecycle))})
+  {:core.async/chan (u/get-output-channel (:core.async/id lifecycle))})
 
 (def in-calls
   {:lifecycle/before-task-start inject-in-ch})
@@ -62,7 +22,7 @@
   (vec
    (mapcat
     (fn [{:keys [lifecycle/task lifecycle/replaceable?] :as lifecycle}]
-      (let [catalog-entry (find-task catalog task)]
+      (let [catalog-entry (u/find-task catalog task)]
         (cond (and (some #{task} tasks) replaceable?
                    (= (:onyx/type catalog-entry) :input))
               [{:lifecycle/task task

@@ -8,10 +8,8 @@
             [onyx.api]))
 
 (defn -main [onyx-id & args]
-  (let [peer-config (assoc (-> "prod-peer-config.edn"
-                               resource slurp read-string) :onyx/id onyx-id)
-        ;; TODO: Transfer dev catalog entries and lifecycles into prod
-        ;; IO streams.
+  (let [cfg (-> "prod-peer-config.edn" resource slurp read-string)
+        peer-config (assoc cfg :onyx/id onyx-id)
         lifecycles (sample-lifecycle/build-lifecycles)]
     (let [job {:workflow workflow
                :catalog (build-catalog 20 50)

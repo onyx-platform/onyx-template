@@ -29,6 +29,8 @@
                 ["resources/dev-peer-config.edn" (render "dev-peer-config.edn" data)]
                 ["resources/prod-peer-config.edn" (render "prod-peer-config.edn" data)]
 
+                [(str "src/" path "/utils.clj") (render "utils.clj" data)]
+                
                 [(str "src/" path "/launcher/dev_system.clj") (render "dev_system.clj" data)]
                 [(str "src/" path "/launcher/launch_prod_peers.clj") (render "launch_prod_peers.clj" data)]
                 [(str "src/" path "/launcher/submit_prod_sample_job.clj") (render "submit_prod_sample_job.clj" data)]
@@ -37,7 +39,6 @@
                 [(str "src/" path "/catalogs/sample_catalog.clj") (render "sample_catalog.clj" data)]
                 [(str "src/" path "/flow_conditions/sample_flow_conditions.clj") (render "sample_flow_conditions.clj" data)]
                 [(str "src/" path "/functions/sample_functions.clj") (render "sample_functions.clj" data)]
-                [(str "src/" path "/jobs/sample_submit_job.clj") (render "sample_submit_job.clj" data)]
                 [(str "src/" path "/lifecycles/sample_lifecycle.clj") (render "sample_lifecycle.clj" data)]
                 [(str "src/" path "/plugins/http_reader.clj") (render "http_reader.clj" data)]
 
@@ -61,6 +62,7 @@
 
                   ["env/dev/user.clj" (render "user.clj" data)]
                   [(str "env/dev/" path "/dev_inputs/.gitkeep") (render "gitkeep" data)]
+                  [(str "src/" path "/utils.clj") (render "utils.clj" data)]
 
                   ["resources/env-config.edn" (render "env-config.edn" data)]
                   ["resources/dev-peer-config.edn" (render "dev-peer-config.edn" data)]

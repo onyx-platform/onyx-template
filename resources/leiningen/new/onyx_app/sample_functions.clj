@@ -9,5 +9,7 @@
   (update-in segment [:line] trim))
 
 (defn upper-case [{:keys [line] :as segment}]
-  (let [upper-cased (apply str (capitalize (first line)) (rest line))]    
-    (assoc-in segment [:line] upper-cased)))
+  (if (seq line)
+    (let [upper-cased (apply str (capitalize (first line)) (rest line))]    
+      (assoc-in segment [:line] upper-cased))
+    segment))

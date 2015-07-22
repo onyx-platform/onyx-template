@@ -31,36 +31,38 @@
            :else entry))
    catalog))
 
-(defn build-catalog [batch-size batch-timeout]
-  [{:onyx/name :read-lines
-    :onyx/ident :http/read-lines
-    :onyx/type :input
-    :onyx/medium :http
-    :http/uri "http://textfiles.com/stories/abbey.txt"
-    :onyx/batch-size batch-size
-    :onyx/batch-timeout batch-timeout
-    :onyx/max-peers 1
-    :onyx/doc "Reads lines from an HTTP url text file"}
+(defn build-catalog
+  ([] (build-catalog 5 50))
+  ([batch-size batch-timeout]
+     [{:onyx/name :read-lines
+       :onyx/ident :http/read-lines
+       :onyx/type :input
+       :onyx/medium :http
+       :http/uri "http://textfiles.com/stories/abbey.txt"
+       :onyx/batch-size batch-size
+       :onyx/batch-timeout batch-timeout
+       :onyx/max-peers 1
+       :onyx/doc "Reads lines from an HTTP url text file"}
 
-   {:onyx/name :format-line
-    :onyx/fn :{{app-name}}.functions.sample-functions/format-line
-    :onyx/type :function
-    :onyx/batch-size batch-size
-    :onyx/batch-timeout batch-timeout
-    :onyx/doc "Strips the line of any leading or trailing whitespace"}
+      {:onyx/name :format-line
+       :onyx/fn :{{app-name}}.functions.sample-functions/format-line
+       :onyx/type :function
+       :onyx/batch-size batch-size
+       :onyx/batch-timeout batch-timeout
+       :onyx/doc "Strips the line of any leading or trailing whitespace"}
 
-   {:onyx/name :upper-case
-    :onyx/fn :{{app-name}}.functions.sample-functions/upper-case
-    :onyx/type :function
-    :onyx/batch-size batch-size
-    :onyx/batch-timeout batch-timeout
-    :onyx/doc "Capitalizes the first letter of the line"}
+      {:onyx/name :upper-case
+       :onyx/fn :{{app-name}}.functions.sample-functions/upper-case
+       :onyx/type :function
+       :onyx/batch-size batch-size
+       :onyx/batch-timeout batch-timeout
+       :onyx/doc "Capitalizes the first letter of the line"}
 
-   {:onyx/name :write-lines
-    :onyx/ident :core.async/write-to-chan
-    :onyx/type :output
-    :onyx/medium :core.async
-    :onyx/batch-size batch-size
-    :onyx/batch-timeout batch-timeout
-    :onyx/max-peers 1
-    :onyx/doc "Writes segments to a core.async channel"}])
+      {:onyx/name :write-lines
+       :onyx/ident :core.async/write-to-chan
+       :onyx/type :output
+       :onyx/medium :core.async
+       :onyx/batch-size batch-size
+       :onyx/batch-timeout batch-timeout
+       :onyx/max-peers 1
+       :onyx/doc "Writes segments to a core.async channel"}]))
