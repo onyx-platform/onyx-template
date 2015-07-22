@@ -3,6 +3,7 @@
             [clojure.java.io :refer [resource]]
             [{{app-name}}.lifecycles.sample-lifecycle]
             [{{app-name}}.functions.sample-functions]
+            [{{app-name}}.plugins.http-reader]
             [onyx.plugin.core-async]
             [onyx.api]))
 
