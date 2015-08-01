@@ -1,6 +1,7 @@
 (ns {{app-name}}.plugins.http-reader
   (:require [clojure.core.async :refer [chan >!! <!! alts!! timeout go <!]]
             [onyx.peer.pipeline-extensions :as p-ext]
+            [onyx.peer.function :as function]
             [onyx.static.default-vals :refer [defaults]]))
 
 ;;; A custom input plugin allows us to read from an HTTP plugin. This
@@ -75,7 +76,7 @@
       (swap! pending-messages dissoc message-id)))
 
   (pending?
-    [_ _ message-id]
+    [_ {:keys [http/pending-messages]} message-id]
     (get @pending-messages message-id))
 
   (drained?
