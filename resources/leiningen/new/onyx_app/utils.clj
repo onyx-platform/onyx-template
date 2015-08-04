@@ -77,7 +77,12 @@
 
 (defn bind-inputs! [lifecycles mapping]
   (doseq [[task segments] mapping]
-    (let [in-ch (get-input-channel (channel-id-for lifecycles task))]
+    (let [in-ch (get-input-channel (channel-id-for lifecycles task))
+          n-segments (count segments)]
+      (when (< input-channel-capacity n-segments)
+        (throw (ex-info "Input channel capacity is smaller than bound inputs. Capacity can be adjusted in utils.clj"
+                        {:channel-size input-channel-capacity
+                         :n-segments n-segments})))
       (doseq [segment segments]
         (>!! in-ch segment))
       (>!! in-ch :done))))
