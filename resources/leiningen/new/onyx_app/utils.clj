@@ -83,6 +83,10 @@
         (throw (ex-info "Input channel capacity is smaller than bound inputs. Capacity can be adjusted in utils.clj"
                         {:channel-size input-channel-capacity
                          :n-segments n-segments})))
+      (when-not ((set (map :lifecycle/task lifecycles)) task)
+        (throw (ex-info (str "Cannot bind input for task " task " as lifecycles are missing. Check that inputs are being bound to the correct task name.")
+                        {:input task
+                         :lifecycles lifecycles})))
       (doseq [segment segments]
         (>!! in-ch segment))
       (>!! in-ch :done))))
