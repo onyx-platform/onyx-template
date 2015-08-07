@@ -1,4 +1,4 @@
-(defproject onyx-app/lein-template "0.7.0.1"
+(defproject onyx-app/lein-template "0.7.0.2-SNAPSHOT"
   :description "Onyx 0.6.0 Leiningen application template"
   :url "https://github.com/onyx-platform/onyx-template"
   :license {:name "Eclipse Public License"
