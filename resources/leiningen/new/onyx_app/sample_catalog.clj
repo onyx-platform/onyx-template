@@ -4,33 +4,6 @@
 ;;; them for describing input and output sources, injecting parameters,
 ;;; and adjusting performance settings.
 
-(defn in-memory-catalog
-  "Takes a catalog and a set of input/output task names,
-   returning a new catalog with all I/O catalog entries
-   that were specified turned into core.async plugins. The
-   core.async entries preserve all non-Onyx parameters."
-  [catalog tasks]
-  (mapv
-   (fn [entry]
-     (cond (and (some #{(:onyx/name entry)} tasks) (= (:onyx/type entry) :input))
-           (merge
-            entry
-            {:onyx/plugin :onyx.plugin.core-async/input
-             :onyx/type :input
-             :onyx/medium :core.async
-             :onyx/max-peers 1
-             :onyx/doc "Reads segments from a core.async channel"})
-           (and (some #{(:onyx/name entry)} tasks) (= (:onyx/type entry) :output))
-           (merge
-            entry
-            {:onyx/plugin :onyx.plugin.core-async/output
-             :onyx/type :output
-             :onyx/medium :core.async
-             :onyx/max-peers 1
-             :onyx/doc "Writes segments to a core.async channel"})
-           :else entry))
-   catalog))
-
 (defn build-catalog
   ([] (build-catalog 5 50))
   ([batch-size batch-timeout]

@@ -54,6 +54,33 @@
     :zookeeper/address zk-str
     :zookeeper.server/port zk-port))
 
+(defn in-memory-catalog
+  "Takes a catalog and a set of input/output task names,
+   returning a new catalog with all I/O catalog entries
+   that were specified turned into core.async plugins. The
+   core.async entries preserve all non-Onyx parameters."
+  [catalog tasks]
+  (mapv
+   (fn [entry]
+     (cond (and (some #{(:onyx/name entry)} tasks) (= (:onyx/type entry) :input))
+           (merge
+            entry
+            {:onyx/plugin :onyx.plugin.core-async/input
+             :onyx/type :input
+             :onyx/medium :core.async
+             :onyx/max-peers 1
+             :onyx/doc "Reads segments from a core.async channel"})
+           (and (some #{(:onyx/name entry)} tasks) (= (:onyx/type entry) :output))
+           (merge
+            entry
+            {:onyx/plugin :onyx.plugin.core-async/output
+             :onyx/type :output
+             :onyx/medium :core.async
+             :onyx/max-peers 1
+             :onyx/doc "Writes segments to a core.async channel"})
+           :else entry))
+   catalog))
+
 ;;;; Lifecycles utils ;;;;
 
 (def input-channel-capacity 10000)
@@ -74,6 +101,43 @@
        (map :core.async/id)
        (remove nil?)
        (first)))
+
+(defn inject-in-ch [event lifecycle]
+  {:core.async/chan (get-input-channel (:core.async/id lifecycle))})
+
+(defn inject-out-ch [event lifecycle]
+  {:core.async/chan (get-output-channel (:core.async/id lifecycle))})
+
+(def in-calls
+  {:lifecycle/before-task-start inject-in-ch})
+
+(def out-calls
+  {:lifecycle/before-task-start inject-out-ch})
+
+;;; Stubs lifecycles to use core.async IO, instead of, say, Kafka or Datomic.
+(defn in-memory-lifecycles
+  [lifecycles catalog tasks]
+  (vec
+   (mapcat
+    (fn [{:keys [lifecycle/task lifecycle/replaceable?] :as lifecycle}]
+      (let [catalog-entry (u/find-task catalog task)]
+        (cond (and (some #{task} tasks) replaceable?
+                   (= (:onyx/type catalog-entry) :input))
+              [{:lifecycle/task task
+                :lifecycle/calls :{{app-name}}.lifecycles.sample-lifecycle/in-calls
+                :core.async/id (java.util.UUID/randomUUID)}
+               {:lifecycle/task task
+                :lifecycle/calls :onyx.plugin.core-async/reader-calls}]
+              (and (some #{task} tasks) replaceable?
+                   (= (:onyx/type catalog-entry) :output))
+              [{:lifecycle/task task
+                :lifecycle/calls :{{app-name}}.lifecycles.sample-lifecycle/out-calls
+                :core.async/id (java.util.UUID/randomUUID)}
+               {:lifecycle/task task
+                :lifecycle/calls :onyx.plugin.core-async/writer-calls}]
+              :else [lifecycle])))
+    lifecycles)))
+
 
 (defn bind-inputs! [lifecycles mapping]
   (doseq [[task segments] mapping]

@@ -16,8 +16,8 @@
 (deftest test-sample-dev-job
   (try
     (let [stubs [:read-lines :write-lines]
-          catalog (sc/in-memory-catalog (build-catalog) stubs)
-          lifecycles (sl/in-memory-lifecycles (build-lifecycles) catalog stubs)]
+          catalog (u/in-memory-catalog (build-catalog) stubs)
+          lifecycles (u/in-memory-lifecycles (build-lifecycles) catalog stubs)]
       (user/go (u/n-peers catalog workflow))
       (u/bind-inputs! lifecycles {:read-lines dev-inputs/lines})
       (let [peer-config (u/load-peer-config (:onyx-id user/system))

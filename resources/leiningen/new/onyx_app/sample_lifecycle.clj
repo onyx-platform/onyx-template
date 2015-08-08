@@ -4,41 +4,6 @@
             [onyx.static.planning :refer [find-task]]
             [{{app-name}}.utils :as u]))
 
-(defn inject-in-ch [event lifecycle]
-  {:core.async/chan (u/get-input-channel (:core.async/id lifecycle))})
-
-(defn inject-out-ch [event lifecycle]
-  {:core.async/chan (u/get-output-channel (:core.async/id lifecycle))})
-
-(def in-calls
-  {:lifecycle/before-task-start inject-in-ch})
-
-(def out-calls
-  {:lifecycle/before-task-start inject-out-ch})
-
-;;; Stubs lifecycles to use core.async IO, instead of, say, Kafka or Datomic.
-(defn in-memory-lifecycles
-  [lifecycles catalog tasks]
-  (vec
-   (mapcat
-    (fn [{:keys [lifecycle/task lifecycle/replaceable?] :as lifecycle}]
-      (let [catalog-entry (u/find-task catalog task)]
-        (cond (and (some #{task} tasks) replaceable?
-                   (= (:onyx/type catalog-entry) :input))
-              [{:lifecycle/task task
-                :lifecycle/calls :{{app-name}}.lifecycles.sample-lifecycle/in-calls
-                :core.async/id (java.util.UUID/randomUUID)}
-               {:lifecycle/task task
-                :lifecycle/calls :onyx.plugin.core-async/reader-calls}]
-              (and (some #{task} tasks) replaceable?
-                   (= (:onyx/type catalog-entry) :output))
-              [{:lifecycle/task task
-                :lifecycle/calls :{{app-name}}.lifecycles.sample-lifecycle/out-calls
-                :core.async/id (java.util.UUID/randomUUID)}
-               {:lifecycle/task task
-                :lifecycle/calls :onyx.plugin.core-async/writer-calls}]
-              :else [lifecycle])))
-    lifecycles)))
 
 ;;;; Lifecycle hook to debug segments by logging them to the console.
 (defn log-batch [event lifecycle]
