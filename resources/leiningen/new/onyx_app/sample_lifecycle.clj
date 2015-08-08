@@ -42,7 +42,7 @@
 
 ;;;; Lifecycle hook to debug segments by logging them to the console.
 (defn log-batch [event lifecycle]
-  (doseq [m (map :message (mapcat :leaves (:onyx.core/results event)))]
+  (doseq [m (map :message (mapcat :leaves (:tree (:onyx.core/results event))))]
     (prn "Logging segment: " m))
   {})
 
