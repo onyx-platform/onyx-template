@@ -124,14 +124,14 @@
         (cond (and (some #{task} tasks) replaceable?
                    (= (:onyx/type catalog-entry) :input))
               [{:lifecycle/task task
-                :lifecycle/calls :{{app-name}}.lifecycles.sample-lifecycle/in-calls
+                :lifecycle/calls ::in-calls
                 :core.async/id (java.util.UUID/randomUUID)}
                {:lifecycle/task task
                 :lifecycle/calls :onyx.plugin.core-async/reader-calls}]
               (and (some #{task} tasks) replaceable?
                    (= (:onyx/type catalog-entry) :output))
               [{:lifecycle/task task
-                :lifecycle/calls :{{app-name}}.lifecycles.sample-lifecycle/out-calls
+                :lifecycle/calls ::out-calls
                 :core.async/id (java.util.UUID/randomUUID)}
                {:lifecycle/task task
                 :lifecycle/calls :onyx.plugin.core-async/writer-calls}]
