@@ -120,7 +120,7 @@
   (vec
    (mapcat
     (fn [{:keys [lifecycle/task lifecycle/replaceable?] :as lifecycle}]
-      (let [catalog-entry (u/find-task catalog task)]
+      (let [catalog-entry (find-task catalog task)]
         (cond (and (some #{task} tasks) replaceable?
                    (= (:onyx/type catalog-entry) :input))
               [{:lifecycle/task task
