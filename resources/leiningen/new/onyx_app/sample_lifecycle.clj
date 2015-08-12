@@ -1,14 +1,14 @@
 (ns {{app-name}}.lifecycles.sample-lifecycle
   (:require [clojure.core.async :refer [chan sliding-buffer >!!]]
             [onyx.plugin.core-async :refer [take-segments!]]
+            [taoensso.timbre :refer [info]]
             [onyx.static.planning :refer [find-task]]
             [{{app-name}}.utils :as u]))
 
-
-;;;; Lifecycle hook to debug segments by logging them to the console.
 (defn log-batch [event lifecycle]
-  (doseq [m (map :message (mapcat :leaves (:tree (:onyx.core/results event))))]
-    (prn "Logging segment: " m))
+  (let [task-name (:onyx/name (:onyx.core/task-map event))]
+    (doseq [m (map :message (mapcat :leaves (:tree (:onyx.core/results event))))]
+      (info task-name " logging segment: " m)))
   {})
 
 (def log-calls
