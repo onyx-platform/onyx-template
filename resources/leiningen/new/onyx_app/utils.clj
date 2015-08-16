@@ -38,6 +38,16 @@
             entry))
         catalog))
 
+(defn add-to-job
+  "Adds to the catalog and lifecycles of a job in form
+  {:workflow ...
+   :catalog ...
+   :lifecycles ...}"
+  [job {:keys [catalog lifecycles]}]
+  (-> job
+      (update :catalog into catalog)
+      (update :lifecycles into lifecycles)))
+
 (defn n-peers
   "Takes a workflow and catalog, returns the minimum number of peers
    needed to execute this job."
