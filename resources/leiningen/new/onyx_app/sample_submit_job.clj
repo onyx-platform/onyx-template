@@ -29,4 +29,5 @@
       ;; Automatically grab output from the stubbed core.async channels,
       ;; returning a vector of the results with data structures representing
       ;; the output.
-      (sl/collect-outputs! dev-lifecycles [:write-lines]))))
+      (sl/collect-outputs! dev-lifecycles [:write-lines])
+      (shutdown-agents))))
