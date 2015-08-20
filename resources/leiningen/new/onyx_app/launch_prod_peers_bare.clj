@@ -17,6 +17,7 @@
                        (fn []
                          (doseq [v-peer peers]
                            (onyx.api/shutdown-peer v-peer))
-                         (onyx.api/shutdown-peer-group peer-group))))
+                         (onyx.api/shutdown-peer-group peer-group)
+                         (shutdown-agents))))
     ;; Block forever.
     (<!! (chan))))

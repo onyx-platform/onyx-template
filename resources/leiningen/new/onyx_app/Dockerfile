@@ -1,4 +1,4 @@
-FROM docker pull phusion/baseimage:0.9.17
+FROM phusion/baseimage:0.9.17
 MAINTAINER Michael Drogalis <mjd3089@rit.edu>
 
 RUN apt-get update

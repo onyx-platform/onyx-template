@@ -15,4 +15,5 @@
                :catalog (build-catalog 20 50)
                :lifecycles lifecycles
                :task-scheduler :onyx.task-scheduler/balanced}]
-      (onyx.api/submit-job peer-config job))))
+      (onyx.api/submit-job peer-config job)
+      (shutdown-agents))))
