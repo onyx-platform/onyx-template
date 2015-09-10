@@ -30,7 +30,10 @@ Load up `env/dev/user.clj`. Evaluate the `stop` function.
 
 ### Production Mode Peers
 
-Launch the `src/{{app-name}}/launcher/launch_prod_peers.clj` main function, giving it an Onyx ID. Optionally, a Dockerfile has been created at the root of the project to package this up into an uberjar for a Java 8 Ubuntu 14 environment.
+First start the Aeron media driver, which should be used in production mode, by running the main function in `src/{{app-name}}/launcher/aeron_media_driver.clj`.
+
+Then launch the `src/{{app-name}}/launcher/launch_prod_peers.clj` main function, giving it an Onyx ID. Optionally, a Dockerfile has been created at the root of the project to package this up into an uberjar for a Java 8 Ubuntu 14 environment.
+
 
 ### Launch the Sample Job in Production
 
