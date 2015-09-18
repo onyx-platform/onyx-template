@@ -34,6 +34,7 @@
                 [(str "src/" path "/launcher/dev_system.clj") (render "dev_system.clj" data)]
                 [(str "src/" path "/launcher/launch_prod_peers.clj") (render "launch_prod_peers.clj" data)]
                 [(str "src/" path "/launcher/submit_prod_sample_job.clj") (render "submit_prod_sample_job.clj" data)]
+                [(str "src/" path "/launcher/aeron_media_driver.clj") (render "aeron_media_driver.clj" data)]
 
                 [(str "src/" path "/workflows/sample_workflow.clj") (render "sample_workflow.clj" data)]
                 [(str "src/" path "/catalogs/sample_catalog.clj") (render "sample_catalog.clj" data)]

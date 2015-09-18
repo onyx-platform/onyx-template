@@ -1,5 +1,6 @@
 {:zookeeper/address "127.0.0.1:2188"
  :onyx.peer/job-scheduler :onyx.job-scheduler/greedy
  :onyx.messaging/impl :aeron
- :onyx.messaging/peer-port-range [40000 40020]
- :onyx.messaging/bind-addr "127.0.0.1"}
+ :onyx.messaging/bind-addr "localhost"
+ :onyx.messaging/peer-ports [40199]
+ :onyx.messaging.aeron/embedded-driver? false}

@@ -1,12 +1,12 @@
 # {{app-name}}
 
-An Onyx 0.7.0 application that does distributed things. This project has been populated with a sample job and some basic Onyx idioms to make development easier to use.
+An Onyx 0.7.3 application that does distributed things. This project has been populated with a sample job and some basic Onyx idioms to make development easier to use.
 
 ## Usage
 
 ### Launch the Sample Job in Development
 
-Run the `deftest`s in `test/jobs//sample_job_test.clj`. The tests automatically start and stop the development environment, so make sure don't already have the dev environment (explained below) running - otherwise you'd get a port conflict.
+Run the `deftest`s in `test/{{app-name}}/jobs/sample_job_test.clj`. The tests automatically start and stop the development environment, so make sure don't already have the dev environment (explained below) running - otherwise you'd get a port conflict.
 
 ### Start the Development Mode
 
@@ -23,14 +23,17 @@ Load up `env/dev/user.clj`. Evaluate the `stop` function.
 ### Launch the Development Sample Job in a REPL
 
 ```clojure
-(user/go)
+(user/go 4)
 (require '{{app-name}}.jobs.sample-submit-job)
 ({{app-name}}.jobs.sample-submit-job/submit-job user/system)
 ```
 
 ### Production Mode Peers
 
-Launch the `src/{{app-name}}/launcher/launch_prod_peers.clj` main function, giving it an Onyx ID. Optionally, a Dockerfile has been created at the root of the project to package this up into an uberjar for a Java 8 Ubuntu 14 environment.
+First start the Aeron media driver, which should be used in production mode, by running the main function in `src/{{app-name}}/launcher/aeron_media_driver.clj`.
+
+Then launch the `src/{{app-name}}/launcher/launch_prod_peers.clj` main function, giving it an Onyx ID. Optionally, a Dockerfile has been created at the root of the project to package this up into an uberjar for a Java 8 Ubuntu 14 environment.
+
 
 ### Launch the Sample Job in Production
 
