@@ -1,12 +1,12 @@
 # {{app-name}}
 
-An Onyx 0.7.0 application that does distributed things.
+An Onyx 0.7.3 application that does distributed things.
 
 ## Usage
 
 ### Start the Development Mode
 
-Load up `env/dev/user.clj`. Evaluate the `go` function.
+Load up `env/dev/user.clj`. Evaluate the `go` function, which takes a single integer argument for how many peers to launch.
 
 ### Launch the Sample Job in Development
 
