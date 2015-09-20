@@ -1,6 +1,6 @@
 # {{app-name}}
 
-An Onyx 0.7.3 application that does distributed things. This project has been populated with a sample job and some basic Onyx idioms to make development easier to use.
+An Onyx 0.7.4 application that does distributed things. This project has been populated with a sample job and some basic Onyx idioms to make development easier to use.
 
 ## Usage
 

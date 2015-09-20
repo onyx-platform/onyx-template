@@ -1,6 +1,6 @@
 # Onyx Application Template
 
-A Leiningen template for creating Onyx 0.7.0 apps.
+A Leiningen template for creating Onyx 0.7.4 apps.
 
 ### Usage
 
