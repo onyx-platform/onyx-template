@@ -1,6 +1,6 @@
 # {{app-name}}
 
-An Onyx 0.7.3 application that does distributed things.
+An Onyx 0.7.5 application that does distributed things.
 
 ## Usage
 
