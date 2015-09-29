@@ -1,9 +1,11 @@
 test:
   override:
+          - echo '{:user {:plugins [[lein-exec "0.3.5"]]}}' > ~/.lein/profiles.clj
           - lein set-version 99.99.99 
           - lein install
           - lein new onyx-app test-app
           - cd test-app && lein test && cd ..
+          - cd test-app && lein exec -e "(user/go 4)(require 'test-app.jobs.sample-submit-job)(test-app.jobs.sample-submit-job/submit-job user/system))" && cd ..
           - lein new onyx-app test-app-bare bare
           - cd test-app-bare && lein test && cd ..
 
