@@ -7,6 +7,7 @@
             [{{app-name}}.flow-conditions.sample-flow-conditions :as sf]
             [{{app-name}}.functions.sample-functions]
             [{{app-name}}.dev-inputs.sample-input :as dev-inputs]
+            [{{app-name}}.utils :as u]
             [onyx.api]))
 
 (defn submit-job [dev-env]
@@ -15,11 +16,11 @@
         ;; Turn :read-lines and :write-lines into core.async I/O channels
         stubs [:read-lines :write-lines]
         ;; Stubs the catalog entries for core.async I/O
-        dev-catalog (sc/in-memory-catalog (build-catalog 20 50) stubs)
+        dev-catalog (u/in-memory-catalog (build-catalog 20 50) stubs)
         ;; Stubs the lifecycles for core.async I/O
-        dev-lifecycles (sl/in-memory-lifecycles (build-lifecycles) dev-catalog stubs)]
+        dev-lifecycles (u/in-memory-lifecycles (build-lifecycles) dev-catalog stubs)]
     ;; Automatically pipes the data structure into the channel, attaching :done at the end
-    (sl/bind-inputs! dev-lifecycles {:read-lines dev-inputs/lines})
+    (u/bind-inputs! dev-lifecycles {:read-lines dev-inputs/lines})
     (let [job {:workflow workflow
                :catalog dev-catalog
                :lifecycles dev-lifecycles
@@ -29,5 +30,4 @@
       ;; Automatically grab output from the stubbed core.async channels,
       ;; returning a vector of the results with data structures representing
       ;; the output.
-      (sl/collect-outputs! dev-lifecycles [:write-lines])
-      (shutdown-agents))))
+      (u/collect-outputs! dev-lifecycles [:write-lines]))))
