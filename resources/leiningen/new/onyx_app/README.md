@@ -6,7 +6,7 @@ An Onyx 0.7.5 application that does distributed things. This project has been po
 
 ### Launch the Sample Job in Development
 
-Run the `deftest`s in `test/{{app-name}}/jobs/sample_job_test.clj`. The tests automatically start and stop the development environment, so make sure don't already have the dev environment (explained below) running - otherwise you'd get a port conflict.
+Run the `deftest`s in `test/{{app-name}}/jobs/sample_job_test.clj`. The tests automatically start and stop the development environment, so make sure you don't already have the dev environment (explained below) running - otherwise you'd get a port conflict.
 
 ### Start the Development Mode
 
