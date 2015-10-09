@@ -42,7 +42,7 @@
                 [(str "src/" path "/functions/sample_functions.clj") (render "sample_functions.clj" data)]
                 [(str "src/" path "/lifecycles/sample_lifecycle.clj") (render "sample_lifecycle.clj" data)]
                 [(str "src/" path "/plugins/http_reader.clj") (render "http_reader.clj" data)]
-
+                [(str "src/" path "/jobs/sample_submit_job.clj") (render "sample_submit_job.clj" data)]
                 [(str "test/" path "/jobs/sample_job_test.clj") (render "sample_job_test.clj" data)])))
   ([name arg]
      (if (= arg "bare")
