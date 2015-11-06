@@ -1,4 +1,5 @@
 (ns {{app-name}}.launcher.launch-prod-peers
+  (:gen-class)
   (:require [clojure.core.async :refer [chan <!!]]
             [clojure.java.io :refer [resource]]
             [{{app-name}}.lifecycles.sample-lifecycle]

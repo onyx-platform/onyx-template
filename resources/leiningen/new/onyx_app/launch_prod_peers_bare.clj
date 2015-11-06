@@ -1,10 +1,11 @@
 (ns {{app-name}}.launcher.launch-prod-peers
-    (:require [clojure.core.async :refer [chan <!!]]
-              [clojure.java.io :refer [resource]]
-;             [{{app-name}}.lifecycles.lifecycle]
-;             [{{app-name}}.functions.functions]
-              [onyx.plugin.core-async]
-              [onyx.api]))
+  (:gen-class)
+  (:require [clojure.core.async :refer [chan <!!]]
+            [clojure.java.io :refer [resource]]
+            ;[{{app-name}}.lifecycles.lifecycle]
+            ;[{{app-name}}.functions.functions]
+            [onyx.plugin.core-async]
+            [onyx.api]))
 
 (defn -main [onyx-id n & args]
   (let [n-peers (Integer/parseInt n)
