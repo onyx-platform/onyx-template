@@ -1,6 +1,6 @@
 # Onyx Application Template
 
-A Leiningen template for creating Onyx 0.7.5 apps.
+A Leiningen template for creating Onyx 0.8.0 apps.
 
 ### Usage
 
@@ -20,7 +20,7 @@ Then read the instructions on the `README.md` in your fresh project.
 
 ## License
 
-Copyright © 2015 Michael Drogalis
+Copyright © 2015 Distributed Masonry
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
