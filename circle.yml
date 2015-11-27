@@ -12,3 +12,10 @@ test:
 machine:
   java:
     version: oraclejdk8
+
+deployment:
+  update-projects:
+    branch: master
+    commands:
+            - git reset HEAD --hard 
+            - lein deploy
