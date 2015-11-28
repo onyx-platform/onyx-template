@@ -3,51 +3,35 @@
             [clojure.core.async :refer [>!!]]
             [clojure.java.io :refer [resource]]
             [com.stuartsierra.component :as component]
-            [{{app-name}}.launcher.dev-system :refer [onyx-dev-env]]
-            [{{app-name}}.workflows.sample-workflow :refer [workflow]]
-            [{{app-name}}.catalogs.sample-catalog :refer [build-catalog] :as sc]
-            [{{app-name}}.lifecycles.sample-lifecycle :refer [build-lifecycles] :as sl]
-            [{{app-name}}.plugins.http-reader]
-            [{{app-name}}.functions.sample-functions]
+
+            [{{app-name}}.jobs.sample-submit-job :refer [build-job]]
             [{{app-name}}.dev-inputs.sample-input :as dev-inputs]
-            [{{app-name}}.utils :as u]
+            [{{app-name}}.lifecycles.sample-lifecycle :refer [get-core-async-channels]]
             [onyx.api]))
 
-(deftest test-sample-dev-job
-  (try
-    (let [stubs [:read-lines :write-lines]
-          catalog (u/in-memory-catalog (build-catalog) stubs)
-          lifecycles (u/in-memory-lifecycles (build-lifecycles) catalog stubs)]
-      (user/go (u/n-peers catalog workflow))
-      (u/bind-inputs! lifecycles {:read-lines dev-inputs/lines})
-      (let [peer-config (u/load-peer-config (:onyx-id user/system))
-            job {:workflow workflow
-                 :catalog catalog
-                 :lifecycles lifecycles
-                 :task-scheduler :onyx.task-scheduler/balanced}]
-        (onyx.api/submit-job peer-config job)
-        (let [[results] (u/collect-outputs! lifecycles [:write-lines])]
-          (is (seq results)))))
-    (catch InterruptedException e
-      (Thread/interrupted))
-    (finally
-     (user/stop))))
+(deftest onyx-dev-job-test
+  (let [id (java.util.UUID/randomUUID)
+        config (load-config)
+        env-config (assoc (:env-config config) :onyx/id id)
+        peer-config (assoc (:peer-config config) :onyx/id id)]
+    (with-test-env [test-env [5 env-config peer-config]]
+                   (let [job (build-job :dev)
+                         {:keys [write-lines read-lines]} (get-core-async-channels job)]
+                     (onyx.api/submit-job peer-config job)
+                     (doseq [segment dev-inputs/lines]
+                       (>!! read-lines segment))
+                     (>!! read-lines :done)
+                     (close! read-lines)
+                     (is (= 16
+                            (count (take-segments! write-lines))))))))
 
-(deftest test-sample-prod-job
-  (try
-    (let [catalog (build-catalog 20 500)
-          lifecycles (build-lifecycles)]
-      (user/go (u/n-peers catalog workflow))
-      (u/bind-inputs! lifecycles {:read-lines dev-inputs/lines})
-      (let [peer-config (u/load-peer-config (:onyx-id user/system))
-            job {:workflow workflow
-                 :catalog catalog
-                 :lifecycles lifecycles
-                 :task-scheduler :onyx.task-scheduler/balanced}]
-        (onyx.api/submit-job peer-config job)
-        (let [[results] (u/collect-outputs! lifecycles [:write-lines])]
-          (is (seq results)))))
-    (catch InterruptedException e
-      (Thread/interrupted))
-    (finally
-     (user/stop))))
+(deftest onyx-prod-job-test
+  (let [id (java.util.UUID/randomUUID)
+        config (load-config)
+        env-config (assoc (:env-config config) :onyx/id id)
+        peer-config (assoc (:peer-config config) :onyx/id id)]
+    (with-test-env [test-env [5 env-config peer-config]]
+                   (let [job (build-job :prod)
+                         {:keys [write-lines read-lines]} (get-core-async-channels job)]
+                     (onyx.api/submit-job peer-config job)
+                     (is (take-segments! write-lines))))))

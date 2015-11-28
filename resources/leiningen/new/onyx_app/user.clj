@@ -7,14 +7,11 @@
 
 (def system nil)
 
-(defn init [n-peers]
-  (alter-var-root #'system (constantly (onyx-dev-env n-peers))))
+(defn init [])
 
-(defn start []
-  (alter-var-root #'system component/start))
+(defn start [])
 
-(defn stop []
-  (alter-var-root #'system (fn [s] (when s (component/stop s)))))
+(defn stop [])
 
 (defn go [n-peers]
   (init n-peers)

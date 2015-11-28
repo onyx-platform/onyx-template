@@ -1,20 +1,20 @@
 (ns {{app-name}}.flow-conditions.sample-flow-conditions)
 
-(def flow-conditions
+(defn build-flow-conditions [ctx]
   [{:flow/from :upper-case
     :flow/to [:write-lines]
     :flow/short-circuit? true
     :flow/thrown-exception? true
-    :flow/post-transform :{{app-name}}.flow-conditions.sample-flow-conditions/substitute-segment
-    :flow/predicate :{{app-name}}.flow-conditions.sample-flow-conditions/npe?
+    :flow/post-transform ::substitute-segment
+    :flow/predicate ::npe?
     :flow/doc "Send a canned value if this segment threw a NullPointerException."}
    {:flow/from :format-line
     :flow/to [:upper-case]
     :param/disallow-char \B
     :param/max-line-length 60
     :flow/predicate [:and
-                     [:not [:{{app-name}}.flow-conditions.sample-flow-conditions/starts-with? :param/disallow-char]]
-                     [:{{app-name}}.flow-conditions.sample-flow-conditions/within-length? :param/max-line-length]]
+                     [:not [::starts-with? :param/disallow-char]]
+                     [::within-length? :param/max-line-length]]
     :flow/doc "Output the line if it doesn't start with 'B' and is less than 60 characters"}])
 
 (defn starts-with? [event old {:keys [line]} all-new disallowed-char]
@@ -28,4 +28,3 @@
 
 (defn substitute-segment [event ex]
   {:line "<<< Blank line was here >>>"})
-
