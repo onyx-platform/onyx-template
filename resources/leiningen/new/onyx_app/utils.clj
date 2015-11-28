@@ -71,14 +71,3 @@
   (is (= (into #{} expected) (into #{} (remove (partial = :done) actual))))
   (is (= :done (last actual)))
   (is (= (dec (count actual)) (count expected))))
-
-(defn load-peer-config [onyx-id]
-  (assoc (-> "dev-peer-config.edn" resource slurp read-string)
-    :onyx/id onyx-id
-    :zookeeper/address zk-str))
-
-(defn load-env-config [onyx-id]
-  (assoc (-> "env-config.edn" resource slurp read-string)
-    :onyx/id onyx-id
-    :zookeeper/address zk-str
-    :zookeeper.server/port zk-port))

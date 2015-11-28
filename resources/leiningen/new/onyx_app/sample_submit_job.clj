@@ -1,6 +1,7 @@
 (ns {{app-name}}.jobs.sample-submit-job
   (:require [clojure.java.io :refer [resource]]
             [com.stuartsierra.component :as component]
+            [onyx.test-helper :refer [load-config]]
             [{{app-name}}.plugins.http-reader :refer [add-http-reader]]
             [{{app-name}}.catalogs.sample-catalog :refer [build-catalog]]
             [{{app-name}}.lifecycles.sample-lifecycle :refer [build-lifecycles
@@ -31,8 +32,9 @@
     job))
 
 (defn -main [onyx-id & args]
-  (let [cfg (-> "prod-peer-config.edn" resource slurp read-string)
-        peer-config (assoc cfg :onyx/id onyx-id)]
+  (let [config (assoc-in (load-config "config.edn")
+                              [:peer-config :onyx/id] onyx-id)
+        peer-config (get config :peer-config)]
     (let [job (build-job :prod)]
       (onyx.api/submit-job peer-config job)
       (shutdown-agents))))

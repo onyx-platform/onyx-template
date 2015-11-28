@@ -6,14 +6,15 @@
             [{{app-name}}.functions.sample-functions]
             [{{app-name}}.plugins.http-reader]
             [onyx.plugin.core-async]
+            [onyx.test-helper :refer [load-config]]
             [onyx.api]))
 
 (defn -main [onyx-id n & args]
   (let [n-peers (Integer/parseInt n)
-	peer-config (assoc (-> "prod-peer-config.edn"
-			       resource slurp read-string) :onyx/id onyx-id)
-	peer-group (onyx.api/start-peer-group peer-config)
-	peers (onyx.api/start-peers n-peers peer-group)]
+        config (assoc-in (load-config "config.edn") [:peer-config :onyx/id] onyx-id)
+        peer-config (get config :peer-config)
+	      peer-group (onyx.api/start-peer-group peer-config)
+	      peers (onyx.api/start-peers n-peers peer-group)]
     (.addShutdownHook (Runtime/getRuntime)
 		      (Thread.
 			(fn []
