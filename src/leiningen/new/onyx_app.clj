@@ -29,7 +29,6 @@
                     [(str "src/" path "/utils.clj") (render "utils.clj" data)]
                     [(str "src/" path "/launcher/aeron_media_driver.clj") (render "aeron_media_driver.clj" data)]]
         sample-files [[(str "src/" path "/launcher/launch_prod_peers.clj") (render "launch_prod_peers.clj" data)]
-                      [(str "src/" path "/launcher/submit_prod_sample_job.clj") (render "submit_prod_sample_job.clj" data)]
                       [(str "src/" path "/workflows/sample_workflow.clj") (render "sample_workflow.clj" data)]
                       [(str "src/" path "/catalogs/sample_catalog.clj") (render "sample_catalog.clj" data)]
                       [(str "src/" path "/flow_conditions/sample_flow_conditions.clj") (render "sample_flow_conditions.clj" data)]

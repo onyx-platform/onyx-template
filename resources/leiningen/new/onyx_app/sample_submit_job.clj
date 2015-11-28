@@ -29,4 +29,9 @@
                              logging      (add-logging logging))]
     job))
 
-(defn submit-job [])
+(defn -main [onyx-id & args]
+  (let [cfg (-> "prod-peer-config.edn" resource slurp read-string)
+        peer-config (assoc cfg :onyx/id onyx-id)]
+    (let [job (build-job :prod)]
+      (onyx.api/submit-job peer-config job)
+      (shutdown-agents))))
