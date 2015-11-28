@@ -9,6 +9,7 @@
             [{{app-name}}.workflows.sample-workflow :refer [build-workflow]]
             [{{app-name}}.flow-conditions.sample-flow-conditions :refer [build-flow-conditions]]
             [{{app-name}}.dev-inputs.sample-input :as dev-inputs]
+            [{{app-name}}.functions.sample-functions]
             [onyx.api]))
 
 ;;;; Lets build a job

@@ -6,7 +6,7 @@
 
 (defn base-catalog [batch-size batch-timeout]
   [{:onyx/name :format-line
-    :onyx/fn :testapp.functions.sample-functions/format-line
+    :onyx/fn :{{app-name}}.functions.sample-functions/format-line
     :onyx/type :function
     :onyx/batch-size batch-size
     :onyx/batch-timeout batch-timeout
@@ -20,7 +20,7 @@
     :onyx/doc "identity"}
 
    {:onyx/name :upper-case
-    :onyx/fn :testapp.functions.sample-functions/upper-case
+    :onyx/fn :{{app-name}}.functions.sample-functions/upper-case
     :onyx/type :function
     :onyx/batch-size batch-size
     :onyx/batch-timeout batch-timeout
@@ -55,7 +55,7 @@
   (into
     (base-catalog batch-size batch-timeout)
     [{:onyx/name :read-lines
-      :onyx/plugin :testapp.plugins.http-reader/reader
+      :onyx/plugin :{{app-name}}.plugins.http-reader/reader
       :onyx/type :input
       :onyx/medium :http
       :http/uri "http://textfiles.com/stories/abbey.txt"

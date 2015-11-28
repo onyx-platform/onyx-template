@@ -1,9 +1,10 @@
 (ns {{app-name}}.jobs.sample-job-test
   (:require [clojure.test :refer [deftest is]]
-            [clojure.core.async :refer [>!!]]
+            [clojure.core.async :refer [>!! close!]]
             [clojure.java.io :refer [resource]]
             [com.stuartsierra.component :as component]
-
+            [onyx.test-helper :refer [load-config with-test-env]]
+            [onyx.plugin.core-async :refer [take-segments!]]
             [{{app-name}}.jobs.sample-submit-job :refer [build-job]]
             [{{app-name}}.dev-inputs.sample-input :as dev-inputs]
             [{{app-name}}.lifecycles.sample-lifecycle :refer [get-core-async-channels]]

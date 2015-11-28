@@ -91,10 +91,10 @@
   [{:keys [catalog lifecycles] :as job}]
   (let [inputs (u/find-task-by-key catalog
                                    :onyx/plugin
-                                   :testapp.plugins.http-reader/reader)]
+                                   :{{app-name}}.plugins.http-reader/reader)]
     (u/add-to-job job
                   {:lifecycles
                    (mapcat #(remove nil? %)
                            [(when-let [input-task-name (get inputs :onyx/name)]
                               [{:lifecycle/task input-task-name
-                                :lifecycle/calls :testapp.plugins.http-reader/reader-calls}])])})))
+                                :lifecycle/calls :{{app-name}}.plugins.http-reader/reader-calls}])])})))
