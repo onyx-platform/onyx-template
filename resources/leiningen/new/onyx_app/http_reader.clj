@@ -2,7 +2,8 @@
   (:require [clojure.core.async :refer [chan >!! <!! alts!! timeout go <!]]
             [onyx.peer.pipeline-extensions :as p-ext]
             [onyx.peer.function :as function]
-            [onyx.static.default-vals :refer [defaults]]))
+            [onyx.static.default-vals :refer [defaults]]
+            [{{app-name}}.utils :as u]))
 
 ;;; A custom input plugin allows us to read from an HTTP plugin. This
 ;;; input plugin doesn't checkpoint its progress, so it's not fault tolerant.
@@ -85,3 +86,15 @@
 
 (defn reader [pipeline-data]
   (->HttpReader))
+
+(defn add-http-reader
+  [{:keys [catalog lifecycles] :as job}]
+  (let [inputs (u/find-task-by-key catalog
+                                   :onyx/plugin
+                                   :testapp.plugins.http-reader/reader)]
+    (u/add-to-job job
+                  {:lifecycles
+                   (mapcat #(remove nil? %)
+                           [(when-let [input-task-name (get inputs :onyx/name)]
+                              [{:lifecycle/task input-task-name
+                                :lifecycle/calls :testapp.plugins.http-reader/reader-calls}])])})))
