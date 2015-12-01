@@ -1,5 +1,5 @@
 FROM phusion/baseimage:0.9.17
-MAINTAINER Michael Drogalis <mjd3089@rit.edu>
+MAINTAINER Excellent Person <fill@me.in>
 
 RUN add-apt-repository -y ppa:webupd8team/java
 RUN apt-get install -y software-properties-common
