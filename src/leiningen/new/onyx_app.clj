@@ -50,7 +50,7 @@
              (= args "bare") (into bare-files)))))
 ["Dockerfile" "script/run-container.sh" "script/run-peers.sh" "script/build.sh"]
 (defn files-to-render [opts]
-  (cond -> ["README.md" ".gitignore"
+  (cond-> ["README.md" ".gitignore"
             "LICENSE"   "project.clj"
             "env/dev/user.clj"
             "env/dev/onyx-app/sample_input.clj"
