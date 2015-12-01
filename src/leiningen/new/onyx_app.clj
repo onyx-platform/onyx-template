@@ -4,9 +4,14 @@
 
 (def render (renderer "onyx_app"))
 
+(defn in?
+  "true if seq contains elm"
+  [seq elm]
+  (some #(= elm %) seq))
+
 (defn onyx-app
   "Creates a new Onyx application template"
-  [name & [arg]]
+  [name & args]
   (let [path (name-to-path name)
         onyx-version "0.8.2"
         data {:name name
@@ -35,18 +40,33 @@
                       [(str "src/" path "/plugins/http_reader.clj") (render "http_reader.clj" data)]
                       [(str "src/" path "/jobs/sample_submit_job.clj") (render "sample_submit_job.clj" data)]
                       [(str "test/" path "/jobs/sample_job_test.clj") (render "sample_job_test.clj" data)]]
-        bare-files [[(str "src/" path "/launcher/launch_prod_peers.clj") (render "launch_prod_peers_bare.clj" data)]
-                    [(str "env/dev/" path "/dev_inputs/.gitkeep") (render "gitkeep" data)]
-                    [(str "src/" path "/workflows/.gitkeep") (render "gitkeep" data)]
-                    [(str "src/" path "/catalogs/.gitkeep") (render "gitkeep" data)]
-                    [(str "src/" path "/flow_conditions/.gitkeep") (render "gitkeep" data)]
-                    [(str "src/" path "/functions/.gitkeep") (render "gitkeep" data)]
-                    [(str "src/" path "/lifecycles/.gitkeep") (render "gitkeep" data)]
-                    [(str "src/" path "/plugins/.gitkeep") (render "gitkeep" data)]
-                    [(str "test/" path "/jobs/.gitkeep") (render "gitkeep" data)]]]
+        bare-files [[(str "src/" path "/launcher/launch_prod_peers.clj") (render "launch_prod_peers_bare.clj" data)]]]
     (main/info "Generating fresh Onyx app.")
+    (main/info (str args))
     (apply ->files 
            data
            (cond-> base-files
-             (nil? arg) (into sample-files)
-             (= arg "bare") (into bare-files)))))
+             (nil? args) (into sample-files)
+             (= args "bare") (into bare-files)))))
+["Dockerfile" "script/run-container.sh" "script/run-peers.sh" "script/build.sh"]
+(defn files-to-render [opts]
+  (cond -> ["README.md" ".gitignore"
+            "LICENSE"   "project.clj"
+            "env/dev/user.clj"
+            "env/dev/onyx-app/sample_input.clj"
+            "resources/config.edn"
+            ""]))
+
+(defn docker? [opts]
+  (some #{"+docker"} opts))
+
+(defn metrics? [opts]
+  (some #{"+metrics"} opts))
+
+(defn metrics-requires [opts]
+  (if (metrics? opts)
+    ["onyx.lifecycle.metrics.metrics"]
+    ["onyx.lifecycle.metrics.timbre"]))
+
+(defn option-mapping [name opts]
+  {:docker? (fn [expr] (if (:docker? opts) expr ""))})
