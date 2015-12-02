@@ -17,6 +17,7 @@
            "resources/config.edn"
            "env/dev/onyx_app/sample_input.clj"
            "src/onyx_app/launcher/launch_prod_peers.clj"
+           "src/onyx_app/launcher/aeron_media_driver.clj"
            "src/onyx_app/workflows/sample_workflow.clj"
            "src/onyx_app/catalogs/sample_catalog.clj"
            "src/onyx_app/flow_conditions/sample_flow_conditions.clj"
