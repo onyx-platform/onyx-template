@@ -28,6 +28,7 @@
 
 (deftest onyx-prod-job-test
   (let [id (java.util.UUID/randomUUID)
+        name (str "HELLO")
         config (load-config)
         env-config (assoc (:env-config config) :onyx/id id)
         peer-config (assoc (:peer-config config) :onyx/id id)]
@@ -36,3 +37,7 @@
                          {:keys [write-lines read-lines]} (get-core-async-channels job)]
                      (onyx.api/submit-job peer-config job)
                      (is (take-segments! write-lines))))))
+
+(def docker
+  {{#docker?}}true {{/docker?}}false)
+(comment "hello")

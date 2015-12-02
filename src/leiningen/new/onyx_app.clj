@@ -41,13 +41,13 @@
               :onyx-version onyx-version
               :app-name name
               :sanitized path
-              :docker? (fn [expr] (if (:docker? args) expr ""))}
+              :docker? (fn [block] (if (docker? args) block ""))}
 
         files (files-to-render args)
         render-instructions (render-files files name data)]
     (main/info "Generating fresh Onyx app.")
     (apply ->files data render-instructions)
-    (main/info "DONE")
+    (main/info (str "Building a new onyx app with: " args))
     (comment  (apply ->files
                     data
                     (cond-> base-files
