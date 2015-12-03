@@ -12,6 +12,6 @@ RUN apt-get install -y oracle-java8-installer
 
 ADD target/{{app-name}}-0.1.0-SNAPSHOT-standalone.jar /srv/{{app-name}}.jar
 
-ADD script/run-peers.sh /srv/run-peers.sh
+ADD script/run_peers.sh /srv/run_peers.sh
 
-ENTRYPOINT ["/bin/sh", "/srv/run-peers.sh"]
+ENTRYPOINT ["/bin/sh", "/srv/run_peers.sh"]
