@@ -1,0 +1,16 @@
+peer:
+        build: .
+        links:
+                - zookeeper
+        environment:
+                - ZOOKEEPER_ADDR=zookeeper:2181
+                - ONYX_ID=1
+                - NPEERS=4
+        privileged: true
+
+zookeeper:
+        image: 'mesoscloud/zookeeper:3.4.6-ubuntu-14.04'
+        environment:
+                - MYID=1
+        expose:
+                - '2181'

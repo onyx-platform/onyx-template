@@ -27,7 +27,9 @@
            "src/onyx_app/jobs/sample_submit_job.clj"
            "src/onyx_app/utils.clj"
            "test/onyx_app/jobs/sample_job_test.clj"]
-          (docker? opts) (conj "Dockerfile" "script/run_container.sh" "script/run_peers.sh" "script/build.sh")))
+    (docker? opts) (conj "Dockerfile" "script/run_container.sh"
+                         "script/run_peers.sh" "script/build.sh"
+                         "docker-compose.yml")))
 
 (defn render-files [files name data]
   (mapv (juxt (fn [path] (clojure.string/replace path #"onyx_app" name)) (fn [file-path] (render file-path data)))
