@@ -1,9 +1,5 @@
-{:env-config
- {:zookeeper/address "127.0.0.1:2188"
-  :zookeeper/server? true
-  :zookeeper.server/port 2188}
- :peer-config
- {:zookeeper/address                     "127.0.0.1:2188"
+{:peer-config
+ {;:zookeeper/address                     "192.168.99.100:2181" Set this to your ZK ensemble
   :onyx.peer/job-scheduler               :onyx.job-scheduler/greedy
   :onyx.peer/zookeeper-timeout           60000
   :onyx.messaging/allow-short-circuit?   true

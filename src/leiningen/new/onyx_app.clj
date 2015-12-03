@@ -48,12 +48,7 @@
         render-instructions (render-files files name data)]
     (main/info "Generating fresh Onyx app.")
     (apply ->files data render-instructions)
-    (main/info (str "Building a new onyx app with: " args))
-    (comment  (apply ->files
-                    data
-                    (cond-> base-files
-                            (nil? args) (into sample-files)
-                            (= args "bare") (into bare-files))))))
+    (main/info (str "Building a new onyx app with: " args))))
 
 (defn metrics-requires [opts]
   (if (metrics? opts)

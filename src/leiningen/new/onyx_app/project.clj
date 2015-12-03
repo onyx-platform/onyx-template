@@ -4,7 +4,8 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]
-                 [org.onyxplatform/onyx "{{onyx-version}}"]]
+                 [org.onyxplatform/onyx "{{onyx-version}}"]
+                 [environ "1.0.1"]]
   :profiles {:uberjar {:aot [{{app-name}}.launcher.aeron-media-driver
                              {{app-name}}.launcher.launch-prod-peers]}
              :dev {:dependencies [[org.clojure/tools.namespace "0.2.11"]]
