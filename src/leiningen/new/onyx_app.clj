@@ -26,9 +26,10 @@
            "src/onyx_app/plugins/http_reader.clj"
            "src/onyx_app/jobs/sample_submit_job.clj"
            "src/onyx_app/utils.clj"
-           "test/onyx_app/jobs/sample_job_test.clj"]
+           "test/onyx_app/jobs/sample_job_test.clj"
+           "script/build.sh"]
     (docker? opts) (conj "Dockerfile" "script/run_container.sh"
-                         "script/run_peers.sh" "script/build.sh"
+                         "script/run_peers.sh"
                          "docker-compose.yml")))
 
 (defn render-files [files name data]
