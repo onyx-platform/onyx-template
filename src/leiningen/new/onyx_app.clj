@@ -30,6 +30,7 @@
            "script/build.sh"]
     (docker? opts) (conj "Dockerfile" "script/run_container.sh"
                          "script/run_peers.sh"
+                         "script/run_aeron.sh"
                          "docker-compose.yml")))
 
 (defn render-files [files name data]

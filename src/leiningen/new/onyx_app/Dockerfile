@@ -17,6 +17,6 @@ RUN mkdir /etc/service/aeron
 
 ADD target/{{app-name}}-0.1.0-SNAPSHOT-standalone.jar /srv/{{app-name}}.jar
 
-ADD script/run_peers.sh /etc/service/onyx_peer/run.sh
-ADD script/run_aeron.sh /etc/service/aeron/run.sh
+ADD script/run_peers.sh /etc/service/onyx_peer/run
+ADD script/run_aeron.sh /etc/service/aeron/run
 CMD ["/sbin/my_init"]
