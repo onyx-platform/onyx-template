@@ -14,3 +14,5 @@ zookeeper:
                 - MYID=1
         expose:
                 - '2181'
+        ports:
+                - '2181:2181'
