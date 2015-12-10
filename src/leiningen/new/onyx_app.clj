@@ -13,7 +13,7 @@
 (defn files-to-render [opts]
   (cond-> ["README.md" ".gitignore"
            "LICENSE" "project.clj"
-           "env/dev/user.clj"
+           "env/dev/user.clj" ".projectile"
            "resources/config.edn"
            "env/dev/onyx_app/sample_input.clj"
            "src/onyx_app/launcher/launch_prod_peers.clj"
