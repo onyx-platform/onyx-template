@@ -1,8 +1,8 @@
-(ns {app-name}.lifecycles.sample-lifecycle
+(ns {{app-name}}.lifecycles.sample-lifecycle
   (:require [clojure.core.async :refer [chan sliding-buffer >!!]]
             [onyx.plugin.core-async :refer [take-segments!]]
             [taoensso.timbre :refer [info]]
-            [{app-name}.utils :as u]
+            [{{app-name}}.utils :as u]
             [cheshire.core :as json]))
 
 
