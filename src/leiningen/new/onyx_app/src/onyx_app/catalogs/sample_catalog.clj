@@ -1,4 +1,5 @@
-(ns {{app-name}}.catalogs.sample-catalog)
+(ns {{app-name}}.catalogs.sample-catalog
+    (:require [{{app-name}}.functions.sample-functions]))
 
 ;;; Catalogs describe each task in a workflow. We use
 ;;; them for describing input and output sources, injecting parameters,

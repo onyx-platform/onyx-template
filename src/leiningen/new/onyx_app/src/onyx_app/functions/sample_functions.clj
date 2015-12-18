@@ -1,5 +1,6 @@
 (ns {{app-name}}.functions.sample-functions
-  (:require [clojure.string :refer [trim capitalize]]))
+    (:require [clojure.string :refer [trim capitalize]]
+              [clojure.walk :refer [postwalk]]))
 
 ;;; Defines functions to be used by the peers. These are located
 ;;; with fully qualified namespaced keywords, such as
