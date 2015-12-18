@@ -1,41 +1,41 @@
 (ns {{app-name}}.jobs.sample-submit-job
-    (:require [clojure.java.io :refer [resource]]
-              [com.stuartsierra.component :as component]
-              [onyx.test-helper :refer [load-config]]
-              [{{app-name}}.plugins.http-reader :refer [add-http-reader]]
-              [{{app-name}}.catalogs.sample-catalog :refer [build-catalog]]
-              [{{app-name}}.lifecycles.sample-lifecycle :refer [build-lifecycles
-                                                                add-core-async
-                                                                add-logging]]
-              [{{app-name}}.workflows.sample-workflow :refer [build-workflow]]
-              [{{app-name}}.flow-conditions.sample-flow-conditions :refer [build-flow-conditions]]
-              [{{app-name}}.sample-input :as dev-inputs]
-              [{{app-name}}.functions.sample-functions]
-              [onyx.api]))
+  (:require [onyx.test-helper :refer [load-config]]
+            [{{app-name}}.sample-input :refer [lines]]
+            [{{app-name}}.catalogs.sample-catalog :refer [build-catalog]]
+            [{{app-name}}.lifecycles.sample-lifecycle :refer [add-core-async
+                                                         add-kafka
+                                                         add-logging
+                                                         add-sql
+                                                         add-seq
+                                                         build-lifecycles]]
+            [{{app-name}}.workflows.sample-workflow :refer [build-workflow]]))
 
 ;;;; Lets build a job
 (defn build-job [mode]
-  (let [core-async?  true
-        http-reader? (= mode :prod)
+  (let [core-async?  (= :dev mode)
+        kafka        (= :prod mode)
+        seq          (if (= :dev mode) lines)
+        sql          (= :prod mode)
         logging      :write-lines
-        base-job     {:catalog    (build-catalog {:batch-size 100
-                                                  :batch-timeout 1000
-                                                  :mode mode})
-                      :lifecycles (build-lifecycles {:mode mode})
-                      :workflow   (build-workflow {:mode mode})
-                      :flow-conditions (build-flow-conditions {:mode mode})
-                      :task-scheduler :onyx.task-scheduler/balanced}
-        job          (cond-> base-job
-                       core-async?  (add-core-async)
-                       http-reader? (add-http-reader)
-                       logging      (add-logging logging))]
-    job))
+        base-job {:catalog (build-catalog {:batch-size    1
+                                           :batch-timeout 1000
+                                           :mode          mode})
+                  :lifecycles (build-lifecycles {:mode mode})
+                  :workflow (build-workflow {:mode mode})
+                  :task-scheduler :onyx.task-scheduler/balanced}]
+    (cond-> base-job
+            core-async? (add-core-async)
+            seq (add-seq seq)
+            logging (add-logging logging)
+            kafka (add-kafka {:kafka/topic     "meetup"
+                              :kafka/group-id  "onyx-consumer"
+                              :kafka/zookeeper "192.168.99.100:2181"
+                              :kafka/partition "0"})
+            sql (add-sql))))
 
 (defn -main [onyx-id & args]
   (let [config (load-config "config.edn")
         peer-config (-> (get config :peer-config)
-                        (assoc :onyx/id onyx-id)
-                        (assoc :zookeeper/address "192.168.99.100"))]
-    (clojure.pprint/pprint peer-config)
-    (let [job (build-job :prod)]
-      (onyx.api/submit-job peer-config job))))
+                        (assoc :onyx/id onyx-id))
+        job (build-job :prod)]
+    (onyx.api/submit-job peer-config job)))

@@ -24,7 +24,24 @@
     :onyx/type :function
     :onyx/batch-size batch-size
     :onyx/batch-timeout batch-timeout
-    :onyx/doc "Capitalizes the first letter of the line"}])
+    :onyx/doc "Capitalizes the first letter of the line"}
+
+   {:onyx/name :extract-meetup-info
+    :onyx/fn :{{app-name}}.functions.sample-functions/transform-segment-shape
+    :onyx/type :function
+    :onyx/batch-size batch-size
+    :onyx/batch-timeout batch-timeout
+    :keypath {"groupId" ["group" "id"]
+              "groupCity" ["group" "city"]
+              "category" ["group" "category" "name"]}
+    :onyx/params [:keypath]
+    :onyx/doc "Extracts group-id group-city and category"}
+
+   {:onyx/name :prepare-rows
+    :onyx/fn :{{app-name}}.functions.sample-functions/prepare-rows
+    :onyx/type :function
+    :onyx/batch-size batch-size
+    :onyx/batch-timeout batch-timeout}])
 
 (defmulti build-catalog :mode)
 
@@ -33,13 +50,22 @@
   (into
     (base-catalog batch-size batch-timeout)
     [{:onyx/name :read-lines
-      :onyx/plugin :onyx.plugin.core-async/input
+      :onyx/plugin :onyx.plugin.seq/input
       :onyx/type :input
-      :onyx/medium :core.async
+      :onyx/medium :seq
+      :seq/elements-per-segment 1
+      :seq/checkpoint? true
+      :onyx/batch-size batch-size
       :onyx/max-peers 1
+      :onyx/doc "Reads segments from seq"}
+
+     {:onyx/name :extract-seq-elements
+      :onyx/fn :{{app-name}}.functions.sample-functions/get-in-segment
+      :onyx/type :function
       :onyx/batch-size batch-size
       :onyx/batch-timeout batch-timeout
-      :onyx/doc "Reads segments from a core.async channel"}
+      :keypath [:elements]
+      :onyx/params [:keypath]}
 
      {:onyx/name :write-lines
       :onyx/plugin :onyx.plugin.core-async/output
@@ -55,20 +81,22 @@
   (into
     (base-catalog batch-size batch-timeout)
     [{:onyx/name :read-lines
-      :onyx/plugin :{{app-name}}.plugins.http-reader/reader
+      :onyx/plugin :onyx.plugin.kafka/read-messages
       :onyx/type :input
-      :onyx/medium :http
-      :http/uri "http://textfiles.com/stories/abbey.txt"
+      :onyx/medium :kafka
       :onyx/batch-size batch-size
-      :onyx/batch-timeout batch-timeout
       :onyx/max-peers 1
-      :onyx/doc "Reads lines from an HTTP url text file"}
+      :onyx/doc "Read messages from a kafka topic"}
 
-     {:onyx/name :write-lines
-      :onyx/plugin :onyx.plugin.core-async/output
-      :onyx/type :output
-      :onyx/medium :core.async
-      :onyx/batch-size batch-size
-      :onyx/batch-timeout batch-timeout
-      :onyx/max-peers 1
-      :onyx/doc "Writes segments to a core.async channel"}]))
+     {:onyx/name   :write-lines
+      :onyx/plugin :onyx.plugin.sql/write-rows
+      :onyx/type   :output
+      :onyx/medium :sql
+      :sql/classname "com.mysql.jdbc.Driver"
+      :sql/subprotocol "mysql"
+      :sql/subname "//192.168.99.100:3306/meetup"
+      :sql/user "onyx"
+      :sql/password "onyx"
+      :sql/table :recentMeetups
+      :onyx/batch-size batch-size}]))
+;; TODO: Write an add-sql plugin that injects this data.

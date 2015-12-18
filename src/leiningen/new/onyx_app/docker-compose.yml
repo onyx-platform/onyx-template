@@ -1,18 +1,33 @@
 peer:
-        build: .
-        links:
-                - zookeeper
+        image: '{{app-name}}:0.1.0'
         environment:
-                - ZOOKEEPER_ADDR=zookeeper:2181
-                - ONYX_ID=1
-                - NPEERS=4
+          ONYX_ID: 42
+          NPEERS: 6
         privileged: true
-
+        net: 'host'
 zookeeper:
         image: 'mesoscloud/zookeeper:3.4.6-ubuntu-14.04'
+        net: 'host'
         environment:
-                - MYID=1
-        expose:
-                - '2181'
+          MYID: 'da445c00-befd-48ea-b3c9-8663ced5c731'
         ports:
-                - '2181:2181'
+          - '2181:2181'
+kafka:
+        image: 'ches/kafka'
+        net: 'host'
+        environment:
+          KAFKA_BROKER_ID: 0
+          KAFKA_ADVERTISED_HOST_NAME: 192.168.99.100
+          ZOOKEEPER_IP: 192.168.99.100
+        ports:
+          - "9092:9092"
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+db:
+        image: mysql
+        net: 'host'
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+          MYSQL_USER: onyx
+          MYSQL_PASSWORD: onyx
+          MYSQL_DATABASE: meetup

@@ -1,11 +1,12 @@
 {:peer-config
- {;:zookeeper/address                     "192.168.99.100:2181" Set this to your ZK ensemble
+ {:zookeeper/address                     "localhost"        ;;"192.168.99.100:2181"
   :onyx.peer/job-scheduler               :onyx.job-scheduler/greedy
   :onyx.peer/zookeeper-timeout           60000
   :onyx.messaging/allow-short-circuit?   true
   :onyx.messaging/impl                   :aeron
   ;; Change "localhost" to a resolvable hostname
   ;; by any node in your cluster.
-  :onyx.messaging/bind-addr              "localhost"
+  :onyx.messaging/bind-addr             "localhost"
   :onyx.messaging/peer-port              40200
   :onyx.messaging.aeron/embedded-driver? false}}
+;; TODO: Change bind-addr to reflect your production environment.
