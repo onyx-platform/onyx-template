@@ -16,7 +16,7 @@
         config (update-in (load-config "config.edn")
                           [:peer-config :zookeeper/address]
                           (fn [zkaddr]
-                            (if zkaddr zkaddr (:zookeeper-addr env))))
+                            (if zkaddr zkaddr "zk:2181"))) ;; Default to zk:2181 if none is specified
         peer-config (assoc (:peer-config config) :onyx/id onyx-id)
         peer-group (onyx.api/start-peer-group peer-config)
         peers (onyx.api/start-peers n-peers peer-group)]

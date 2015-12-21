@@ -1,33 +1,36 @@
 peer:
         image: '{{app-name}}:0.1.0'
+        links:
+          - zookeeper:zk
+          - kafka:kafka
+          - db:db
+          - kafkacat:kafkacat
         environment:
           ONYX_ID: 42
           NPEERS: 6
         privileged: true
-        net: 'host'
 zookeeper:
-        image: 'mesoscloud/zookeeper:3.4.6-ubuntu-14.04'
-        net: 'host'
-        environment:
-          MYID: 'da445c00-befd-48ea-b3c9-8663ced5c731'
+        image: 'wurstmeister/zookeeper'
         ports:
           - '2181:2181'
 kafka:
-        image: 'ches/kafka'
-        net: 'host'
-        environment:
-          KAFKA_BROKER_ID: 0
-          KAFKA_ADVERTISED_HOST_NAME: 192.168.99.100
-          ZOOKEEPER_IP: 192.168.99.100
+        image: 'wurstmeister/kafka'
+        links:
+          - zookeeper:zk
         ports:
           - "9092:9092"
         volumes:
           - /var/run/docker.sock:/var/run/docker.sock
 db:
         image: mysql
-        net: 'host'
         environment:
           MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
           MYSQL_USER: onyx
           MYSQL_PASSWORD: onyx
           MYSQL_DATABASE: meetup
+kafkacat:
+        image: 'testapp/kafka-meetup-streamer:0.1.0'
+        links:
+          - kafka:kafka
+        environment:
+          BROKER_LIST: kafka:9092

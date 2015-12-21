@@ -29,6 +29,8 @@
     (docker? opts) (conj "Dockerfile"
                          "script/run_peers.sh"
                          "script/run_aeron.sh"
+                         "script/kafka-meetup-streamer/Dockerfile"
+                         "script/kafka-meetup-streamer/script.sh"
                          "docker-compose.yml")))
 
 (defn render-files [files name data]
