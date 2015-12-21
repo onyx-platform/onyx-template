@@ -29,7 +29,7 @@ db:
           MYSQL_PASSWORD: onyx
           MYSQL_DATABASE: meetup
 kafkacat:
-        image: 'testapp/kafka-meetup-streamer:0.1.0'
+        build: script/kafka-meetup-streamer
         links:
           - kafka:kafka
         environment:
