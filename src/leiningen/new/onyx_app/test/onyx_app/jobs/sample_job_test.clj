@@ -12,6 +12,8 @@
                config (load-config)
                env-config (assoc (:env-config config) :onyx/id id)
                peer-config (assoc (:peer-config config) :onyx/id id)]
+           ;; Be sure to set the peer count (5 here) to a number greater than
+           ;; the amount of tasks in your job.
               (with-test-env [test-env [5 env-config peer-config]]
                              (let [job (build-job :dev)
                                    {:keys [write-lines]} (get-core-async-channels job)]
