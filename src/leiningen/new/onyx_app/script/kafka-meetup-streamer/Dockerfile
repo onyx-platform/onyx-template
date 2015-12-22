@@ -12,7 +12,7 @@ RUN apt-get update -y && \
     cd .. && rm -rf kafkacat && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ADD script/kafka-meetup-streamer/script.sh script.sh
+ADD script.sh script.sh
 RUN chmod +x script.sh
 
 CMD ["./script.sh"]
