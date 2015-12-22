@@ -6,7 +6,7 @@ peer:
           - db:db
           - kafkacat:kafkacat
         environment:
-          ONYX_ID: 42
+          ONYX_ID: 1
           NPEERS: 6
         privileged: true
 zookeeper:
