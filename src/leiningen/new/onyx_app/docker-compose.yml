@@ -28,6 +28,8 @@ db:
           MYSQL_USER: onyx
           MYSQL_PASSWORD: onyx
           MYSQL_DATABASE: meetup
+        ports:
+          - "3306:3306"
 kafkacat:
         build: script/kafka-meetup-streamer
         links:
