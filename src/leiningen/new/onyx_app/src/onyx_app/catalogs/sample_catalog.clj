@@ -95,7 +95,7 @@
       :onyx/medium :sql
       :sql/classname "com.mysql.jdbc.Driver"
       :sql/subprotocol "mysql"
-      :sql/subname "//192.168.99.100:3306/meetup"
+      :sql/subname "//db:3306/meetup"
       :sql/user "onyx"
       :sql/password "onyx"
       :sql/table :recentMeetups
