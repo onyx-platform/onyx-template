@@ -29,13 +29,14 @@
             logging (add-logging logging)
             kafka (add-kafka {:kafka/topic     "meetup"
                               :kafka/group-id  "onyx-consumer"
-                              :kafka/zookeeper "192.168.99.100:2181"
+                              :kafka/zookeeper "zk:2181"
                               :kafka/partition "0"})
             sql (add-sql))))
 
 (defn -main [onyx-id & args]
   (let [config (load-config "config.edn")
         peer-config (-> (get config :peer-config)
-                        (assoc :onyx/id onyx-id))
+                        (assoc :onyx/id onyx-id)
+                        (assoc :zookeeper/address "192.168.99.100:2181"))
         job (build-job :prod)]
     (onyx.api/submit-job peer-config job)))
