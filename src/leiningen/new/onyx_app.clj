@@ -46,15 +46,11 @@
               :onyx-version onyx-version
               :app-name name
               :sanitized path
-              :docker? (fn [block] (if (docker? args) block ""))}
+              :docker? (fn [block] (if (docker? args) block ""))
+              :metrics? (fn [block] (if (metrics? args) block ""))}
 
         files (files-to-render args)
         render-instructions (render-files files name data)]
     (main/info "Generating fresh Onyx app.")
     (apply ->files data render-instructions)
     (main/info (str "Building a new onyx app with: " args))))
-
-(defn metrics-requires [opts]
-  (if (metrics? opts)
-    ["onyx.lifecycle.metrics.metrics"]
-    ["onyx.lifecycle.metrics.timbre"]))

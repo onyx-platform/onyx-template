@@ -6,6 +6,8 @@
             [onyx.plugin.sql]
             [onyx.plugin.core-async]
             [onyx.plugin.seq]
+            {{#metrics?}}[onyx.lifecycle.metrics.timbre]{{/metrics?}}
+            {{#metrics?}}[onyx.lifecycle.metrics.metrics]{{/metrics?}}
             [{{app-name}}.functions.sample-functions]
             [{{app-name}}.jobs.sample-submit-job]
             [{{app-name}}.lifecycles.sample-lifecycle])

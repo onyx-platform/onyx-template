@@ -1,9 +1,9 @@
 (ns {{app-name}}.lifecycles.sample-lifecycle
-  (:require [clojure.core.async :refer [chan sliding-buffer >!!]]
-            [onyx.plugin.core-async :refer [take-segments!]]
-            [taoensso.timbre :refer [info]]
-            [{{app-name}}.utils :as u]
-            [cheshire.core :as json]))
+    (:require [clojure.core.async :refer [chan sliding-buffer >!!]]
+              [onyx.plugin.core-async :refer [take-segments!]]
+              [taoensso.timbre :refer [info]]
+              [{{app-name}}.utils :as u]
+              [cheshire.core :as json]))
 
 
 ;;;;================- Logging -===========================
@@ -29,12 +29,12 @@
 (def get-input-channel
   "Returns the same channel every time for an id."
   (memoize
-    (fn [id] (chan 100))))
+   (fn [id] (chan 100))))
 
 (def get-output-channel
   "Returns the same channel every time for an id."
   (memoize
-    (fn [id] (chan (sliding-buffer 100)))))
+   (fn [id] (chan (sliding-buffer 100)))))
 
 (defn inject-in-ch
   [event lifecycle]
@@ -54,9 +54,9 @@
   (let [inputs  (:onyx/name (u/find-task-by-key catalog :onyx/plugin :onyx.plugin.core-async/input))
         outputs (:onyx/name (u/find-task-by-key catalog :onyx/plugin :onyx.plugin.core-async/output))]
     {inputs (get-input-channel (:core.async/id
-                                 (first (filter #(= inputs (:lifecycle/task %)) lifecycles))))
+                                (first (filter #(= inputs (:lifecycle/task %)) lifecycles))))
      outputs (get-output-channel (:core.async/id
-                                   (first (filter #(= outputs (:lifecycle/task %)) lifecycles))))}))
+                                  (first (filter #(= outputs (:lifecycle/task %)) lifecycles))))}))
 
 (defn add-core-async
   "Add's core.async state to corresponding catalog entries.
@@ -97,7 +97,7 @@
    Must supply :kafka/topic, :kafka/partition, :kafka/group-id and :kafka/zookeeper"
   (assert (not (some nil? ((juxt :kafka/topic
                                  :kafka/group-id :kafka/zookeeper)
-                            kafka-settings)))
+                           kafka-settings)))
           "Need to specify :kafka/topic, :kafka/group-id and :kafka/zookeeper")
   (let [kafka-settings (merge {:kafka/deserializer-fn ::deserialize-message
                                :kafka/offset-reset :smallest
@@ -116,11 +116,11 @@
                                           entry))
                                       entries)))
         (u/add-to-job
-          {:lifecycles
-           (mapcat #(remove nil? %)
-                   [(when-let [task-name (get kafka-input :onyx/name)]
-                      [{:lifecycle/task task-name
-                        :lifecycle/calls :onyx.plugin.kafka/read-messages-calls}])])}))))
+         {:lifecycles
+          (mapcat #(remove nil? %)
+                  [(when-let [task-name (get kafka-input :onyx/name)]
+                     [{:lifecycle/task task-name
+                       :lifecycle/calls :onyx.plugin.kafka/read-messages-calls}])])}))))
 
 ;;;;=======================================================
 ;;;;                     SQL
@@ -133,11 +133,11 @@
                                        :onyx.plugin.sql/write-rows)]
     (-> job
         (u/add-to-job
-          {:lifecycles
-           (mapcat #(remove nil? %)
-                   [(when-let [task-name (get sql-output :onyx/name)]
-                      [{:lifecycle/task task-name
-                        :lifecycle/calls :onyx.plugin.sql/write-rows-calls}])])}))))
+         {:lifecycles
+          (mapcat #(remove nil? %)
+                  [(when-let [task-name (get sql-output :onyx/name)]
+                     [{:lifecycle/task task-name
+                       :lifecycle/calls :onyx.plugin.sql/write-rows-calls}])])}))))
 
 (defn build-lifecycles
   "Put your environment-independent lifecycles here"
@@ -159,9 +159,23 @@
                                       :onyx.plugin.seq/input)]
     (-> job
         (u/add-to-job
-          {:lifecycles
-           [{:lifecycle/task (get seq-input :onyx/name)
-             :seq seq
-             :lifecycle/calls ::in-calls}
-            {:lifecycle/task (get seq-input :onyx/name)
-             :lifecycle/calls :onyx.plugin.seq/reader-calls}]}))))
+         {:lifecycles
+          [{:lifecycle/task (get seq-input :onyx/name)
+            :seq seq
+            :lifecycle/calls ::in-calls}
+           {:lifecycle/task (get seq-input :onyx/name)
+            :lifecycle/calls :onyx.plugin.seq/reader-calls}]}))))
+
+
+;;;;============================================================
+;;;;                      Metrics
+(defn add-metrics
+  [job task]
+  (u/add-to-job job
+   {:lifecycles
+    [{:lifecycle/task task ; Or :all for all tasks in the workflow
+      :lifecycle/calls :onyx.lifecycle.metrics.metrics/calls
+      :metrics/buffer-capacity 10000
+      :metrics/workflow-name "meetup-workflow"
+      :metrics/sender-fn :onyx.lifecycle.metrics.timbre/timbre-sender
+      :lifecycle/doc "Instruments a task's metrics to timbre"}]}))

@@ -9,6 +9,7 @@
                  ;Docker Opts
                  {{#docker?}}[org.onyxplatform/onyx-sql "0.8.2.1"]{{/docker?}}
                  {{#docker?}}[org.onyxplatform/onyx-kafka "0.8.2.2"]{{/docker?}}
+                 {{#metrics?}}[org.onyxplatform/onyx-metrics "0.8.3.0"]{{/metrics?}}
                   [org.onyxplatform/onyx-seq "0.8.3.0"]
                   [cheshire "5.5.0"]
                   [mysql/mysql-connector-java "5.1.18"]
