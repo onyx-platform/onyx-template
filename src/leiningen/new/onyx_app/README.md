@@ -1,24 +1,12 @@
 # {{app-name}}
 
-An Onyx 0.8.2 application that does distributed things. This project has been populated with a sample job and some basic Onyx idioms to make development easier to use.
+An Onyx 0.8.3 application that does distributed things. This project has been populated with a sample job and some basic Onyx idioms to make development easier to use.
 
 ## Usage
 
 ### Launch the Sample Job in Development
 
 Run the `deftest`s in `test/{{app-name}}/jobs/sample_job_test.clj`. The tests automatically start and stop the development environment, so make sure you don't already have the dev environment (explained below) running - otherwise you'd get a port conflict.
-
-### Start the Development Mode
-
-Load up `env/dev/user.clj`. Evaluate the `go` function.
-
-### Reset the Development Mode
-
-Load up `env/dev/user.clj`. Evaluate the `reset` function.
-
-### Stop the Development Mode
-
-Load up `env/dev/user.clj`. Evaluate the `stop` function.
 
 ### Launch the Development Sample Job in a REPL
 
