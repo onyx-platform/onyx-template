@@ -18,7 +18,7 @@
         seq          (if (= :dev mode) lines)
         sql          (= :prod mode)
         logging      :write-lines
-        metrics      :write-lines
+        {{#metrics?}}metrics      :write-lines{{/metrics?}}
         base-job {:catalog (build-catalog {:batch-size    1
                                            :batch-timeout 1000
                                            :mode          mode})
@@ -28,7 +28,7 @@
     (cond-> base-job
       core-async? (add-core-async)
       seq     (add-seq seq)
-      metrics (add-metrics metrics)
+      {{#metrics?}}metrics (add-metrics metrics){{/metrics?}}
       logging (add-logging logging)
       kafka   (add-kafka {:kafka/topic     "meetup"
                           :kafka/group-id  "onyx-consumer"
