@@ -6,13 +6,13 @@
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.onyxplatform/onyx "{{onyx-version}}"]
                  [environ "1.0.1"]
-                 ;Docker Opts
-                 {{#docker?}}[org.onyxplatform/onyx-sql "0.8.2.1"]{{/docker?}}
-                 {{#docker?}}[org.onyxplatform/onyx-kafka "0.8.2.2"]{{/docker?}}
+                                        ;Docker Opts
+                 [org.onyxplatform/onyx-sql "0.8.2.1"]
+                 [org.onyxplatform/onyx-kafka "0.8.2.2"]
                  {{#metrics?}}[org.onyxplatform/onyx-metrics "0.8.3.0"]{{/metrics?}}
-                  [org.onyxplatform/onyx-seq "0.8.3.0"]
-                  [cheshire "5.5.0"]
-                  [mysql/mysql-connector-java "5.1.18"]
+                 [org.onyxplatform/onyx-seq "0.8.3.0"]
+                 [cheshire "5.5.0"]
+                 [mysql/mysql-connector-java "5.1.18"]
                  ]
   :profiles {:uberjar {:aot [{{app-name}}.launcher.aeron-media-driver
                              {{app-name}}.launcher.launch-prod-peers]}
