@@ -34,8 +34,10 @@
                          "docker-compose.yml")))
 
 (defn render-files [files name data]
-  (mapv (juxt (fn [path] (clojure.string/replace path #"onyx_app" name)) (fn [file-path] (render file-path data)))
-       files))
+  (let [name (clojure.string/replace name #"-" "_")]
+    (mapv (juxt (fn [path] (clojure.string/replace path #"onyx_app" name))
+                (fn [file-path] (render file-path data)))
+          files)))
 
 (defn onyx-app
   "Creates a new Onyx application template"
