@@ -52,6 +52,32 @@ That will have an associated channel that we can use to collect our output!
 
 Try to run the test, and watch the output of onyx.log in your project root.
 
+### Production
+Running onyx in production just requires building an uberjar and running
+the {{app-name}}.launcher.launch_prod_peers function with an `onyx_id` and a `npeers`
+argument.
+
+`onyx_id` will essentially namespace this particular peer to a cluster.
+This allows you to run multiple groups of onyx environments with the same
+zookeeper ensemble.
+
+`npeers` will create multiple peers (units to execute tasks in a workflow) on
+the same JVM. It is recommended you have 1 peer per core.
+
+You are also going to want to verify that the peer-config in `resources/config.edn`
+is correct. Specifically that `:zookeeper/address` contains a ZK server in your
+ensemble, and that your `:onyx.messaging/bind-addr` is an address reachable
+by any other peer in the cluster.
+
+For our case right now, `:zookeeper/address` is set to use "zk:2181", and since
+we only have one physical node running several peers, localhost is reachable by
+all the peers in the cluster.
+
+Submitting a job to a production cluster is exactly the same as in the
+development example. You generate your job (this time with `:prod` instead of
+`:dev`), and call `submit-job`. This time your peer config will come from
+"resources/config.edn" instead of the anaphoric macro though.
+
 ## License
 
 Copyright © 2015 FIXME
