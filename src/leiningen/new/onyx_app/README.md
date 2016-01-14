@@ -54,7 +54,7 @@ Try to run the test, and watch the output of onyx.log in your project root.
 
 ### Production
 Running onyx in production just requires building an uberjar and running
-the {{app-name}}.launcher.launch_prod_peers function with an `onyx_id` and a `npeers`
+the `{{app-name}}.launcher.launch_prod_peers` function with an `onyx_id` and a `npeers`
 argument.
 
 `onyx_id` will essentially namespace this particular peer to a cluster.
@@ -76,8 +76,45 @@ all the peers in the cluster.
 Submitting a job to a production cluster is exactly the same as in the
 development example. You generate your job (this time with `:prod` instead of
 `:dev`), and call `submit-job`. This time your peer config will come from
-"resources/config.edn" instead of the anaphoric macro though.
+'resources/config.edn' instead of the anaphoric macro though.
+{{#docker}}
+## Docker Compose
+With docker-compose, we can demonstrate a real example application. 
 
+### Problem
+We want to get data from [Meetup.com](www.meetup.com) into a MySQL database after doing some transformations. Meetup.com provides an event stream at `stream.meetup.com`. You can use `curl` to check it out by running this common
+
+    curl -i https://stream.meetup.com/2/open_events
+    
+The basic structure is just a nested JSON map. We want to be able to process this as `edn` segments in Onyx, and eventually store our results in MySQl.
+
+### Approach
+The architecture is quite straightforward. We will be using 5 containers in a docker-compose network.
+
+1. ZooKeeper
+2. MySql
+3. Kafka
+	- [Kafka](http://kafka.apache.org/) durable queue.
+4. Peer
+	- A container running (default 6) Onyx peers. You can change the `NPEERS` in the docker-compose.yml file
+5. KafkaCat
+	- A small utility container to `curl` data from meetup.com into the `meetups` Kafka topic.
+	
+KafkaCat will forward data to a topic in Kafka (meetups) that will store it indefinitely. We can then submit jobs to the ZooKeeper container, and the Peer's will pick them up and start running them. We can then output our data using the Onyx SQL plugin to MySQL. 
+
+### Execution
+**First** steps are to make the scripts in the `script/` directory executable. Run the following two commands 
+
+    `chmod +x script/*`
+    `chmod +x script/kafka-meetup-streamer/*`
+This allows us to use the convenience build scripts, and allows docker to include the scripts that launch our peers and meetup.com streamer. 
+
+**Next**, we will build the example app. Out of the box the lein template includes all that you would need to stream from meetup.com->Kafka->Onyx->MySQL. Run the build script.
+    `./script/build.sh`
+    
+**Once** That finishes, you can run `docker-compose up` to download, configure and launch the rest of the containers. Once that completes (it will take some time), you will have a fully configured Onyx cluster. 
+
+{{/docker}}
 ## License
 
 Copyright © 2015 FIXME
