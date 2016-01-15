@@ -1,7 +1,5 @@
 (ns {{app-name}}.jobs.sample-submit-job
-    (:require [onyx.test-helper :refer [load-config]]
-              [{{app-name}}.sample-input :refer [lines]]
-              [{{app-name}}.catalogs.sample-catalog :refer [build-catalog]]
+    (:require [{{app-name}}.catalogs.sample-catalog :refer [build-catalog]]
               [{{app-name}}.lifecycles.sample-lifecycle :refer [add-core-async
                                                                 add-kafka
                                                                 add-logging
@@ -9,7 +7,9 @@
                                                                 add-seq
                                                                 add-metrics
                                                                 build-lifecycles]]
-              [{{app-name}}.workflows.sample-workflow :refer [build-workflow]]))
+              [{{app-name}}.sample-input :refer [lines]]
+              [{{app-name}}.workflows.sample-workflow :refer [build-workflow]]
+              [onyx.test-helper :refer [load-config]]))
 
 ;;;; Lets build a job
 (defn build-job [mode]
