@@ -44,6 +44,9 @@
   [name & args]
   (let [path (name-to-path name)
         onyx-version "0.8.4"
+        onyx-sql-minor "0"
+        onyx-kafka-minor "0"
+        onyx-seq-minor "0"
         data {:name name
               :onyx-version onyx-version
               :app-name name
