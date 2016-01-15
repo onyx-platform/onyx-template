@@ -157,6 +157,7 @@ You should now see results streaming into MySQL
 2. Use `docker-compose rm` to delete the MySQL/Kafka datastores and start fresh
 3. You can make your own kafkacat containers to pull your own data into Kafka
 4. When you submit your job with `submit-job`, a UUID will be returned. You can use this UUID with `kill-job` if you're at the repl.
+5. If you're having issues with the kafkacat container connecting to meetup.com, there seems to be a docker-machine bug that won't pass on the correct DNS information on container creation. This is resolved by restarting your docker host, usually `docker-machine restart <name>`
 
 {{/docker}}
 ## License
