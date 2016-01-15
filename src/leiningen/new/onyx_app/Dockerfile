@@ -1,8 +1,6 @@
 FROM phusion/baseimage:0.9.17
 MAINTAINER Excellent Person <fill@me.in>
 
-
-
 RUN add-apt-repository -y ppa:webupd8team/java
 RUN apt-get install -y software-properties-common
 RUN apt-get update
