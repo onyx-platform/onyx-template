@@ -5,14 +5,13 @@
 (defmulti build-workflow :mode)
 
 (defmethod build-workflow :dev
-           [ctx]
-           [[:read-lines :extract-seq-elements]
-            [:extract-seq-elements :extract-meetup-info]
-            [:extract-meetup-info :prepare-rows]
-            [:prepare-rows :write-lines]])
+  [ctx]
+  [[:read-lines  :extract-meetup-info]
+   [:extract-meetup-info :prepare-rows]
+   [:prepare-rows :write-lines]])
 
 (defmethod build-workflow :prod
-           [ctx]
-           [[:read-lines :extract-meetup-info]
-            [:extract-meetup-info :prepare-rows]
-            [:prepare-rows :write-lines]])
+  [ctx]
+  [[:read-lines :extract-meetup-info]
+   [:extract-meetup-info :prepare-rows]
+   [:prepare-rows :write-lines]])

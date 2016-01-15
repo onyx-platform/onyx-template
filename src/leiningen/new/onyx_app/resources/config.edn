@@ -10,3 +10,4 @@
   :onyx.messaging/peer-port              40200
   :onyx.messaging.aeron/embedded-driver? false}}
 ;; TODO: Change bind-addr to reflect your production environment.
+;; For a full list of options, http://www.onyxplatform.org/cheat-sheet.html#/peer-config

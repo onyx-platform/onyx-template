@@ -43,7 +43,7 @@
   "Creates a new Onyx application template"
   [name & args]
   (let [path (name-to-path name)
-        onyx-version "0.8.2"
+        onyx-version "0.8.4"
         data {:name name
               :onyx-version onyx-version
               :app-name name

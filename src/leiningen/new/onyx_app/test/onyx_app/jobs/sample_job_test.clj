@@ -1,10 +1,10 @@
 (ns {{app-name}}.jobs.sample-job-test
     (:require [clojure.test :refer [deftest is]]
-      [onyx.test-helper :refer [load-config with-test-env]]
+      [onyx.test-helper :refer [load-config with-test-env feedback-exception!]]
       [onyx.plugin.core-async :refer [take-segments!]]
       [{{app-name}}.jobs.sample-submit-job :refer [build-job]]
       [{{app-name}}.lifecycles.sample-lifecycle :refer [get-core-async-channels]]
-      [{{app-name}}.launcher.launch-prod-peers]            ;; Load namespace to include runtime deps
+      [{{app-name}}.launcher.launch-prod-peers];; Load namespace to include runtime deps
       [onyx.api]))
 
 (deftest onyx-dev-job-test
@@ -16,8 +16,9 @@
            ;; the amount of tasks in your job.
               (with-test-env [test-env [5 env-config peer-config]]
                              (let [job (build-job :dev)
-                                   {:keys [write-lines]} (get-core-async-channels job)]
-                                  (onyx.api/submit-job peer-config job)
-                                  (let [results (take-segments! write-lines)]
+                                   {:keys [write-lines]} (get-core-async-channels job)
+                                   {:keys [job-id]}      (onyx.api/submit-job peer-config job)]
+                               (feedback-exception! job-id peer-config)
+                               (let [results (take-segments! write-lines)]
                                        (is (= 4 (count results)))
                                        (is (= :done (last results))))))))

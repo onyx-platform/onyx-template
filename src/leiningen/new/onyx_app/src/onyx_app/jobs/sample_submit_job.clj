@@ -42,4 +42,5 @@
                         (assoc :onyx/id onyx-id)
                         (assoc :zookeeper/address "192.168.99.100:2181"))
         job (build-job :prod)]
-    (onyx.api/submit-job peer-config job)))
+    (let [{:keys [job-id]} (onyx.api/submit-job peer-config job)]
+      (println "Submitted job: " job-id))))

@@ -54,7 +54,6 @@
       :onyx/plugin :onyx.plugin.seq/input
       :onyx/type :input
       :onyx/medium :seq
-      :seq/elements-per-segment 1
       :seq/checkpoint? true
       :onyx/batch-size batch-size
       :onyx/max-peers 1
