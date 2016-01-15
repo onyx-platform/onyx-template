@@ -43,12 +43,13 @@
   "Creates a new Onyx application template"
   [name & args]
   (let [path (name-to-path name)
-        onyx-version "0.8.4"
-        onyx-sql-minor "0"
-        onyx-kafka-minor "0"
-        onyx-seq-minor "0"
         data {:name name
-              :onyx-version onyx-version
+              ;; The formatting here matters
+              :onyx-version "0.8.4"
+              :onyx-sql-minor "0"
+              :onyx-kafka-minor "0"
+              :onyx-metrics-minor "0"
+              :onyx-seq-minor "0"
               :app-name name
               :sanitized path
               :docker? (fn [block] (if (docker? args) block ""))

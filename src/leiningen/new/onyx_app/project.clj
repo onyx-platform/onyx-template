@@ -7,10 +7,10 @@
                  [org.onyxplatform/onyx "{{onyx-version}}"]
                  [environ "1.0.1"]
                                         ;Docker Opts
-                 [org.onyxplatform/onyx-sql "{{onyx-version}}.0"]
-                 [org.onyxplatform/onyx-kafka "{{onyx-version}}.0"]
-                 {{#metrics?}}[org.onyxplatform/onyx-metrics "{{onyx-version}}.0"]{{/metrics?}}
-                 [org.onyxplatform/onyx-seq "{{onyx-version}}.0"]
+                 [org.onyxplatform/onyx-sql "{{onyx-version}}.{{onyx-sql-minor}}"]
+                 [org.onyxplatform/onyx-kafka "{{onyx-version}}.{{onyx-kafka-minor}}"]
+                 {{#metrics?}}[org.onyxplatform/onyx-metrics "{{onyx-version}}.{{onyx-metrics-minor}}"]{{/metrics?}}
+                 [org.onyxplatform/onyx-seq "{{onyx-version}}.{{onyx-seq-minor}}"]
                  [cheshire "5.5.0"]
                  [mysql/mysql-connector-java "5.1.18"]
                  ]

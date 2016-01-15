@@ -26,23 +26,23 @@ git checkout master
 git stash
 git pull
 
-if [[ "$new_version" == *[.]*[.]*[.]* ]]; 
-then 
-	echo "Four digit release number "$new_version" therefore releasing plugin without updating Onyx dependency"
-	new_plugin_version=$new_version
-elif [[ "$new_version" == *[.]*[.]* ]]; 
+if [[ "$new_version" == *[.]*[.]*[.]* ]];
 then
-	core_version=$new_version
-	#lein update-dependency org.onyxplatform/onyx $core_version
-	if [[ "$version_type" == "$new_version" ]]; then 
-		new_plugin_version=$version_base".0"
-	else
-		new_plugin_version=$version_base".0-"$version_type
-	fi
+    echo "Four digit release number "$new_version" therefore releasing plugin without updating Onyx dependency"
+    new_plugin_version=$new_version
+elif [[ "$new_version" == *[.]*[.]* ]];
+then
+    core_version=$new_version
+    sed -i -e  "s/\(:onyx-version \).*/\1\"$core_version\"/" src/leiningen/new/onyx_app.clj
+    if [[ "$version_type" == "$new_version" ]]; then
+        new_plugin_version=$version_base".0"
+    else
+        new_plugin_version=$version_base".0-"$version_type
+    fi
 
 else
-	echo "Unhandled version number scheme. Exiting"
-	exit 1
+    echo "Unhandled version number scheme. Exiting"
+    exit 1
 fi
 
 lein set-version $new_plugin_version
