@@ -36,7 +36,7 @@ user defined symbol. In this case, that symbol is `test-env`.
     (with-test-env [test-env [5 env-config peer-config]]
     ```
 
-3. `(build-job :dev)` is a convinient idiom we use to build onyx jobs. Most of
+3. `(build-job :dev)` is a convenient idiom we use to build onyx jobs. Most of
 the time, you're going to be testing your workflows on a static dataset during
 development time, but switch to a SQL DB or a Kafka queue when in production. We
 signal this switch with a `mode` keyword. This keyword is then used to build
@@ -105,11 +105,18 @@ The architecture is quite straightforward. We will be using 5 containers in a do
 	
 KafkaCat will forward data to a topic in Kafka (meetups) that will store it indefinitely. We can then submit jobs to the ZooKeeper container, and the Peer's will pick them up and start running them. We can then output our data using the Onyx SQL plugin to MySQL. 
 
+### Prerequisites
+
+* [Docker tools](https://www.docker.com/)
+* Java 8
+
 ### Execution
 **First** steps are to make the scripts in the `script/` directory executable. Run the following two commands 
 
-    `chmod +x script/*`
-    `chmod +x script/kafka-meetup-streamer/*`
+```
+    chmod +x script/*
+    chmod +x script/kafka-meetup-streamer/*
+```
 This allows us to use the convenience build scripts, and allows docker to include the scripts that launch our peers and meetup.com streamer. 
 
 **Next**, we will build the example app. Out of the box the lein template includes all that you would need to stream from meetup.com->Kafka->Onyx->MySQL. Run the build script (with Java 8).
@@ -123,7 +130,7 @@ The `({{appname}}.jobs.sample-submit-job/-main)` will build a submit a job to th
     
     {"groupId" ... "groupCity" ... "category" ...} 
     
-In order to persist this to the `:sql/table` specified in the `:write-lines` catalog entry (:recentMeetups), we need to first create the table and load a schema in MySql. From your `"meetups` database, use the following SQL to setup the table and schema.
+In order to persist this to the `:sql/table` specified in the `:write-lines` catalog entry (:recentMeetups), we need to first create the table and load a schema in MySql. Connect to the MySql instance with: (host will depend on your docker setup): `mysql -h192.168.99.100 -P3306 -uroot`. From your `meetup` database, use the following SQL to setup the table and schema.
 
     use meetup;
     create table recentMeetups (id int PRIMARY KEY AUTO_INCREMENT, 
