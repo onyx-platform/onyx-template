@@ -11,7 +11,6 @@ development as well as automated testing.
 
 There are four main parts of the dev/test environment.
 
-
 1. The `let` binding sets up a dev-mode configuration. This is a plain clojure
 map describing [peer-config](http://www.onyxplatform.org/cheat-sheet.html#/peer-config)
 and [environment-config](http://www.onyxplatform.org/cheat-sheet.html#/env-config). Any of these
@@ -55,7 +54,8 @@ That will have an associated channel that we can use to collect our output!
 `(clojure.tools.namespace.repl/refresh)` can be used with this setup to refresh your project. 
 Many Clojure editors also have convenient keybindings for this!
 
-Then try to run the test via your editor, or in the repl e.g. `(clojure.test/run-tests '{{app-name}}.jobs.sample-job-test)`. Ensure you `tail -F` the output of onyx.log in your project root, to watch out for any issues that might pop up.
+Then try to run the test via your editor, or in the repl e.g. `(clojure.test/run-tests '{{app-name}}.jobs.sample-job-test)`. 
+Ensure you `tail -F` the output of onyx.log in your project root, to watch out for any issues that might pop up.
 
 ### Production
 Running onyx in production just requires building an uberjar and running
