@@ -59,14 +59,6 @@
       :onyx/max-peers 1
       :onyx/doc "Reads segments from seq"}
 
-     {:onyx/name :extract-seq-elements
-      :onyx/fn :{{app-name}}.functions.sample-functions/get-in-segment
-      :onyx/type :function
-      :onyx/batch-size batch-size
-      :onyx/batch-timeout batch-timeout
-      :keypath [:elements]
-      :onyx/params [:keypath]}
-
      {:onyx/name :write-lines
       :onyx/plugin :onyx.plugin.core-async/output
       :onyx/type :output
