@@ -7,7 +7,8 @@
               {{#metrics?}}[onyx.lifecycle.metrics.metrics]{{/metrics?}}
               {{#metrics?}}[onyx.lifecycle.metrics.timbre]{{/metrics?}}
               [onyx.plugin.core-async :refer [take-segments!]]
-              [onyx.plugin.kafka] ;Make the plugins load
+              ; Make the plugins load
+              [onyx.plugin.kafka]
               [onyx.plugin.seq]
               [onyx.plugin.sql]))
 
@@ -21,8 +22,8 @@
     (with-test-env [test-env [5 env-config peer-config]]
       (let [job (build-job :dev)
             {:keys [write-lines]} (get-core-async-channels job)
-            {:keys [job-id]}      (onyx.api/submit-job peer-config job)]
-        ;(feedback-exception! job-id peer-config)
+            {:keys [job-id]} (onyx.api/submit-job peer-config job)]
+        (feedback-exception! peer-config job-id)
         (let [results (take-segments! write-lines)]
           (is (= 4 (count results)))
           (is (= :done (last results))))))))
