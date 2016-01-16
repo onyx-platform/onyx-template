@@ -2,8 +2,12 @@ test:
   override:
           - lein set-version 99.99.99
           - lein install
-          - lein new onyx-app test-app -- +docker +metrics
-          - cd test-app && lein test && cd ..
+          - lein new onyx-app test-app-docker -- +docker
+          - cd test-app-docker && lein test && cd ..
+          - lein new onyx-app test-app-metrics -- +metrics
+          - cd test-app-metrics && lein test && cd ..
+          - lein new onyx-app test-app-docker-metrics -- +docker +metrics
+          - cd test-app-docker-metrics && lein test && cd ..
           - lein new onyx-app test-app-bare
           - cd test-app-bare && lein test && cd ..
 
