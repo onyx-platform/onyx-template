@@ -55,8 +55,7 @@ That will have an associated channel that we can use to collect our output!
 `(clojure.tools.namespace.repl/refresh)` can be used with this setup to refresh your project. 
 Many Clojure editors also have convenient keybindings for this!
 
-Try to run the test via your editor, or using `(clojure.test/run-tests 'your.test.ns)`, 
-while tailing the output of onyx.log in your project root.
+Then try to run the test via your editor, or in the repl e.g. `(clojure.test/run-tests '{{app-name}}.jobs.sample-job-test)`. Ensure you `tail -F` the output of onyx.log in your project root, to watch out for any issues that might pop up.
 
 ### Production
 Running onyx in production just requires building an uberjar and running

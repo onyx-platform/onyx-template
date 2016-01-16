@@ -1,11 +1,11 @@
 (ns {{app-name}}.jobs.sample-job-test
     (:require [clojure.test :refer [deftest is]]
               [onyx api
-               [test-helper :refer [feedback-exception! load-config with-test-env]]]
+              [test-helper :refer [feedback-exception! load-config with-test-env]]]
               [{{app-name}}.jobs.sample-submit-job :refer [build-job]]
               [{{app-name}}.lifecycles.sample-lifecycle :refer [get-core-async-channels]]
-              [onyx.lifecycle.metrics.metrics]
-              [onyx.lifecycle.metrics.timbre]
+              {{#metrics?}}[onyx.lifecycle.metrics.metrics]{{/metrics?}}
+              {{#metrics?}}[onyx.lifecycle.metrics.timbre]{{/metrics?}}
               [onyx.plugin.core-async :refer [take-segments!]]
               [onyx.plugin.kafka] ;Make the plugins load
               [onyx.plugin.seq]
