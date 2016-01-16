@@ -7,7 +7,15 @@
               [{{app-name}}.workflows.sample-workflow :refer [build-workflow]]
               [onyx.test-helper :refer [load-config]]))
 
-;;;; Lets build a job
+;;;; 
+;; Lets build a job
+;; Depending on the mode, the job is built up in a different way
+;; When :dev mode, onyx-seq will be used as an input, with the meetup data being
+;; included in the onyx-seq lifecycle for easy access
+;; core.async is then added as an output task
+;;
+;; When using :prod mode, kafka is added as an input, and onyx-sql is used as the output
+
 (defn build-job [mode]
   (let [core-async?  (= :dev mode)
         kafka        (= :prod mode)
