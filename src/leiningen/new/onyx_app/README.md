@@ -51,9 +51,12 @@ of the job, in this case it's only one that we care about, `:write-lines`.
 That will have an associated channel that we can use to collect our output!
 
 #### Reloading Code in Development
-`clojure.tools.namespace.repl/refresh` can be used with this setup to refresh your project. Most Clojure editors also have convenient keybindings for this!
 
-Try to run the test, and watch the output of onyx.log in your project root.
+`(clojure.tools.namespace.repl/refresh)` can be used with this setup to refresh your project. 
+Many Clojure editors also have convenient keybindings for this!
+
+Try to run the test via your editor, or using `(clojure.test/run-tests 'your.test.ns)`, 
+while tailing the output of onyx.log in your project root.
 
 ### Production
 Running onyx in production just requires building an uberjar and running
