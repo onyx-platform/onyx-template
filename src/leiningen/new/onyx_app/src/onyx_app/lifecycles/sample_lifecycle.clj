@@ -64,10 +64,8 @@
    Detects input/output automatically. Supports one input and one output."
   [{:keys [catalog lifecycles uuid] :as job}]
   (assert (and (sequential? catalog) (sequential? lifecycles)) "must supply a map of the form {:catalog [...] :lifecycles [...]")
-  (let [inputs  (u/find-task-by-key catalog :onyx/plugin
-                                    :onyx.plugin.core-async/input)
-        outputs (u/find-task-by-key catalog :onyx/plugin
-                                    :onyx.plugin.core-async/output)]
+  (let [inputs  (u/find-task-by-key catalog :onyx/plugin :onyx.plugin.core-async/input)
+        outputs (u/find-task-by-key catalog :onyx/plugin :onyx.plugin.core-async/output)]
     (u/add-to-job job
                   {:lifecycles
                    (mapcat #(remove nil? %)
