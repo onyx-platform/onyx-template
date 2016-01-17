@@ -17,28 +17,28 @@
 ;; When using :prod mode, kafka is added as an input, and onyx-sql is used as the output
 
 (defn build-job [mode]
-  (let [core-async?  (= :dev mode)
-        kafka        (= :prod mode)
-        seq          (if (= :dev mode) lines)
-        sql          (= :prod mode)
-        logging      :write-lines
-        {{#metrics?}}metrics      :write-lines{{/metrics?}}
-        base-job {:catalog (build-catalog {:batch-size    1
+  (let [core-async? (= :dev mode)
+        kafka? (= :prod mode)
+        seq (if (= :dev mode) lines)
+        sql? (= :prod mode)
+        logging :write-lines
+        {{#metrics?}}metrics :write-lines{{/metrics?}}
+        base-job {:catalog (build-catalog {:batch-size 1
                                            :batch-timeout 1000
-                                           :mode          mode})
+                                           :mode mode})
                   :lifecycles (build-lifecycles {:mode mode})
                   :workflow (build-workflow {:mode mode})
                   :task-scheduler :onyx.task-scheduler/balanced}]
     (cond-> base-job
       core-async? (add-core-async)
-      seq     (add-seq seq)
+      seq (add-seq seq)
       {{#metrics?}}metrics (add-metrics metrics){{/metrics?}}
       logging (add-logging logging)
-      kafka   (add-kafka {:kafka/topic     "meetup"
-                          :kafka/group-id  "onyx-consumer"
-                          :kafka/zookeeper "zk:2181"
-                          :kafka/partition "0"})
-      sql (add-sql))))
+      kafka? (add-kafka {:kafka/topic "meetup"
+                         :kafka/group-id "onyx-consumer"
+                         :kafka/zookeeper "zk:2181"
+                         :kafka/partition "0"})
+      sql? (add-sql))))
 
 (defn -main [onyx-id & args]
   (let [config (load-config "config.edn")

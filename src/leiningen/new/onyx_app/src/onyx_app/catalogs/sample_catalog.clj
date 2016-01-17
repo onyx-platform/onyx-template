@@ -80,9 +80,9 @@
       :onyx/max-peers 1
       :onyx/doc "Read messages from a kafka topic"}
 
-     {:onyx/name   :write-lines
+     {:onyx/name :write-lines
       :onyx/plugin :onyx.plugin.sql/write-rows
-      :onyx/type   :output
+      :onyx/type :output
       :onyx/medium :sql
       :sql/classname "com.mysql.jdbc.Driver"
       :sql/subprotocol "mysql"
@@ -91,4 +91,5 @@
       :sql/password "onyx"
       :sql/table :recentMeetups
       :onyx/batch-size batch-size}]))
+
 ;; TODO: Write an add-sql plugin that injects this data.
