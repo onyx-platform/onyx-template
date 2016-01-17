@@ -6,8 +6,8 @@
               [cheshire.core :as json]))
 
 
-;;;;================- Logging -===========================
-
+;;;;======================================================
+;;;;                 Logging
 (defn log-batch [event lifecycle]
   (let [task-name (:onyx/name (:onyx.core/task-map event))]
     (doseq [m (map :message (mapcat :leaves (:tree (:onyx.core/results event))))]
@@ -25,7 +25,8 @@
                                    :lifecycle/calls ::log-calls
                                    :lifecycle/doc "Lifecycle for printing the output of a task's batch"}]}))
 
-;;;;================- Core.Async  -===========================
+;;;;======================================================
+;;;;                 Core Async
 (def get-input-channel
   "Returns the same channel every time for an id."
   (memoize
@@ -82,9 +83,9 @@
                                 :core.async/id (or uuid (java.util.UUID/randomUUID))}
                                {:lifecycle/task output-task-name
                                 :lifecycle/calls :onyx.plugin.core-async/writer-calls}])])})))
+
 ;;;;======================================================
 ;;;;                 Kafka
-
 (defn deserialize-message [bytes]
   (try
     (json/parse-string (String. bytes "UTF-8"))
@@ -103,10 +104,8 @@
                                :kafka/offset-reset :smallest
                                :kafka/force-reset? true}
                               kafka-settings)
-        kafka-input    (u/find-task-by-key catalog :onyx/plugin
-                                           :onyx.plugin.kafka/read-messages)
-        kafka-output   (u/find-task-by-key catalog :onyx/plugin
-                                           :onyx.plugin.kafka/write-messages)]
+        kafka-input    (u/find-task-by-key catalog :onyx/plugin :onyx.plugin.kafka/read-messages)
+        kafka-output   (u/find-task-by-key catalog :onyx/plugin :onyx.plugin.kafka/write-messages)]
     (-> job
         (update-in [:catalog] (fn [entries]
                                 (mapv (fn [entry]
@@ -124,13 +123,10 @@
 
 ;;;;=======================================================
 ;;;;                     SQL
-
 (defn add-sql
   [{:keys [catalog lifecycles] :as job}]
-  (let [sql-input (u/find-task-by-key catalog :onyx/plugin
-                                      :onyx.plugin.sql/read-rows)
-        sql-output (u/find-task-by-key catalog :onyx/plugin
-                                       :onyx.plugin.sql/write-rows)]
+  (let [sql-input (u/find-task-by-key catalog :onyx/plugin :onyx.plugin.sql/read-rows)
+        sql-output (u/find-task-by-key catalog :onyx/plugin :onyx.plugin.sql/write-rows)]
     (-> job
         (u/add-to-job
          {:lifecycles
@@ -155,8 +151,7 @@
 
 (defn add-seq
   [{:keys [catalog lifecycles] :as job} seq]
-  (let [seq-input (u/find-task-by-key catalog :onyx/plugin
-                                      :onyx.plugin.seq/input)]
+  (let [seq-input (u/find-task-by-key catalog :onyx/plugin :onyx.plugin.seq/input)]
     (-> job
         (u/add-to-job
          {:lifecycles
@@ -168,7 +163,7 @@
 
 
 ;;;;============================================================
-;;;;                      Metrics
+;;;;                    Metrics
 (defn add-metrics
   [job task]
   (u/add-to-job job
