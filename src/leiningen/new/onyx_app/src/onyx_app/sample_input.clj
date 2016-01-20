@@ -20,4 +20,5 @@
     "maybe_rsvp_count" 0, "status" "upcoming",
     "time"             1452304800000, "rsvp_limit" 6,
     "event_url"        "http://www.meetup.com/Foodies/events/227420766/",
-    "mtime"            1450129671307}])
+    "mtime"            1450129671307}
+   :done])

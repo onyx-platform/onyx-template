@@ -2,6 +2,7 @@
     (:require [clojure.core.async :refer [chan sliding-buffer >!!]]
               [onyx.plugin.core-async :refer [take-segments!]]
               [taoensso.timbre :refer [info]]
+              [clojure.set :refer [join]]
               [{{app-name}}.utils :as u]
               [cheshire.core :as json]))
 
@@ -27,23 +28,24 @@
 
 ;;;;======================================================
 ;;;;                 Core Async
-(def get-input-channel
-  "Returns the same channel every time for an id."
-  (memoize
-   (fn [id] (chan 100))))
+(def channels (atom {}))
 
-(def get-output-channel
-  "Returns the same channel every time for an id."
-  (memoize
-   (fn [id] (chan (sliding-buffer 100)))))
+(defn get-channel
+  ([id] (get-channel id nil))
+  ([id size]
+   (if-let [id (get @channels id)]
+     id
+     (do (swap! channels assoc id (chan (or size 1000)))
+         (get-channel id)))))
 
 (defn inject-in-ch
-  [event lifecycle]
-  {:core.async/chan (get-input-channel (:core.async/id lifecycle))})
-
+  [_ lifecycle]
+  {:core.async/chan (get-channel (:core.async/id lifecycle)
+                                 (or (:core.async/size lifecycle) 1000))})
 (defn inject-out-ch
-  [event lifecycle]
-  {:core.async/chan (get-output-channel (:core.async/id lifecycle))})
+  [_ lifecycle]
+  {:core.async/chan (get-channel (:core.async/id lifecycle)
+                                 (or (:core.async/size lifecycle) 1001))})
 
 (def in-calls
   {:lifecycle/before-task-start inject-in-ch})
@@ -51,36 +53,38 @@
 (def out-calls
   {:lifecycle/before-task-start inject-out-ch})
 
-(defn get-core-async-channels [{:keys [lifecycles catalog]}]
-  (let [inputs  (:onyx/name (u/find-task-by-key catalog :onyx/plugin :onyx.plugin.core-async/input))
-        outputs (:onyx/name (u/find-task-by-key catalog :onyx/plugin :onyx.plugin.core-async/output))]
-    {inputs (get-input-channel (:core.async/id
-                                (first (filter #(= inputs (:lifecycle/task %)) lifecycles))))
-     outputs (get-output-channel (:core.async/id
-                                  (first (filter #(= outputs (:lifecycle/task %)) lifecycles))))}))
+(defn get-core-async-channels
+  [{:keys [catalog lifecycles]}]
+  (let [lifecycle-catalog-join (join catalog lifecycles {:onyx/name :lifecycle/task})]
+    (reduce (fn [acc item]
+              (assoc acc
+                     (:onyx/name item)
+                     (get-channel (:core.async/id item)))) {} (filter :core.async/id lifecycle-catalog-join))))
 
-(defn add-core-async
-  "Add's core.async state to corresponding catalog entries.
-   Detects input/output automatically. Supports one input and one output."
-  [{:keys [catalog lifecycles uuid] :as job}]
-  (assert (and (sequential? catalog) (sequential? lifecycles)) "must supply a map of the form {:catalog [...] :lifecycles [...]")
-  (let [inputs  (u/find-task-by-key catalog :onyx/plugin :onyx.plugin.core-async/input)
-        outputs (u/find-task-by-key catalog :onyx/plugin :onyx.plugin.core-async/output)]
-    (u/add-to-job job
-                  {:lifecycles
-                   (mapcat #(remove nil? %)
-                           [(when-let [input-task-name (get inputs :onyx/name)]
-                              [{:lifecycle/task input-task-name
-                                :lifecycle/calls ::in-calls
-                                :core.async/id (or uuid (java.util.UUID/randomUUID))}
-                               {:lifecycle/task input-task-name
-                                :lifecycle/calls :onyx.plugin.core-async/reader-calls}])
-                            (when-let [output-task-name (get outputs :onyx/name)]
-                              [{:lifecycle/task output-task-name
-                                :lifecycle/calls ::out-calls
-                                :core.async/id (or uuid (java.util.UUID/randomUUID))}
-                               {:lifecycle/task output-task-name
-                                :lifecycle/calls :onyx.plugin.core-async/writer-calls}])])})))
+
+(defn add-core-async-input
+  ([job task] (add-core-async-input job task 1000))
+  ([job task chan-size]
+   (if-let [entry (first (filter #(= (:onyx/name %) task) (:catalog job)))]
+     (-> job
+         (update-in [:lifecycles] into [{:lifecycle/task task
+                                         :lifecycle/calls ::in-calls
+                                         :core.async/id   (java.util.UUID/randomUUID)
+                                         :core.async/size chan-size}
+                                        {:lifecycle/task task
+                                         :lifecycle/calls :onyx.plugin.core-async/reader-calls}]))
+     (throw (java.lang.IllegalArgumentException)))))
+
+(defn add-core-async-output
+  ([job task] (add-core-async-output job task 1000))
+  ([job task chan-size]
+   (if-let [entry (first (filter #(= (:onyx/name %) task) (:catalog job)))]
+     (update-in job [:lifecycles] into [{:lifecycle/task task
+                                         :core.async/id   (java.util.UUID/randomUUID)
+                                         :core.async/size (inc chan-size)
+                                         :lifecycle/calls ::out-calls}
+                                        {:lifecycle/task task
+                                         :lifecycle/calls :onyx.plugin.core-async/writer-calls}]))))
 
 ;;;;======================================================
 ;;;;                 Kafka
@@ -144,7 +148,7 @@
   (let [seq (:seq lifecycle)]
     {:seq/seq seq}))
 
-(def in-calls
+(def in-seq-calls
   {:lifecycle/before-task-start inject-in-reader})
 
 (defn add-seq
@@ -155,7 +159,7 @@
          {:lifecycles
           [{:lifecycle/task (get seq-input :onyx/name)
             :seq seq
-            :lifecycle/calls ::in-calls}
+            :lifecycle/calls ::in-seq-calls}
            {:lifecycle/task (get seq-input :onyx/name)
             :lifecycle/calls :onyx.plugin.seq/reader-calls}]}))))
 
