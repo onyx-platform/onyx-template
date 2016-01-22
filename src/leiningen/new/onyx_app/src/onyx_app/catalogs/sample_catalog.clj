@@ -84,12 +84,6 @@
       :onyx/plugin :onyx.plugin.sql/write-rows
       :onyx/type :output
       :onyx/medium :sql
-      :sql/classname "com.mysql.jdbc.Driver"
-      :sql/subprotocol "mysql"
-      :sql/subname "//db:3306/meetup"
-      :sql/user "onyx"
-      :sql/password "onyx"
-      :sql/table :recentMeetups
       :onyx/batch-size batch-size}]))
 
 ;; TODO: Write an add-sql plugin that injects this data.

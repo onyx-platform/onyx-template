@@ -9,6 +9,7 @@
 
 ;;;;======================================================
 ;;;;                 Logging
+
 (defn log-batch [event lifecycle]
   (let [task-name (:onyx/name (:onyx.core/task-map event))]
     (doseq [m (map :message (mapcat :leaves (:tree (:onyx.core/results event))))]
@@ -21,10 +22,10 @@
 (defn add-logging
   "Add's logging output to a tasks output-batch. "
   [job task]
-  (assert (and (keyword? task) (u/find-task (:catalog job) task)))
-  (u/add-to-job job {:lifecycles [{:lifecycle/task task
-                                   :lifecycle/calls ::log-calls
-                                   :lifecycle/doc "Lifecycle for printing the output of a task's batch"}]}))
+  (if-let [entry (first (filter #(= (:onyx/name %) task) (:catalog job)))]
+    (-> job
+        (update-in [:lifecycles] conj {:lifecycle/task task
+                                       :lifecycle/calls ::log-calls}))))
 
 ;;;;======================================================
 ;;;;                 Core Async
@@ -88,59 +89,123 @@
 
 ;;;;======================================================
 ;;;;                 Kafka
-(defn deserialize-message [bytes]
+(defn deserialize-message-json [bytes]
   (try
     (json/parse-string (String. bytes "UTF-8"))
     (catch Exception e
       {:error e})))
 
-(defn add-kafka
-  [{:keys [catalog lifecycles] :as job} kafka-settings]
-  "Instruments a :task with Kafka lifecycle and catalog settings.
-   Must supply :kafka/topic, :kafka/partition, :kafka/group-id and :kafka/zookeeper"
-  (assert (not (some nil? ((juxt :kafka/topic
-                                 :kafka/group-id :kafka/zookeeper)
-                           kafka-settings)))
-          "Need to specify :kafka/topic, :kafka/group-id and :kafka/zookeeper")
-  (let [kafka-settings (merge {:kafka/deserializer-fn ::deserialize-message
-                               :kafka/offset-reset :smallest
-                               :kafka/force-reset? true}
-                              kafka-settings)
-        kafka-input    (u/find-task-by-key catalog :onyx/plugin :onyx.plugin.kafka/read-messages)
-        kafka-output   (u/find-task-by-key catalog :onyx/plugin :onyx.plugin.kafka/write-messages)]
-    (-> job
-        (update-in [:catalog] (fn [entries]
-                                (mapv (fn [entry]
-                                        (if (= (get entry :onyx/plugin)
-                                               :onyx.plugin.kafka/read-messages)
-                                          (merge entry kafka-settings)
-                                          entry))
-                                      entries)))
-        (u/add-to-job
-         {:lifecycles
-          (mapcat #(remove nil? %)
-                  [(when-let [task-name (get kafka-input :onyx/name)]
-                     [{:lifecycle/task task-name
-                       :lifecycle/calls :onyx.plugin.kafka/read-messages-calls}])])}))))
+(defn deserialize-message-edn [bytes]
+  (try
+    (read-string (String. bytes "UTF-8"))
+    (catch Exception e
+      {:error e})))
+
+(defn serialize-message-json [segment]
+  (.getBytes (json/generate-string segment)))
+
+(defn serialize-message-edn [segment]
+  (.getBytes segment))
+
+(defn expand-serializer-fn [task]
+  (update-in task [:kafka/serializer-fn]
+             (fn [v]
+               (condp = v
+                 :json    ::serialize-message-json
+                 :edn     ::serialize-message-edn
+                 v))))
+
+(defn expand-deserializer-fn [task]
+  (update-in task [:kafka/deserializer-fn]
+             (fn [v]
+               (condp = v
+                 :json    ::deserialize-message-json
+                 :edn     ::deserialize-message-edn
+                 v))))
+
+(defn add-kafka-input
+  "Instrument a job with Kafka lifecycles and catalog entries.
+  opts are of the following form for Kafka consumers AND producers
+
+  opts {
+  :kafka/topic               - Name of a topic
+  :kafka/partition           - Optional: partition to read from if
+                                 auto-assignment is not used
+  :kafka/group-id            - The consumer identity to store in ZooKeeper
+  :kafka/zookeeper           - The ZooKeeper connection string
+  :kafka/offset-reset        - Offset bound to seek to when not found
+                                 - :smallest or :largest
+  :kafka/force-reset?        - Force to read from the beginning or end of the
+                                 log, as specified by :kafka/offset-reset.
+                                 If false, reads from the last acknowledged
+                                 messsage if it exists
+  :kafka/deserializer-fn     - :json or :edn for default deserializers, a
+                                custom fn can also be supplied. Only for
+                                :input tasks}
+
+  ========================== Optional Settings =================================
+  :kafka/chan-capacity
+  :kafka/fetch-size
+  :kafka/empty-read-back-off
+  :kafka/commit-interval
+  :kafka/request-size"
+  ([job task] (add-kafka-input job task nil))
+  ([job task opts]
+   (if-let [entry (first (filter #(= (:onyx/name %) task) (:catalog job)))]
+     (-> job
+         (update-in [:lifecycles] conj {:lifecycle/task task
+                                        :lifecycle/calls :onyx.plugin.kafka/read-messages-calls})
+         (update-in [:catalog] (fn [catalog]
+                                 (replace {entry ((comp (partial merge opts)
+                                                        expand-deserializer-fn) entry)} catalog))))
+     (throw (java.lang.IllegalArgumentException)))))
+
+(defn add-kafka-output
+  "Instrument a job with Kafka lifecycles and catalog entries.
+  opts are of the following form for Kafka consumers AND producers
+
+  :kafka/topic               - Name of a topic
+  :kafka/zookeeper           - The ZooKeeper connection string
+  :kafka/serializer-fn       - :json or :edn for default serializers, a
+                                custom fn can also be supplied. Only for
+                                :output tasks
+
+  ========================== Optional Settings =================================
+  :kafka/request-size"
+  ([job task] (add-kafka-output job task nil))
+  ([job task opts]
+   (if-let [entry (first (filter #(= (:onyx/name %) task) (:catalog job)))]
+     (-> job
+         (update-in [:lifecycles] conj {:lifecycle/task task
+                                        :lifecycle/calls :onyx.plugin.kafka/write-messages-calls})
+         (update-in [:catalog] (fn [catalog]
+                                 (replace {entry ((comp (partial merge opts)
+                                                        expand-serializer-fn) entry)} catalog))))
+     (throw (java.lang.IllegalArgumentException)))))
+
 
 ;;;;=======================================================
 ;;;;                     SQL
-(defn add-sql
-  [{:keys [catalog lifecycles] :as job}]
-  (let [sql-input (u/find-task-by-key catalog :onyx/plugin :onyx.plugin.sql/read-rows)
-        sql-output (u/find-task-by-key catalog :onyx/plugin :onyx.plugin.sql/write-rows)]
-    (-> job
-        (u/add-to-job
-         {:lifecycles
-          (mapcat #(remove nil? %)
-                  [(when-let [task-name (get sql-output :onyx/name)]
-                     [{:lifecycle/task task-name
-                       :lifecycle/calls :onyx.plugin.sql/write-rows-calls}])])}))))
+(defn add-sql-input
+  ([job task] (add-sql-input job task nil))
+  ([job task opts]
+   (if-let [entry (first (filter #(= (:onyx/name %) task) (:catalog job)))]
+     (-> job
+         (update-in [:lifecycles] conj {:lifecycle/task task
+                                        :lifecycle/calls :onyx.plugin.sql/read-rows-calls})
+         (update-in [:catalog] (fn [catalog]
+                                 (replace {entry (merge opts entry)} catalog)))))))
 
-(defn build-lifecycles
-  "Put your environment-independent lifecycles here"
-  [ctx]
-  [])
+(defn add-sql-output
+  ([job task] (add-sql-output job task nil))
+  ([job task opts]
+   (if-let [entry (first (filter #(= (:onyx/name %) task) (:catalog job)))]
+     (-> job
+         (update-in [:lifecycles] conj {:lifecycle/task task
+                                        :lifecycle/calls :onyx.plugin.sql/write-rows-calls})
+         (update-in [:catalog] (fn [catalog]
+                                 (replace {entry (merge opts entry)} catalog)))))))
+
 
 ;;;;============================================================
 ;;;;                  Onyx Seq
@@ -150,6 +215,9 @@
 
 (def in-seq-calls
   {:lifecycle/before-task-start inject-in-reader})
+
+(defn add-seq-input [job task])
+(defn add-seq-output [job task])
 
 (defn add-seq
   [{:keys [catalog lifecycles] :as job} seq]
@@ -176,3 +244,8 @@
       :metrics/workflow-name "meetup-workflow"
       :metrics/sender-fn :onyx.lifecycle.metrics.timbre/timbre-sender
       :lifecycle/doc "Instruments a task's metrics to timbre"}]}))
+
+(defn build-lifecycles
+  "Put your environment-independent lifecycles here"
+  [ctx]
+  [])

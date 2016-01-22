@@ -1,8 +1,8 @@
 (ns {{app-name}}.jobs.sample-submit-job
     (:require [{{app-name}}.catalogs.sample-catalog :refer [build-catalog]]
               [{{app-name}}.lifecycles.sample-lifecycle
-               :refer [add-core-async-output add-kafka add-logging
-                       add-sql add-seq add-metrics build-lifecycles]]
+               :refer [add-core-async-output add-kafka-input add-logging
+                       add-sql-output add-seq add-metrics build-lifecycles]]
               [{{app-name}}.sample-input :refer [lines]]
               [{{app-name}}.workflows.sample-workflow :refer [build-workflow]]
               [onyx.test-helper :refer [load-config]]))
@@ -34,11 +34,16 @@
       seq (add-seq seq)
       {{#metrics?}}metrics (add-metrics metrics){{/metrics?}}
       logging (add-logging logging)
-      kafka? (add-kafka {:kafka/topic "meetup"
-                         :kafka/group-id "onyx-consumer"
-                         :kafka/zookeeper "zk:2181"
-                         :kafka/partition "0"})
-      sql? (add-sql))))
+      kafka? (add-kafka-input :write-lines {:kafka/topic "meetup"
+                                            :kafka/group-id "onyx-consumer"
+                                            :kafka/zookeeper "zk:2181"
+                                            :kafka/partition "0"})
+      sql? (add-sql-output :write-lines {:sql/classname "com.mysql.jdbc.Driver"
+                                         :sql/subprotocol "mysql"
+                                         :sql/subname "//db:3306/meetup"
+                                         :sql/user "onyx"
+                                         :sql/password "onyx"
+                                         :sql/table :recentMeetups}))))
 
 (defn -main [onyx-id & args]
   (let [config (load-config "config.edn")
