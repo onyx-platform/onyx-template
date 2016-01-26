@@ -15,6 +15,7 @@
            "LICENSE" "project.clj"
            ".projectile"
            "resources/config.edn"
+           "resources/sample_input.edn"
            "src/onyx_app/launcher/launch_prod_peers.clj"
            "src/onyx_app/launcher/aeron_media_driver.clj"
            "src/onyx_app/workflows/sample_workflow.clj"
@@ -22,8 +23,6 @@
            "src/onyx_app/functions/sample_functions.clj"
            "src/onyx_app/lifecycles/sample_lifecycle.clj"
            "src/onyx_app/jobs/sample_submit_job.clj"
-           "src/onyx_app/utils.clj"
-           "src/onyx_app/sample_input.clj"
            "test/onyx_app/jobs/sample_job_test.clj"
            "script/build.sh"]
     (docker? opts) (conj "Dockerfile"

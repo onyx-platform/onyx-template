@@ -3,9 +3,7 @@
               [onyx.plugin.core-async :refer [take-segments!]]
               [taoensso.timbre :refer [info]]
               [clojure.set :refer [join]]
-              [{{app-name}}.utils :as u]
               [cheshire.core :as json]))
-
 
 ;;;;======================================================
 ;;;;                 Logging
@@ -211,39 +209,32 @@
 ;;;;                  Onyx Seq
 (defn inject-in-reader [event lifecycle]
   (let [seq (:seq lifecycle)]
-    {:seq/seq seq}))
+    {:seq/seq (read-string (slurp seq))}))
 
 (def in-seq-calls
   {:lifecycle/before-task-start inject-in-reader})
 
-(defn add-seq-input [job task])
-(defn add-seq-output [job task])
-
-(defn add-seq
-  [{:keys [catalog lifecycles] :as job} seq]
-  (let [seq-input (u/find-task-by-key catalog :onyx/plugin :onyx.plugin.seq/input)]
+(defn add-seq-input [job task opts]
+  (if-let [entry (first (filter #(= (:onyx/name %) task) (:catalog job)))]
     (-> job
-        (u/add-to-job
-         {:lifecycles
-          [{:lifecycle/task (get seq-input :onyx/name)
-            :seq seq
-            :lifecycle/calls ::in-seq-calls}
-           {:lifecycle/task (get seq-input :onyx/name)
-            :lifecycle/calls :onyx.plugin.seq/reader-calls}]}))))
-
+        (update-in [:lifecycles] into [(merge {:lifecycle/task task
+                                               :lifecycle/calls ::in-seq-calls}
+                                              opts)
+                                       {:lifecycle/task task
+                                        :lifecycle/calls :onyx.plugin.seq/reader-calls}]))))
 
 ;;;;============================================================
 ;;;;                    Metrics
+
 (defn add-metrics
-  [job task]
-  (u/add-to-job job
-   {:lifecycles
-    [{:lifecycle/task task ; Or :all for all tasks in the workflow
-      :lifecycle/calls :onyx.lifecycle.metrics.metrics/calls
-      :metrics/buffer-capacity 10000
-      :metrics/workflow-name "meetup-workflow"
-      :metrics/sender-fn :onyx.lifecycle.metrics.timbre/timbre-sender
-      :lifecycle/doc "Instruments a task's metrics to timbre"}]}))
+  "Add's metrics"
+  [job task opts]
+  (if-let [entry (first (filter #(= (:onyx/name %) task) (:catalog job)))]
+    (-> job
+        (update-in [:lifecycles] conj (merge {:lifecycle/task task ; Or :all for all tasks in the workflow
+                                              :lifecycle/calls :onyx.lifecycle.metrics.metrics/calls}
+                                             opts)))))
+
 
 (defn build-lifecycles
   "Put your environment-independent lifecycles here"
