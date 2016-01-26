@@ -154,8 +154,8 @@
          (update-in [:lifecycles] conj {:lifecycle/task task
                                         :lifecycle/calls :onyx.plugin.kafka/read-messages-calls})
          (update-in [:catalog] (fn [catalog]
-                                 (replace {entry ((comp (partial merge opts)
-                                                        expand-deserializer-fn) entry)} catalog))))
+                                 (replace {entry ((comp expand-deserializer-fn
+                                                        (partial merge opts)) entry)} catalog))))
      (throw (java.lang.IllegalArgumentException)))))
 
 (defn add-kafka-output
@@ -177,8 +177,8 @@
          (update-in [:lifecycles] conj {:lifecycle/task task
                                         :lifecycle/calls :onyx.plugin.kafka/write-messages-calls})
          (update-in [:catalog] (fn [catalog]
-                                 (replace {entry ((comp (partial merge opts)
-                                                        expand-serializer-fn) entry)} catalog))))
+                                 (replace {entry ((comp expand-serializer-fn
+                                                        (partial merge opts)) entry)} catalog))))
      (throw (java.lang.IllegalArgumentException)))))
 
 
