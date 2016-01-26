@@ -26,9 +26,10 @@
       (= :dev mode) (add-core-async-output :write-lines)
       (= :dev mode) (add-seq-input :read-lines {:seq "resources/sample_input.edn"})
       (= :prod mode) (add-kafka-input :read-lines {:kafka/topic "meetup"
-                                                    :kafka/group-id "onyx-consumer"
-                                                    :kafka/zookeeper "zk:2181"
-                                                    :kafka/partition "0"})
+                                                   :kafka/group-id "onyx-consumer"
+                                                   :kafka/zookeeper "zk:2181"
+                                                   :kafka/partition "0"
+                                                   :kafka/offset-reset :smallest})
       (= :prod mode) (add-sql-output :write-lines {:sql/classname "com.mysql.jdbc.Driver"
                                                    :sql/subprotocol "mysql"
                                                    :sql/subname "//db:3306/meetup"
