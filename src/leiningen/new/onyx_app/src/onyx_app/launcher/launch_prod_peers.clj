@@ -2,8 +2,7 @@
   (:require [clojure.core.async :refer [<!! chan]]
             [environ.core :refer [env]]
             [onyx.test-helper :refer [load-config]]
-            {{#docker?}}[taoensso.timbre :as t]
-            [clojure.pprint :refer [pprint]]{{/docker?}}
+            {{#docker?}}[taoensso.timbre :as t]{{/docker?}}
             [onyx.plugin.kafka]
             [onyx.plugin.sql]
             [onyx.plugin.core-async]
@@ -19,7 +18,7 @@
   "Logger to output on std-out, for use with docker-compose"
   [data]
   (let [{:keys [output-fn]} data]
-    (pprint (output-fn data))))
+    (println (output-fn data))))
 {{/docker?}}
 (defn -main [onyx-id n & args]
   (let [n-peers (Integer/parseInt n)
