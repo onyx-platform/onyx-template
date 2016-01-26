@@ -185,6 +185,14 @@
 ;;;;=======================================================
 ;;;;                     SQL
 (defn add-sql-input
+  "Add's sql output lifecycles to a task. Opts should include JDBC
+  connection specs
+  {:sql/classname ...
+   :sql/subprotocol ...
+   :sql/subname ...
+   :sql/user ...
+   :sql/password ...
+   :sql/table ...}"
   ([job task] (add-sql-input job task nil))
   ([job task opts]
    (if-let [entry (first (filter #(= (:onyx/name %) task) (:catalog job)))]
@@ -195,6 +203,14 @@
                                  (replace {entry (merge opts entry)} catalog)))))))
 
 (defn add-sql-output
+  "Add's sql output lifecycles to a task. Opts should include JDBC
+  connection specs
+  {:sql/classname ...
+   :sql/subprotocol ...
+   :sql/subname ...
+   :sql/user ...
+   :sql/password ...
+   :sql/table ...}"
   ([job task] (add-sql-output job task nil))
   ([job task opts]
    (if-let [entry (first (filter #(= (:onyx/name %) task) (:catalog job)))]
@@ -214,7 +230,9 @@
 (def in-seq-calls
   {:lifecycle/before-task-start inject-in-reader})
 
-(defn add-seq-input [job task opts]
+(defn add-seq-input
+  "Add's lifecycles to use an edn file as an input"
+  [job task opts]
   (if-let [entry (first (filter #(= (:onyx/name %) task) (:catalog job)))]
     (-> job
         (update-in [:lifecycles] into [(merge {:lifecycle/task task
@@ -227,7 +245,7 @@
 ;;;;                    Metrics
 
 (defn add-metrics
-  "Add's metrics"
+  "Add's throughput and latency metrics to a task"
   [job task opts]
   (if-let [entry (first (filter #(= (:onyx/name %) task) (:catalog job)))]
     (-> job
