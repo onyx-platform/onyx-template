@@ -28,7 +28,7 @@
       (= :prod mode) (add-kafka-input :read-lines {:kafka/topic "meetup"
                                                    :kafka/group-id "onyx-consumer"
                                                    :kafka/zookeeper "zk:2181"
-                                                   :kafka/partition "0"
+                                                   :kafka/serializer-fn :json
                                                    :kafka/offset-reset :smallest})
       (= :prod mode) (add-sql-output :write-lines {:sql/classname "com.mysql.jdbc.Driver"
                                                    :sql/subprotocol "mysql"
