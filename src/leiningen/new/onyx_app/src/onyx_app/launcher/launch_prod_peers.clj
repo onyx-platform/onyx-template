@@ -2,6 +2,8 @@
   (:require [clojure.core.async :refer [<!! chan]]
             [environ.core :refer [env]]
             [onyx.test-helper :refer [load-config]]
+            {{#docker?}}[taoensso.timbre :as t]
+            [clojure.pprint :refer [pprint]]{{/docker?}}
             [onyx.plugin.kafka]
             [onyx.plugin.sql]
             [onyx.plugin.core-async]
@@ -12,14 +14,27 @@
             [{{app-name}}.jobs.sample-submit-job]
             [{{app-name}}.lifecycles.sample-lifecycle])
   (:gen-class))
-
+{{#docker?}}
+(defn standard-out-logger
+  "Logger to output on std-out, for use with docker-compose"
+  [data]
+  (let [{:keys [output-fn]} data]
+    (pprint (output-fn data))))
+{{/docker?}}
 (defn -main [onyx-id n & args]
   (let [n-peers (Integer/parseInt n)
         config (update-in (load-config "config.edn")
                           [:peer-config :zookeeper/address]
                           (fn [zkaddr]
                             (if zkaddr zkaddr "zk:2181"))) ;; Default to zk:2181 if none is specified
-        peer-config (assoc (:peer-config config) :onyx/id onyx-id)
+        peer-config (-> (:peer-config config)
+                        (assoc :onyx/id onyx-id)
+                        {{#docker?}}(assoc :onyx.log/config {:appenders
+                                                             {:standard-out
+                                                              {:enabled? true
+                                                               :async? false
+                                                               :output-fn t/default-output-fn
+                                                               :fn standard-out-logger}}}){{/docker?}})
         peer-group (onyx.api/start-peer-group peer-config)
         peers (onyx.api/start-peers n-peers peer-group)]
     (println "Attempting to connec to to Zookeeper: " (:zookeeper/address peer-config))

@@ -25,7 +25,7 @@
     (cond-> base-job
       (= :dev mode) (add-core-async-output :write-lines)
       (= :dev mode) (add-seq-input :read-lines {:seq "resources/sample_input.edn"})
-      (= :prod mode) (add-kafka-input :write-lines {:kafka/topic "meetup"
+      (= :prod mode) (add-kafka-input :read-lines {:kafka/topic "meetup"
                                                     :kafka/group-id "onyx-consumer"
                                                     :kafka/zookeeper "zk:2181"
                                                     :kafka/partition "0"})
