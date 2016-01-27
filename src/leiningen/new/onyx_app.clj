@@ -44,7 +44,7 @@
   (let [path (name-to-path name)
         data {:name name
               ;; The formatting here matters
-              :onyx-version "0.8.4"
+              :onyx-version "0.8.6"
               :onyx-sql-minor "0"
               :onyx-kafka-minor "0"
               :onyx-metrics-minor "0"
