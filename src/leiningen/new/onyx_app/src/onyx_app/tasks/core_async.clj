@@ -7,22 +7,24 @@
 
 (def channels (atom {}))
 
+(def default-channel-size 1000)
+
 (defn get-channel
   ([id] (get-channel id nil))
   ([id size]
    (if-let [id (get @channels id)]
      id
-     (do (swap! channels assoc id (chan (or size 1000)))
+     (do (swap! channels assoc id (chan (or size default-channel-size)))
          (get-channel id)))))
 
 (defn inject-in-ch
   [_ lifecycle]
   {:core.async/chan (get-channel (:core.async/id lifecycle)
-                                 (or (:core.async/size lifecycle) 1000))})
+                                 (or (:core.async/size lifecycle) default-channel-size))})
 (defn inject-out-ch
   [_ lifecycle]
   {:core.async/chan (get-channel (:core.async/id lifecycle)
-                                 (or (:core.async/size lifecycle) 1000))})
+                                 (or (:core.async/size lifecycle) default-channel-size))})
 
 (def in-calls
   {:lifecycle/before-task-start inject-in-ch})
@@ -40,7 +42,7 @@
 
 
 (defn add-core-async-input
-  ([job task opts] (add-core-async-input job task opts 1000))
+  ([job task opts] (add-core-async-input job task opts default-channel-size))
   ([job task opts chan-size]
    (-> job
        (update :catalog conj (merge {:onyx/name task
@@ -59,7 +61,7 @@
                                   :lifecycle/calls :onyx.plugin.core-async/reader-calls}]))))
 
 (defn add-core-async-output
-  ([job task opts] (add-core-async-output job task opts 1000))
+  ([job task opts] (add-core-async-output job task opts default-channel-size))
   ([job task opts chan-size]
    (-> job
        (update :catalog conj (merge {:onyx/name task
