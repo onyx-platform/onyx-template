@@ -1,5 +1,5 @@
 {:peer-config
- {:zookeeper/address                     "zk:2181"        ;;"192.168.99.100:2181"
+ {:zookeeper/address                     #env [ZOOKEEPER "zk:2181"]
   :onyx.peer/job-scheduler               :onyx.job-scheduler/greedy
   :onyx.peer/zookeeper-timeout           60000
   :onyx.messaging/allow-short-circuit?   true

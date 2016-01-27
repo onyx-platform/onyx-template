@@ -6,7 +6,7 @@
               [{{app-name}}.tasks.file-input :refer [add-seq-file-input]]
               [{{app-name}}.lifecycles.sample-lifecycle :refer [add-logging add-metrics build-lifecycles]]
               [{{app-name}}.workflows.sample-workflow :refer [build-workflow]]
-              [onyx.test-helper :refer [load-config]]))
+              [aero.core :refer [read-config]]))
 
 ;;;;
 ;; Lets build a job
@@ -48,7 +48,7 @@
       true (add-logging :write-lines))))
 
 (defn -main [onyx-id & args]
-  (let [config (load-config "config.edn")
+  (let [config (read-config (clojure.java.io/resource "config.edn"))
         peer-config (-> (get config :peer-config)
                         (assoc :onyx/id onyx-id)
                         (assoc :zookeeper/address "192.168.99.100:2181"))
