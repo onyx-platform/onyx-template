@@ -3,7 +3,7 @@
               [onyx api
               [test-helper :refer [feedback-exception! validate-enough-peers! load-config with-test-env]]]
               [{{app-name}}.jobs.sample-submit-job :refer [build-job]]
-              [{{app-name}}.lifecycles.sample-lifecycle :refer [get-core-async-channels]]
+              [{{app-name}}.tasks.core-async :refer [get-core-async-channels]]
               {{#metrics?}}[onyx.lifecycle.metrics.metrics]{{/metrics?}}
               {{#metrics?}}[onyx.lifecycle.metrics.timbre]{{/metrics?}}
               [onyx.plugin.core-async :refer [take-segments!]]

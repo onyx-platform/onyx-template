@@ -83,6 +83,7 @@ development example. You generate your job (this time with `:prod` instead of
 `:dev`), and call `submit-job`. This time your peer config will come from
 'resources/config.edn' instead of the anaphoric macro though.
 {{#docker}}
+
 ## Docker Compose
 With docker-compose, we can demonstrate a real example application. 
 

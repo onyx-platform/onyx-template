@@ -1,8 +1,10 @@
 (ns {{app-name}}.jobs.sample-submit-job
     (:require [{{app-name}}.catalogs.sample-catalog :refer [build-catalog]]
-              [{{app-name}}.lifecycles.sample-lifecycle
-               :refer [add-core-async-output add-kafka-input add-logging
-                       add-sql-output add-seq-input add-metrics build-lifecycles]]
+              [{{app-name}}.tasks.kafka :refer [add-kafka-input add-kafka-output]]
+              [{{app-name}}.tasks.core-async :refer [add-core-async-input add-core-async-output]]
+              [{{app-name}}.tasks.sql :refer [add-sql-input add-sql-output]]
+              [{{app-name}}.tasks.file-input :refer [add-seq-file-input]]
+              [{{app-name}}.lifecycles.sample-lifecycle :refer [add-logging add-metrics build-lifecycles]]
               [{{app-name}}.workflows.sample-workflow :refer [build-workflow]]
               [onyx.test-helper :refer [load-config]]))
 
@@ -16,20 +18,16 @@
 ;; When using :prod mode, kafka is added as an input, and onyx-sql is used as the output
 
 (defn build-job [mode]
-  (let [base-job {:catalog (build-catalog {:batch-size 1
-                                           :batch-timeout 1000
-                                           :mode mode})
+  (let [batch-size 1
+        batch-timeout 1000
+        base-job {:catalog (build-catalog batch-size batch-timeout)
                   :lifecycles (build-lifecycles {:mode mode})
                   :workflow (build-workflow {:mode mode})
                   :task-scheduler :onyx.task-scheduler/balanced}]
     (cond-> base-job
-      (= :dev mode) (add-core-async-output :write-lines)
-      (= :dev mode) (add-seq-input :read-lines {:seq "resources/sample_input.edn"})
-      (= :prod mode) (add-kafka-input :read-lines {:kafka/topic "meetup"
-                                                   :kafka/group-id "onyx-consumer"
-                                                   :kafka/zookeeper "zk:2181"
-                                                   :kafka/deserializer-fn :json
-                                                   :kafka/offset-reset :smallest})
+      (= :dev mode) (add-core-async-output :write-lines batch-size)
+      (= :dev mode) (add-seq-file-input :read-lines batch-size "resources/sample_input.edn")
+      (= :prod mode) (add-kafka-input :read-lines "meetup" "onyx-consumer" "zk:2181" :json true {:kafka/offset-reset :smallest})
       (= :prod mode) (add-sql-output :write-lines {:sql/classname "com.mysql.jdbc.Driver"
                                                    :sql/subprotocol "mysql"
                                                    :sql/subname "//db:3306/meetup"

@@ -26,7 +26,6 @@ lein new onyx-app my-app-name -- +metrics
 For adding the ability to instrument any step in a workflow with latency and
 throughput metrics.
 
-
 ## License
 
 Copyright © 2015 Distributed Masonry

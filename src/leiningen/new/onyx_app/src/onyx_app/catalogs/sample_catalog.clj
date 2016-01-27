@@ -5,7 +5,7 @@
 ;;; them for describing input and output sources, injecting parameters,
 ;;; and adjusting performance settings.
 
-(defn base-catalog [batch-size batch-timeout]
+(defn build-catalog [batch-size batch-timeout]
   [{:onyx/name :format-line
     :onyx/fn :{{app-name}}.functions.sample-functions/format-line
     :onyx/type :function
@@ -43,47 +43,3 @@
     :onyx/type :function
     :onyx/batch-size batch-size
     :onyx/batch-timeout batch-timeout}])
-
-(defmulti build-catalog :mode)
-
-(defmethod build-catalog :dev
-  [{:keys [batch-size batch-timeout]}]
-  (into
-    (base-catalog batch-size batch-timeout)
-    [{:onyx/name :read-lines
-      :onyx/plugin :onyx.plugin.seq/input
-      :onyx/type :input
-      :onyx/medium :seq
-      :seq/checkpoint? true
-      :onyx/batch-size batch-size
-      :onyx/max-peers 1
-      :onyx/doc "Reads segments from seq"}
-
-     {:onyx/name :write-lines
-      :onyx/plugin :onyx.plugin.core-async/output
-      :onyx/type :output
-      :onyx/medium :core.async
-      :onyx/max-peers 1
-      :onyx/batch-size batch-size
-      :onyx/batch-timeout batch-timeout
-      :onyx/doc "Writes segments to a core.async channel"}]))
-
-(defmethod build-catalog :prod
-  [{:keys [batch-size batch-timeout]}]
-  (into
-    (base-catalog batch-size batch-timeout)
-    [{:onyx/name :read-lines
-      :onyx/plugin :onyx.plugin.kafka/read-messages
-      :onyx/type :input
-      :onyx/medium :kafka
-      :onyx/batch-size batch-size
-      :onyx/max-peers 1
-      :onyx/doc "Read messages from a kafka topic"}
-
-     {:onyx/name :write-lines
-      :onyx/plugin :onyx.plugin.sql/write-rows
-      :onyx/type :output
-      :onyx/medium :sql
-      :onyx/batch-size batch-size}]))
-
-;; TODO: Write an add-sql plugin that injects this data.
