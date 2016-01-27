@@ -38,22 +38,23 @@
    (add-kafka-input job task batch-size topic group-id zookeeper-addr batch-size deserializer-fn force-reset? {}))
   ([job task batch-size topic group-id zookeeper-addr batch-size deserializer-fn force-reset? opts]
    (-> job
-       (update :catalog conj {:onyx/name task
-                              :onyx/plugin :onyx.plugin.kafka/read-messages
-                              :onyx/type :input
-                              :onyx/medium :kafka
-                              :kafka/topic topic
-                              :kafka/group-id group-id
-                              :kafka/fetch-size 307200
-                              :kafka/chan-capacity 1000
-                              :kafka/zookeeper zookeeper-addr
-                              :kafka/offset-reset :smallest
-                              :kafka/force-reset? force-reset?
-                              :kafka/empty-read-back-off 500
-                              :kafka/commit-interval 500
-                              :kafka/deserializer-fn (expand-deserializer-fn deserializer-fn)
-                              :onyx/batch-size batch-size
-                              :onyx/doc "Reads messages from a Kafka topic"})
+       (update :catalog conj (merge {:onyx/name task
+                                     :onyx/plugin :onyx.plugin.kafka/read-messages
+                                     :onyx/type :input
+                                     :onyx/medium :kafka
+                                     :kafka/topic topic
+                                     :kafka/group-id group-id
+                                     :kafka/fetch-size 307200
+                                     :kafka/chan-capacity 1000
+                                     :kafka/zookeeper zookeeper-addr
+                                     :kafka/offset-reset :smallest
+                                     :kafka/force-reset? force-reset?
+                                     :kafka/empty-read-back-off 500
+                                     :kafka/commit-interval 500
+                                     :kafka/deserializer-fn (expand-deserializer-fn deserializer-fn)
+                                     :onyx/batch-size batch-size
+                                     :onyx/doc "Reads messages from a Kafka topic"}
+                                    opts))
        (update :lifecycles conj {:lifecycle/task task
                                  :lifecycle/calls :onyx.plugin.kafka/read-messages-calls}))))
 

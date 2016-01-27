@@ -39,17 +39,18 @@
    (add-sql-insert-output job task batch-size classname subprotocol subname user password table-name {}))
   ([job task batch-size classname subprotocol subname user password table-name opts]
    (-> job
-       (update :catalog conj {:onyx/name task
-                              :onyx/plugin :onyx.plugin.sql/write-rows
-                              :onyx/type :output
-                              :onyx/medium :sql
-                              :sql/classname classname
-                              :sql/subprotocol subprotocol
-                              :sql/subname subname
-                              :sql/user user
-                              :sql/password password
-                              :sql/table table-name
-                              :onyx/batch-size batch-size
-                              :onyx/doc "Writes segments from the :rows keys to the SQL database"})
+       (update :catalog conj (merge {:onyx/name task
+                                     :onyx/plugin :onyx.plugin.sql/write-rows
+                                     :onyx/type :output
+                                     :onyx/medium :sql
+                                     :sql/classname classname
+                                     :sql/subprotocol subprotocol
+                                     :sql/subname subname
+                                     :sql/user user
+                                     :sql/password password
+                                     :sql/table table-name
+                                     :onyx/batch-size batch-size
+                                     :onyx/doc "Writes segments from the :rows keys to the SQL database"}
+                                    opts))
        (update :lifecycles conj {:lifecycle/task task
                                  :lifecycle/calls :onyx.plugin.sql/write-rows-calls}))))
