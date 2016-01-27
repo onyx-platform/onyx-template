@@ -2,7 +2,7 @@
     (:require [{{app-name}}.catalogs.sample-catalog :refer [build-catalog]]
               [{{app-name}}.tasks.kafka :refer [add-kafka-input add-kafka-output]]
               [{{app-name}}.tasks.core-async :refer [add-core-async-input add-core-async-output]]
-              [{{app-name}}.tasks.sql :refer [add-sql-input add-sql-output]]
+              [{{app-name}}.tasks.sql :refer [add-sql-partition-input add-sql-insert-output]]
               [{{app-name}}.tasks.file-input :refer [add-seq-file-input]]
               [{{app-name}}.lifecycles.sample-lifecycle :refer [add-logging add-metrics build-lifecycles]]
               [{{app-name}}.workflows.sample-workflow :refer [build-workflow]]
@@ -27,13 +27,8 @@
     (cond-> base-job
       (= :dev mode) (add-core-async-output :write-lines batch-size)
       (= :dev mode) (add-seq-file-input :read-lines batch-size "resources/sample_input.edn")
-      (= :prod mode) (add-kafka-input :read-lines "meetup" "onyx-consumer" "zk:2181" :json true {:kafka/offset-reset :smallest})
-      (= :prod mode) (add-sql-output :write-lines {:sql/classname "com.mysql.jdbc.Driver"
-                                                   :sql/subprotocol "mysql"
-                                                   :sql/subname "//db:3306/meetup"
-                                                   :sql/user "onyx"
-                                                   :sql/password "onyx"
-                                                   :sql/table :recentMeetups})
+      (= :prod mode) (add-kafka-input :read-lines batch-size "meetup" "onyx-consumer" "zk:2181" :json true {:kafka/offset-reset :smallest})
+      (= :prod mode) (add-sql-insert-output :write-lines "com.mysql.jdbc.Driver" "mysql" "//db:3306/meetup" "onyx" "onyx" :recentMeetups)
       {{#metrics?}}true (add-metrics :write-lines {:metrics/buffer-capacity 10000
                                                    :metrics/workflow-name "meetup-workflow"
                                                    :metrics/sender-fn :onyx.lifecycle.metrics.timbre/timbre-sender}){{/metrics?}}

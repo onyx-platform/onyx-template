@@ -34,9 +34,9 @@
 
 (defn add-kafka-input
   "Instrument a job with Kafka lifecycles and catalog entries."
-  ([job task topic group-id zookeeper-addr batch-size deserializer-fn force-reset?] 
-   (add-kafka-input job task topic group-id zookeeper-addr batch-size deserializer-fn force-reset? {}))
-  ([job task topic group-id zookeeper-addr batch-size deserializer-fn force-reset? opts]
+  ([job task batch-size topic group-id zookeeper-addr batch-size deserializer-fn force-reset?] 
+   (add-kafka-input job task batch-size topic group-id zookeeper-addr batch-size deserializer-fn force-reset? {}))
+  ([job task batch-size topic group-id zookeeper-addr batch-size deserializer-fn force-reset? opts]
    (-> job
        (update :catalog conj {:onyx/name task
                               :onyx/plugin :onyx.plugin.kafka/read-messages

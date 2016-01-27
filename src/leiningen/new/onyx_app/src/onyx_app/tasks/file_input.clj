@@ -9,7 +9,7 @@
   {:lifecycle/before-task-start inject-in-reader})
 
 (defn add-seq-file-input
-  "Add's lifecycles to use an edn file as an input"
+  "Adds task catalog entry and task lifecycles to use an edn file as an input"
   ([job task batch-size filename]
    (add-seq-file-input job task batch-size filename {}))
   ([job task batch-size filename opts]
