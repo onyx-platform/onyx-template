@@ -40,14 +40,14 @@
 
 
 (defn add-core-async-input
-  ([job task batch-size] (add-core-async-input job task batch-size 1000 {}))
-  ([job task batch-size chan-size opts]
+  ([job task opts] (add-core-async-input job task opts 1000))
+  ([job task opts chan-size]
    (-> job
        (update :catalog conj (merge {:onyx/name task
                                      :onyx/plugin :onyx.plugin.core-async/input
                                      :onyx/type :input
                                      :onyx/medium :core.async
-                                     :onyx/batch-size batch-size
+                                     ;:onyx/batch-size batch-size
                                      :onyx/max-peers 1
                                      :onyx/doc "Reads segments from a core.async channel"}
                                     opts))
@@ -59,15 +59,15 @@
                                   :lifecycle/calls :onyx.plugin.core-async/reader-calls}]))))
 
 (defn add-core-async-output
-  ([job task batch-size] (add-core-async-output job task batch-size 1000 {}))
-  ([job task batch-size chan-size opts]
+  ([job task opts] (add-core-async-output job task opts 1000))
+  ([job task opts chan-size]
    (-> job
        (update :catalog conj (merge {:onyx/name task
                                      :onyx/plugin :onyx.plugin.core-async/output
                                      :onyx/type :output
                                      :onyx/medium :core.async
                                      :onyx/max-peers 1
-                                     :onyx/batch-size batch-size
+                                     ;:onyx/batch-size batch-size
                                      :onyx/doc "Writes segments to a core.async channel"}
                                     opts))
 

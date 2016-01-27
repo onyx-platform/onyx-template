@@ -20,60 +20,44 @@
 (defn serialize-message-edn [segment]
   (.getBytes segment))
 
-(defn expand-serializer-fn [v]
-  (condp = v
-    :json    ::serialize-message-json
-    :edn     ::serialize-message-edn
-    v))
-
-(defn expand-deserializer-fn [v]
-  (condp = v
-    :json    ::deserialize-message-json
-    :edn     ::deserialize-message-edn
-    v))
-
 (defn add-kafka-input
   "Instrument a job with Kafka lifecycles and catalog entries."
-  ([job task batch-size topic group-id zookeeper-addr batch-size deserializer-fn force-reset?] 
-   (add-kafka-input job task batch-size topic group-id zookeeper-addr batch-size deserializer-fn force-reset? {}))
-  ([job task batch-size topic group-id zookeeper-addr batch-size deserializer-fn force-reset? opts]
-   (-> job
-       (update :catalog conj (merge {:onyx/name task
-                                     :onyx/plugin :onyx.plugin.kafka/read-messages
-                                     :onyx/type :input
-                                     :onyx/medium :kafka
-                                     :kafka/topic topic
-                                     :kafka/group-id group-id
-                                     :kafka/fetch-size 307200
-                                     :kafka/chan-capacity 1000
-                                     :kafka/zookeeper zookeeper-addr
-                                     :kafka/offset-reset :smallest
-                                     :kafka/force-reset? force-reset?
-                                     :kafka/empty-read-back-off 500
-                                     :kafka/commit-interval 500
-                                     :kafka/deserializer-fn (expand-deserializer-fn deserializer-fn)
-                                     :onyx/batch-size batch-size
-                                     :onyx/doc "Reads messages from a Kafka topic"}
-                                    opts))
-       (update :lifecycles conj {:lifecycle/task task
-                                 :lifecycle/calls :onyx.plugin.kafka/read-messages-calls}))))
+  [job task opts]
+  (-> job
+      (update :catalog conj (merge {:onyx/name task
+                                    :onyx/plugin :onyx.plugin.kafka/read-messages
+                                    :onyx/type :input
+                                    :onyx/medium :kafka
+                                    ;:kafka/topic "topic"
+                                    ;:kafka/group-id "group-id"
+                                    :kafka/fetch-size 307200
+                                    :kafka/chan-capacity 1000
+                                    ;:kafka/zookeeper "zookeeper-addr"
+                                    :kafka/offset-reset :smallest
+                                    ;:kafka/force-reset? true
+                                    :kafka/empty-read-back-off 500
+                                    :kafka/commit-interval 500
+                                    ;:kafka/deserializer-fn ::deserialize-message-json
+                                    ;:onyx/batch-size 100
+                                    :onyx/doc "Reads messages from a Kafka topic"}
+                                   opts))
+      (update :lifecycles conj {:lifecycle/task task
+                                :lifecycle/calls :onyx.plugin.kafka/read-messages-calls})))
 
 (defn add-kafka-output
   "Instrument a job with Kafka lifecycles and catalog entries."
-  ([job task topic zookeeper-addr batch-size serializer-fn]
-   (add-kafka-output job task topic zookeeper-addr batch-size serializer-fn {}))
-  ([job task topic zookeeper-addr batch-size serializer-fn opts]
-   (-> job
-       (update :catalog conj (merge {:onyx/name task
-                                     :onyx/plugin :onyx.plugin.kafka/write-messages
-                                     :onyx/type :output
-                                     :onyx/medium :kafka
-                                     :kafka/topic topic
-                                     :kafka/zookeeper zookeeper-addr
-                                     :kafka/serializer-fn (expand-serializer-fn serializer-fn)
-                                     :kafka/request-size 307200
-                                     :onyx/batch-size batch-size
-                                     :onyx/doc "Writes messages to a Kafka topic"}
-                                    opts))
-       (update :lifecycles conj {:lifecycle/task task
-                                 :lifecycle/calls :onyx.plugin.kafka/write-messages-calls}))))
+  [job task opts]
+  (-> job
+      (update :catalog conj (merge {:onyx/name task
+                                    :onyx/plugin :onyx.plugin.kafka/write-messages
+                                    :onyx/type :output
+                                    :onyx/medium :kafka
+                                    ;:onyx/batch-size batch-size
+                                    ;:kafka/topic topic
+                                    ;:kafka/zookeeper zookeeper-addr
+                                    ;:kafka/serializer-fn (expand-serializer-fn serializer-fn)
+                                    :kafka/request-size 307200
+                                    :onyx/doc "Writes messages to a Kafka topic"}
+                                   opts))
+      (update :lifecycles conj {:lifecycle/task task
+                                :lifecycle/calls :onyx.plugin.kafka/write-messages-calls})))

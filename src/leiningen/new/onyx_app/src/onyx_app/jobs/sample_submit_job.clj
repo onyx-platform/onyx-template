@@ -25,10 +25,22 @@
                   :workflow (build-workflow {:mode mode})
                   :task-scheduler :onyx.task-scheduler/balanced}]
     (cond-> base-job
-      (= :dev mode) (add-core-async-output :write-lines batch-size)
-      (= :dev mode) (add-seq-file-input :read-lines batch-size "resources/sample_input.edn")
-      (= :prod mode) (add-kafka-input :read-lines batch-size "meetup" "onyx-consumer" "zk:2181" :json true {:kafka/offset-reset :smallest})
-      (= :prod mode) (add-sql-insert-output :write-lines "com.mysql.jdbc.Driver" "mysql" "//db:3306/meetup" "onyx" "onyx" :recentMeetups)
+      (= :dev mode) (add-core-async-output :write-lines {:onyx/batch-size batch-size})
+      (= :dev mode) (add-seq-file-input :read-lines {:onyx/batch-size batch-size 
+                                                     :filename "resources/sample_input.edn"})
+      (= :prod mode) (add-kafka-input :read-lines {:onyx/batch-size batch-size
+                                                   :kafka/topic "meetup"
+                                                   :kafka/group-id "onyx-consumer" 
+                                                   :kafka/zookeeper "zk:2181" 
+                                                   :kafka/deserializer-fn :{{app-name}}.tasks.kafka/deserialize-message-json
+                                                   :kafka/offset-reset :smallest})
+      (= :prod mode) (add-sql-insert-output :write-lines {:onyx/batch-size batch-size
+                                                          :sql/classname "com.mysql.jdbc.Driver" 
+                                                          :sql/subprotocol "mysql" 
+                                                          :sql/subname "//db:3306/meetup" 
+                                                          :sql/user "onyx" 
+                                                          :sql/password "onyx" 
+                                                          :sql/table :recentMeetups})
       {{#metrics?}}true (add-metrics :write-lines {:metrics/buffer-capacity 10000
                                                    :metrics/workflow-name "meetup-workflow"
                                                    :metrics/sender-fn :onyx.lifecycle.metrics.timbre/timbre-sender}){{/metrics?}}
