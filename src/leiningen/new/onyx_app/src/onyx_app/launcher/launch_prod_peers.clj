@@ -21,11 +21,10 @@
     (println (output-fn data))))
 {{/docker?}}
 
-(defn -main [onyx-id n & args]
+(defn -main [n & args]
   (let [n-peers (Integer/parseInt n)
         config (read-config (clojure.java.io/resource "config.edn"))
         peer-config (-> (:peer-config config)
-                        (assoc :onyx/id onyx-id)
                         {{#docker?}}(assoc :onyx.log/config {:appenders
                                                              {:standard-out
                                                               {:enabled? true
