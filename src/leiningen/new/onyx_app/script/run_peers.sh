@@ -3,6 +3,6 @@ set -o errexit
 set -o nounset
 set -o xtrace
 
-BIND_ADDR=$(hostname --ip-address)
-APP_NAME=$(echo "{{app-name}}" | sed s/"-"/"_"/g)
+export BIND_ADDR=$(hostname --ip-address)
+export APP_NAME=$(echo "{{app-name}}" | sed s/"-"/"_"/g)
 exec java -cp /srv/{{app-name}}.jar "$APP_NAME.launcher.launch_prod_peers" $NPEERS {{^docker?}}>>/var/log/onyx.log 2>&1{{/docker?}}
