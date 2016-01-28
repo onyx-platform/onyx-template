@@ -26,9 +26,9 @@ map suitable for development.
 2. The `(with-test-env)` macro will setup and teardown a full fledged
 test environment for running your job (or jobs) locally. It handles the
 different failure conditions of Onyx, as well as terminating when it
-recieves an interupt (Ctrl-C). The macro is [*anaphoric*](http://letoverlambda.com/index.cl/guest/chap6.html)
-,meaning that it creates a development environment and binds it to a
-user defined symbol. In this case, that symbol is `test-env`.
+recieves an interupt (Ctrl-C). The macro is [*anaphoric*](http://letoverlambda.com/index.cl/guest/chap6.html), 
+meaning that it creates a development environment and binds it to a user
+defined symbol. In this case, that symbol is `test-env`.  
 [Read More](https://onyx-platform.gitbooks.io/onyx/content/doc/user-guide/testing-onyx-jobs.html#automatic-resource-clean-up)
 
     ```
@@ -82,8 +82,8 @@ Submitting a job to a production cluster is exactly the same as in the
 development example. You generate your job (this time with `:prod` instead of
 `:dev`), and call `submit-job`. This time your peer config will come from
 'resources/config.edn' instead of the anaphoric macro though.
-{{#docker}}
 
+{{#docker?}}
 ## Docker Compose
 With docker-compose, we can demonstrate a real example application. 
 
@@ -169,7 +169,7 @@ You should now see results streaming into MySQL
 4. When you submit your job with `submit-job`, a UUID will be returned. You can use this UUID with `kill-job` if you're at the repl.
 5. If you're having issues with the kafkacat container connecting to meetup.com, there seems to be a docker-machine bug that won't pass on the correct DNS information on container creation. This is resolved by restarting your docker host, usually `docker-machine restart <name>`
 
-{{/docker}}
+{{/docker?}}
 ## License
 
 Copyright © 2015 FIXME
