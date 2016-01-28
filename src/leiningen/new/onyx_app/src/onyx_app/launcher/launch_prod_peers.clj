@@ -23,7 +23,7 @@
 
 (defn -main [n & args]
   (let [n-peers (Integer/parseInt n)
-        config (read-config (clojure.java.io/resource "config.edn"))
+        config (read-config (clojure.java.io/resource "config.edn") {:profile :default})
         peer-config (-> (:peer-config config)
                         {{#docker?}}(assoc :onyx.log/config {:appenders
                                                              {:standard-out
