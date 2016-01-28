@@ -6,7 +6,8 @@
               [{{app-name}}.tasks.file-input :refer [add-seq-file-input]]
               [{{app-name}}.lifecycles.sample-lifecycle :refer [add-logging add-metrics build-lifecycles]]
               [{{app-name}}.workflows.sample-workflow :refer [build-workflow]]
-              [onyx.test-helper :refer [load-config]]))
+              [aero.core :refer [read-config]]
+              [onyx.api]))
 
 ;;;;
 ;; Lets build a job
@@ -26,20 +27,21 @@
                   :task-scheduler :onyx.task-scheduler/balanced}]
     (cond-> base-job
       (= :dev mode) (add-core-async-output :write-lines {:onyx/batch-size batch-size})
-      (= :dev mode) (add-seq-file-input :read-lines {:onyx/batch-size batch-size 
+      (= :dev mode) (add-seq-file-input :read-lines {:onyx/batch-size batch-size
                                                      :filename "resources/sample_input.edn"})
       (= :prod mode) (add-kafka-input :read-lines {:onyx/batch-size batch-size
+                                                   :onyx/max-peers 1
                                                    :kafka/topic "meetup"
-                                                   :kafka/group-id "onyx-consumer" 
-                                                   :kafka/zookeeper "zk:2181" 
+                                                   :kafka/group-id "onyx-consumer"
+                                                   :kafka/zookeeper "zk:2181"
                                                    :kafka/deserializer-fn :{{app-name}}.tasks.kafka/deserialize-message-json
                                                    :kafka/offset-reset :smallest})
       (= :prod mode) (add-sql-insert-output :write-lines {:onyx/batch-size batch-size
-                                                          :sql/classname "com.mysql.jdbc.Driver" 
-                                                          :sql/subprotocol "mysql" 
-                                                          :sql/subname "//db:3306/meetup" 
-                                                          :sql/user "onyx" 
-                                                          :sql/password "onyx" 
+                                                          :sql/classname "com.mysql.jdbc.Driver"
+                                                          :sql/subprotocol "mysql"
+                                                          :sql/subname "//db:3306/meetup"
+                                                          :sql/user "onyx"
+                                                          :sql/password "onyx"
                                                           :sql/table :recentMeetups})
       {{#metrics?}}true (add-metrics :write-lines {:metrics/buffer-capacity 10000
                                                    :metrics/workflow-name "meetup-workflow"
@@ -47,7 +49,7 @@
       true (add-logging :write-lines))))
 
 (defn -main [onyx-id & args]
-  (let [config (load-config "config.edn")
+  (let [config (read-config (clojure.java.io/resource "config.edn"))
         peer-config (-> (get config :peer-config)
                         (assoc :onyx/id onyx-id)
                         (assoc :zookeeper/address "192.168.99.100:2181"))

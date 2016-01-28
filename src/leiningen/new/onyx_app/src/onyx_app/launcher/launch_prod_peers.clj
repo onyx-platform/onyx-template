@@ -1,7 +1,6 @@
 (ns {{app-name}}.launcher.launch-prod-peers
   (:require [clojure.core.async :refer [<!! chan]]
-            [environ.core :refer [env]]
-            [onyx.test-helper :refer [load-config]]
+            [aero.core :refer [read-config]]
             {{#docker?}}[taoensso.timbre :as t]{{/docker?}}
             [onyx.plugin.kafka]
             [onyx.plugin.sql]
@@ -13,6 +12,7 @@
             [{{app-name}}.jobs.sample-submit-job]
             [{{app-name}}.lifecycles.sample-lifecycle])
   (:gen-class))
+
 {{#docker?}}
 (defn standard-out-logger
   "Logger to output on std-out, for use with docker-compose"
@@ -20,12 +20,10 @@
   (let [{:keys [output-fn]} data]
     (println (output-fn data))))
 {{/docker?}}
+
 (defn -main [onyx-id n & args]
   (let [n-peers (Integer/parseInt n)
-        config (update-in (load-config "config.edn")
-                          [:peer-config :zookeeper/address]
-                          (fn [zkaddr]
-                            (if zkaddr zkaddr "zk:2181"))) ;; Default to zk:2181 if none is specified
+        config (read-config (clojure.java.io/resource "config.edn"))
         peer-config (-> (:peer-config config)
                         (assoc :onyx/id onyx-id)
                         {{#docker?}}(assoc :onyx.log/config {:appenders
