@@ -6,7 +6,8 @@
               [{{app-name}}.tasks.file-input :refer [add-seq-file-input]]
               [{{app-name}}.lifecycles.sample-lifecycle :refer [add-logging add-metrics build-lifecycles]]
               [{{app-name}}.workflows.sample-workflow :refer [build-workflow]]
-              [aero.core :refer [read-config]]))
+              [aero.core :refer [read-config]]
+              [onyx.api]))
 
 ;;;;
 ;; Lets build a job
