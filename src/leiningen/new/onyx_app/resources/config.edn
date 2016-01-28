@@ -6,7 +6,7 @@
   :onyx.messaging/impl                   :aeron
   ;; Change "localhost" to a resolvable hostname
   ;; by any node in your cluster.
-  :onyx.messaging/bind-addr             "localhost"
+  :onyx.messaging/bind-addr             #env [BIND_ADDR "localhost"]
   :onyx.messaging/peer-port              40200
   :onyx.messaging.aeron/embedded-driver? false}}
 ;; TODO: Change bind-addr to reflect your production environment.
