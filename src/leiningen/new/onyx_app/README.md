@@ -134,11 +134,13 @@ Note that docker-host will depend on your docker setup, if you are using docker-
 
 Then, use the following SQL to setup the table and schema.
 
+```
     use meetup;
     create table recentMeetups (id int PRIMARY KEY AUTO_INCREMENT, 
                                 groupId VARCHAR(32), 
                                 groupCity VARCHAR(32), 
                                 category VARCHAR(32));
+```
                                 
 Now with everything configured, we can finally submit to the cluster.
 
@@ -151,7 +153,7 @@ Now with everything configured, we can finally submit to the cluster.
     {"groupId" ... "groupCity" ... "category" ...} 
 
 Submit the job to the cluster by running `sample-submit-job/-main`, for example:
-`ZOOKEEPER=$(echo $DOCKER_HOST|cut -d ':' -f 2|sed "s/\/\///g) lein run -m {{appname}}.jobs.sample-submit-job`
+`ZOOKEEPER=$(echo $DOCKER_HOST|cut -d ':' -f 2|sed "s/\/\///g) lein run -m {{app-name}}.jobs.sample-submit-job`
 
 ### Results
 You should now see results streaming into MySQL when you select from the table in mysql:
