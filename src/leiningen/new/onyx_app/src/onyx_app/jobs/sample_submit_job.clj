@@ -48,7 +48,7 @@
                                                    :metrics/sender-fn :onyx.lifecycle.metrics.timbre/timbre-sender}){{/metrics?}}
       true (add-logging :write-lines))))
 
-(defn -main [onyx-id & args]
+(defn -main [& args]
   (let [config (read-config (clojure.java.io/resource "config.edn") {:profile :dev})
         peer-config (get config :peer-config)
         job (build-job :prod)]
