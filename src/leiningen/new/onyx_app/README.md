@@ -114,15 +114,8 @@ KafkaCat will forward data to a topic in Kafka (meetups) that will store it inde
 * Java 8
 
 ### Execution
-**First** steps are to make the scripts in the `script/` directory executable. Run the following two commands 
 
-```
-    chmod +x script/*
-    chmod +x script/kafka-meetup-streamer/*
-```
-This allows us to use the convenience build scripts, and allows docker to include the scripts that launch our peers and meetup.com streamer. 
-
-**Next**, we will build the example app. Out of the box the lein template includes all that you would need to stream from meetup.com->Kafka->Onyx->MySQL. Run the build script (with Java 8).
+First we will build the example app. Out of the box the lein template includes all that you would need to stream from meetup.com->Kafka->Onyx->MySQL. Run the build script (with Java 8).
     `./script/build.sh`
     
 **Once** That finishes, you can run `docker-compose up` to download, configure and launch the rest of the containers. Once that completes (it will take some time), you will have a fully configured Onyx cluster. This cluster (of one physical node, and default 6 peers) that is fully able to receive jobs. Let's try to submit one. 

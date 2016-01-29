@@ -1,5 +1,6 @@
 (ns leiningen.new.onyx-app
   (:require [leiningen.new.templates :refer [renderer name-to-path ->files]]
+	    [clojure.java.shell :refer [sh]]
             [leiningen.core.main :as main]))
 
 (def render (renderer "onyx_app"))
@@ -46,20 +47,27 @@
   "Creates a new Onyx application template"
   [name & args]
   (let [path (name-to-path name)
-        data {:name name
-              ;; The formatting here matters
-              :onyx-version "0.8.6"
-              :onyx-sql-minor "0"
-              :onyx-kafka-minor "0"
-              :onyx-metrics-minor "0"
-              :onyx-seq-minor "0"
-              :app-name name
-              :sanitized path
-              :docker? (fn [block] (if (docker? args) block ""))
-              :metrics? (fn [block] (if (metrics? args) block ""))}
+	data {:name name
+	      ;; The formatting here matters
+	      :onyx-version "0.8.6"
+	      :onyx-sql-minor "0"
+	      :onyx-kafka-minor "0"
+	      :onyx-metrics-minor "0"
+	      :onyx-seq-minor "0"
+	      :app-name name
+	      :sanitized path
+	      :docker? (fn [block] (if (docker? args) block ""))
+	      :metrics? (fn [block] (if (metrics? args) block ""))}
 
-        files (files-to-render args)
-        render-instructions (render-files files name data)]
+	files (files-to-render args)
+	render-instructions (render-files files name data)]
     (main/info "Generating fresh Onyx app.")
     (apply ->files data render-instructions)
+    (run! (fn [file] 
+            (sh "chmod" "+x" (str name file)))
+          ["/script/build.sh"]) 
+    (when (docker? args)
+      (run! (fn [file] 
+              (sh "chmod" "+x" (str name file)))
+            ["/script/run_peers.sh" "/script/run_aeron.sh" "/script/kafka-meetup-streamer/script.sh"]))
     (main/info (str "Building a new onyx app with: " args))))
