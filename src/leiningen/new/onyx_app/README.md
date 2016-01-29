@@ -112,16 +112,24 @@ KafkaCat will forward data to a topic in Kafka (meetups) that will store it inde
 
 ### Prerequisites
 
-* [Docker tools](https://www.docker.com/)
-* Java 8
+1. [Docker ToolBox](https://www.docker.com/products/docker-toolbox/)
+2. On Windows or Mac OS X, setup a local VM with VirtualBox, see [get started](https://docs.docker.com/machine/get-started/)
+3. Java 8
 
 ### Execution
+
+##### Make sure to set the Docker Machine env
+
+If you are using docker-machine, make sure to setup your environment:
+`eval "$(docker-machine env default)"`
+
+where default is the name of your docker-machine box.
 
 ##### Building the Cluster
 
 First we will build the example app. Out of the box the lein template includes all that you would need to stream from meetup.com->Kafka->Onyx->MySQL. Run the build script (with Java 8).
 
-    `./script/build.sh`
+`./script/build.sh`
     
 **Once** That finishes, you can run `docker-compose up` to download, configure and launch the rest of the containers. Once that completes (it will take some time), you will have a fully configured Onyx cluster. This cluster (of one physical node, and default 6 peers) is fully able to receive jobs. Let's try to submit one. 
 
@@ -130,6 +138,7 @@ First we will build the example app. Out of the box the lein template includes a
 In order to persist this to the `:sql/table` specified in the `:write-lines` catalog entry (:recentMeetups), we need to first create the table and load a schema in MySQL. 
 
 Connect to the MySQL instance with: : 
+
 `mysql -h $(echo $DOCKER_HOST|cut -d ':' -f 2|sed "s/\/\///g") -P3306 -uroot`. 
 
 Then, use the following SQL to setup the table and schema.
