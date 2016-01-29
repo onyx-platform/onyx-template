@@ -9,11 +9,11 @@ During development, you can use the `(with-test-env)` macro to start and stop
 Onyx environments on your local machine. You should use the same macro for your
 development as well as automated testing.
 
-There are four main parts of the dev/test environment.
+There are four main parts of the dev/test environment. You can see these in the namespace {{app-name}}.jobs.sample-job-test.
 
 1. The `let` binding sets up a dev-mode configuration. This is a plain clojure
-map describing [peer-config](http://www.onyxplatform.org/cheat-sheet.html#/peer-config)
-and [environment-config](http://www.onyxplatform.org/cheat-sheet.html#/env-config). Any of these
+map describing [peer-config](http://www.onyxplatform.org/docs/cheat-sheet/#/peer-config)
+and [environment-config](http://www.onyxplatform.org/docs/cheat-sheet/#/env-config). Any of these
 defaults can be overridden. The 0-arity version of load-config loads the default
 map suitable for development.
 
@@ -88,9 +88,11 @@ development example. You generate your job (this time with `:prod` instead of
 With docker-compose, we can demonstrate a real example application. 
 
 ### Problem
-We want to get data from [Meetup.com](www.meetup.com) into a MySQL database after doing some transformations. Meetup.com provides an event stream at `stream.meetup.com`. You can use `curl` to check it out by running this common
+We want to get data from [Meetup.com](www.meetup.com) into a MySQL database after doing some transformations. Meetup.com provides an event stream at `stream.meetup.com`. You can use `curl` to check it out by running:
 
+```
     curl -i https://stream.meetup.com/2/open_events
+```
     
 The basic structure is just a nested JSON map. We want to be able to process this as `edn` segments in Onyx, and eventually store our results in MySQL.
 
@@ -98,7 +100,7 @@ The basic structure is just a nested JSON map. We want to be able to process thi
 The architecture is quite straightforward. We will be using 5 containers in a docker-compose network.
 
 1. ZooKeeper
-2. MySql
+2. MySQL
 3. Kafka
 	- [Kafka](http://kafka.apache.org/) durable queue.
 4. Peer
@@ -121,13 +123,13 @@ First we will build the example app. Out of the box the lein template includes a
 
     `./script/build.sh`
     
-**Once** That finishes, you can run `docker-compose up` to download, configure and launch the rest of the containers. Once that completes (it will take some time), you will have a fully configured Onyx cluster. This cluster (of one physical node, and default 6 peers) that is fully able to receive jobs. Let's try to submit one. 
+**Once** That finishes, you can run `docker-compose up` to download, configure and launch the rest of the containers. Once that completes (it will take some time), you will have a fully configured Onyx cluster. This cluster (of one physical node, and default 6 peers) is fully able to receive jobs. Let's try to submit one. 
 
 ##### Setup MySQL database
 
-In order to persist this to the `:sql/table` specified in the `:write-lines` catalog entry (:recentMeetups), we need to first create the table and load a schema in MySql. 
+In order to persist this to the `:sql/table` specified in the `:write-lines` catalog entry (:recentMeetups), we need to first create the table and load a schema in MySQL. 
 
-Connect to the MySql instance with: : 
+Connect to the MySQL instance with: : 
 `mysql -h $(echo $DOCKER_HOST|cut -d ':' -f 2|sed "s/\/\///g") -P3306 -uroot`. 
 
 Then, use the following SQL to setup the table and schema.
@@ -156,7 +158,7 @@ You can also submit the job via the command-line as follows:
 `ZOOKEEPER=$(echo $DOCKER_HOST|cut -d ':' -f 2|sed "s/\/\///g") lein run -m {{app-name}}.jobs.sample-submit-job`
 
 ### Results
-You should now see results streaming into MySQL when you select from the table in mysql:
+You should now see results streaming into MySQL when you select from the table in MySQL:
 
 ```
 mysql> use meetup;
