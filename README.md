@@ -17,14 +17,16 @@ The template also supports the following options
 ```
 lein new onyx-app my-app-name -- +docker
 ```
-For a containerized onyx example that will stream meetup.com data through a
-single node kafka cluster, a simple onyx workflow, and write to a MySQL databse.
+
+`+docker` adds a containerized onyx example that will stream meetup.com data
+through a single node kafka cluster, a simple onyx workflow, and write to a
+MySQL databse.
 
 ```
 lein new onyx-app my-app-name -- +metrics
 ```
 For adding the ability to instrument any step in a workflow with latency and
-throughput metrics.
+throughput metrics. It is highly recommended that this option is applied.
 
 ## License
 
