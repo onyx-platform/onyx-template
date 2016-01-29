@@ -14,7 +14,7 @@ There are four main parts of the dev/test environment.
 1. The `let` binding sets up a dev-mode configuration. This is a plain clojure
 map describing [peer-config](http://www.onyxplatform.org/cheat-sheet.html#/peer-config)
 and [environment-config](http://www.onyxplatform.org/cheat-sheet.html#/env-config). Any of these
-defaults can be overriden. The 0-arity version of load-config loads the default
+defaults can be overridden. The 0-arity version of load-config loads the default
 map suitable for development.
 
     ```
@@ -23,10 +23,10 @@ map suitable for development.
           env-config (assoc (:env-config config) :onyx/id id)
           peer-config (assoc (:peer-config config) :onyx/id id)]
     ```
-2. The `(with-test-env)` macro will setup and teardown a full fledged
+2. The `(with-test-env)` macro will setup and tear-down a full fledged
 test environment for running your job (or jobs) locally. It handles the
 different failure conditions of Onyx, as well as terminating when it
-recieves an interupt (Ctrl-C). The macro is [*anaphoric*](http://letoverlambda.com/index.cl/guest/chap6.html), 
+receives an interrupt (Ctrl-C). The macro is [*anaphoric*](http://letoverlambda.com/index.cl/guest/chap6.html), 
 meaning that it creates a development environment and binds it to a user
 defined symbol. In this case, that symbol is `test-env`.  
 [Read More](https://onyx-platform.gitbooks.io/onyx/content/doc/user-guide/testing-onyx-jobs.html#automatic-resource-clean-up)
@@ -128,7 +128,7 @@ First we will build the example app. Out of the box the lein template includes a
 In order to persist this to the `:sql/table` specified in the `:write-lines` catalog entry (:recentMeetups), we need to first create the table and load a schema in MySql. 
 
 Connect to the MySql instance with: : 
-`mysql -h docker-host -P3306 -uroot`. 
+`mysql -h $(echo $DOCKER_HOST|cut -d ':' -f 2|sed "s/\/\///g") -P3306 -uroot`. 
 
 Note that docker-host will depend on your docker setup, if you are using docker-machine you can obtain the ip with `docker-machine ip docker-machine-name`.
 
@@ -151,7 +151,7 @@ Now with everything configured, we can finally submit to the cluster.
     {"groupId" ... "groupCity" ... "category" ...} 
 
 Submit the job to the cluster by running `sample-submit-job/-main`, for example:
-`ZOOKEEPER_ADDR=docker-host lein run -m {{appname}}.jobs.sample-submit-job`
+`ZOOKEEPER=$(echo $DOCKER_HOST|cut -d ':' -f 2|sed "s/\/\///g) lein run -m {{appname}}.jobs.sample-submit-job`
 
 ### Results
 You should now see results streaming into MySQL when you select from the table in mysql:
