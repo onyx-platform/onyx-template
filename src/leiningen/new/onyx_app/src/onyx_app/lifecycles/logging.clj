@@ -1,4 +1,4 @@
-(ns {{app-name}}.lifecycles.sample-lifecycle
+(ns {{app-name}}.lifecycles.logging
     (:require [taoensso.timbre :refer [info]]))
 
 (defn log-batch [event lifecycle]
