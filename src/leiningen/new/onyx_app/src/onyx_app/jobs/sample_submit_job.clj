@@ -4,7 +4,9 @@
               [{{app-name}}.tasks.core-async :refer [add-core-async-input add-core-async-output]]
               [{{app-name}}.tasks.sql :refer [add-sql-partition-input add-sql-insert-output]]
               [{{app-name}}.tasks.file-input :refer [add-seq-file-input]]
-              [{{app-name}}.lifecycles.sample-lifecycle :refer [add-logging add-metrics build-lifecycles]]
+              [{{app-name}}.lifecycles.sample-lifecycle :refer [build-lifecycles]]
+              [{{app-name}}.lifecycles.metrics :refer [add-metrics]]
+              [{{app-name}}.lifecycles.logging :refer [add-logging]]
               [{{app-name}}.workflows.sample-workflow :refer [build-workflow]]
               [aero.core :refer [read-config]]
               [onyx.api]))
