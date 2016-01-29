@@ -13,25 +13,11 @@
             [{{app-name}}.lifecycles.sample-lifecycle])
   (:gen-class))
 
-{{#docker?}}
-(defn standard-out-logger
-  "Logger to output on std-out, for use with docker-compose"
-  [data]
-  (let [{:keys [output-fn]} data]
-    (println (output-fn data))))
-{{/docker?}}
-
-(defn -main [onyx-id n & args]
+(defn -main [n & args]
   (let [n-peers (Integer/parseInt n)
-        config (read-config (clojure.java.io/resource "config.edn"))
+        config (read-config (clojure.java.io/resource "config.edn") {:profile :default})
         peer-config (-> (:peer-config config)
-                        (assoc :onyx/id onyx-id)
-                        {{#docker?}}(assoc :onyx.log/config {:appenders
-                                                             {:standard-out
-                                                              {:enabled? true
-                                                               :async? false
-                                                               :output-fn t/default-output-fn
-                                                               :fn standard-out-logger}}}){{/docker?}})
+                        {{#docker?}}(assoc :onyx.log/config {:appenders {} :min-level :info}){{/docker?}})
         peer-group (onyx.api/start-peer-group peer-config)
         peers (onyx.api/start-peers n-peers peer-group)]
     (println "Attempting to connec to to Zookeeper: " (:zookeeper/address peer-config))

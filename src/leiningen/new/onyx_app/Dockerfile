@@ -17,4 +17,8 @@ ADD target/{{app-name}}-0.1.0-SNAPSHOT-standalone.jar /srv/{{app-name}}.jar
 
 ADD script/run_peers.sh /etc/service/onyx_peer/run
 ADD script/run_aeron.sh /etc/service/aeron/run
+
+EXPOSE 40200/tcp
+EXPOSE 40200/udp
+
 CMD ["/sbin/my_init"]

@@ -49,10 +49,8 @@
       true (add-logging :write-lines))))
 
 (defn -main [onyx-id & args]
-  (let [config (read-config (clojure.java.io/resource "config.edn"))
-        peer-config (-> (get config :peer-config)
-                        (assoc :onyx/id onyx-id)
-                        (assoc :zookeeper/address "192.168.99.100:2181"))
+  (let [config (read-config (clojure.java.io/resource "config.edn") {:profile :dev})
+        peer-config (get config :peer-config)
         job (build-job :prod)]
     (let [{:keys [job-id]} (onyx.api/submit-job peer-config job)]
       (println "Submitted job: " job-id))))
