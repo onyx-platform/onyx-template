@@ -23,6 +23,8 @@
            "src/onyx_app/catalogs/sample_catalog.clj"
            "src/onyx_app/functions/sample_functions.clj"
            "src/onyx_app/lifecycles/sample_lifecycle.clj"
+           "src/onyx_app/lifecycles/metrics.clj"
+           "src/onyx_app/lifecycles/logging.clj"
            "src/onyx_app/jobs/sample_submit_job.clj"
            "src/onyx_app/tasks/kafka.clj"
            "src/onyx_app/tasks/file_input.clj"
