@@ -59,12 +59,8 @@ Ensure you `tail -F` the output of onyx.log in your project root, to watch out f
 
 ### Production
 Running onyx in production just requires building an uberjar and running
-the `{{app-name}}.launcher.launch_prod_peers` function with an `onyx_id` and a `npeers`
+the `{{app-name}}.launcher.launch_prod_peers` function with an `npeers`
 argument.
-
-`onyx_id` will essentially namespace this particular peer to a cluster.
-This allows you to run multiple groups of onyx environments with the same
-zookeeper ensemble.
 
 `npeers` will create multiple peers (units to execute tasks in a workflow) on
 the same JVM. It is recommended you have 1 peer per core.
