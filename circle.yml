@@ -1,12 +1,14 @@
 test:
   override:
-          - echo '{:user {:plugins [[lein-exec "0.3.5"]]}}' > ~/.lein/profiles.clj
-          - lein set-version 99.99.99 
+          - lein set-version 99.99.99
           - lein install
-          - lein new onyx-app test-app
-          - cd test-app && lein test && cd ..
-          - cd test-app && lein exec -ep "(user/go 4)(require 'test-app.jobs.sample-submit-job)(test-app.jobs.sample-submit-job/submit-job user/system)(user/stop)" && cd ..
-          - lein new onyx-app test-app-bare bare
+          - lein new onyx-app test-app-docker -- +docker
+          - cd test-app-docker && lein test && cd ..
+          - lein new onyx-app test-app-metrics -- +metrics
+          - cd test-app-metrics && lein test && cd ..
+          - lein new onyx-app test-app-docker-metrics -- +docker +metrics
+          - cd test-app-docker-metrics && lein test && cd ..
+          - lein new onyx-app test-app-bare
           - cd test-app-bare && lein test && cd ..
 
 machine:
@@ -17,5 +19,5 @@ deployment:
   update-projects:
     branch: master
     commands:
-            - git reset HEAD --hard 
+            - git reset HEAD --hard
             - lein deploy

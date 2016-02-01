@@ -1,0 +1,24 @@
+{:env-config
+ {:onyx/id #cond {:default #env ONYX_ID
+                  :dev "1"}
+  :onyx.bookkeeper/server? true
+  :onyx.bookkeeper/delete-server-data? true
+  :zookeeper/address #cond {:default #env [ZOOKEEPER "zk:2181"]
+                            :test #env [ZOOKEEPER "127.0.0.1:2181"]}
+  :zookeeper/server? #cond {:default false
+                            :test true}
+  :zookeeper.server/port 2181}
+ :peer-config
+ {:onyx/id                               #cond {:default #env ONYX_ID
+                                                :dev "1"}
+  :zookeeper/address                     #cond {:default #env [ZOOKEEPER "zk:2181"]
+                                                :dev #env [ZOOKEEPER "192.168.99.100:2181"]}
+  :onyx.peer/job-scheduler               :onyx.job-scheduler/greedy
+  :onyx.peer/zookeeper-timeout           60000
+  :onyx.messaging/allow-short-circuit?   true
+  :onyx.messaging/impl                   :aeron
+  ;; Change "localhost" to a resolvable hostname
+  ;; by any node in your cluster.
+  :onyx.messaging/bind-addr             #cond {:default #env [BIND_ADDR "localhost"]}
+  :onyx.messaging/peer-port              40200
+  :onyx.messaging.aeron/embedded-driver? false}}

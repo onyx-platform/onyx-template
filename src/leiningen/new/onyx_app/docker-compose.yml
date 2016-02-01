@@ -1,0 +1,43 @@
+peer:
+        image: '{{app-name}}:0.1.0'
+        links:
+          - zookeeper:zk
+          - kafka:kafka
+          - db:db
+          - kafkacat:kafkacat
+        environment:
+          ONYX_ID: 1
+          NPEERS: 6
+        privileged: true
+        expose:
+          - "40200"
+          - "40200/udp"
+zookeeper:
+        image: 'wurstmeister/zookeeper'
+        ports:
+          - '2181:2181'
+kafka:
+        image: 'wurstmeister/kafka'
+        environment:
+          KAFKA_BROKER_ID: 1
+        links:
+          - zookeeper:zk
+        ports:
+          - "9092:9092"
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+db:
+        image: mysql
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+          MYSQL_USER: onyx
+          MYSQL_PASSWORD: onyx
+          MYSQL_DATABASE: meetup
+        ports:
+          - "3306:3306"
+kafkacat:
+        build: script/kafka-meetup-streamer
+        links:
+          - kafka:kafka
+        environment:
+          BROKER_LIST: kafka:9092
