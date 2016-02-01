@@ -11,6 +11,7 @@
                  {{#metrics?}}[org.onyxplatform/onyx-metrics "{{onyx-version}}.{{onyx-metrics-minor}}"]{{/metrics?}}
                  [org.onyxplatform/onyx-seq "{{onyx-version}}.{{onyx-seq-minor}}"]
                  [cheshire "5.5.0"]
+                 [org.clojure/tools.cli "0.3.3"]
                  [aero "0.1.3"]]
   :profiles {:uberjar {:aot [{{app-name}}.launcher.aeron-media-driver
                              {{app-name}}.launcher.launch-prod-peers]}
