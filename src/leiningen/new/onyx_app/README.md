@@ -12,8 +12,8 @@ development as well as automated testing.
 There are four main parts of the dev/test environment. You can see these in the namespace {{app-name}}.jobs.sample-job-test.
 
 1. The `let` binding sets up a dev-mode configuration. This is a plain clojure
-map describing [peer-config](http://www.onyxplatform.org/docs/cheat-sheet/#/peer-config)
-and [environment-config](http://www.onyxplatform.org/docs/cheat-sheet/#/env-config). Any of these
+map describing [peer-config](http://www.onyxplatform.org/docs/cheat-sheet/0.8.8/#/peer-config)
+and [environment-config](http://www.onyxplatform.org/docs/cheat-sheet/0.8.8/#/env-config). Any of these
 defaults can be overridden. The 0-arity version of load-config loads the default
 map suitable for development.
 
@@ -26,9 +26,9 @@ map suitable for development.
 2. The `(with-test-env)` macro will setup and tear-down a full fledged
 test environment for running your job (or jobs) locally. It handles the
 different failure conditions of Onyx, as well as terminating when it
-receives an interrupt (Ctrl-C). The macro is [*anaphoric*](http://letoverlambda.com/index.cl/guest/chap6.html), 
+receives an interrupt (Ctrl-C). The macro is [*anaphoric*](http://letoverlambda.com/index.cl/guest/chap6.html),
 meaning that it creates a development environment and binds it to a user
-defined symbol. In this case, that symbol is `test-env`.  
+defined symbol. In this case, that symbol is `test-env`.
 [Read More](https://onyx-platform.gitbooks.io/onyx/content/doc/user-guide/testing-onyx-jobs.html#automatic-resource-clean-up)
 
     ```
@@ -51,10 +51,10 @@ That will have an associated channel that we can use to collect our output!
 
 #### Reloading Code in Development
 
-`(clojure.tools.namespace.repl/refresh)` can be used with this setup to refresh your project. 
+`(clojure.tools.namespace.repl/refresh)` can be used with this setup to refresh your project.
 Many Clojure editors also have convenient keybindings for this!
 
-Then try to run the test via your editor, or in the repl e.g. `(clojure.test/run-tests '{{app-name}}.jobs.sample-job-test)`. 
+Then try to run the test via your editor, or in the repl e.g. `(clojure.test/run-tests '{{app-name}}.jobs.sample-job-test)`.
 Ensure you `tail -F` the output of onyx.log in your project root, to watch out for any issues that might pop up.
 
 ### Production
@@ -85,7 +85,7 @@ development example. You generate your job (this time with `:prod` instead of
 
 {{#docker?}}
 ## Docker Compose
-With docker-compose, we can demonstrate a real example application. 
+With docker-compose, we can demonstrate a real example application.
 
 ### Problem
 We want to get data from [Meetup.com](www.meetup.com) into a MySQL database after doing some transformations. Meetup.com provides an event stream at `stream.meetup.com`. You can use `curl` to check it out by running:
@@ -93,7 +93,7 @@ We want to get data from [Meetup.com](www.meetup.com) into a MySQL database afte
 ```
     curl -i https://stream.meetup.com/2/open_events
 ```
-    
+
 The basic structure is just a nested JSON map. We want to be able to process this as `edn` segments in Onyx, and eventually store our results in MySQL.
 
 ### Approach
@@ -107,8 +107,8 @@ The architecture is quite straightforward. We will be using 5 containers in a do
 	- A container running (default 6) Onyx peers. You can change the `NPEERS` in the docker-compose.yml file
 5. KafkaCat
 	- A small utility container to `curl` data from meetup.com into the `meetups` Kafka topic.
-	
-KafkaCat will forward data to a topic in Kafka (meetups) that will store it indefinitely. We can then submit jobs to the ZooKeeper container, and the Peer's will pick them up and start running them. We can then output our data using the Onyx SQL plugin to MySQL. 
+
+KafkaCat will forward data to a topic in Kafka (meetups) that will store it indefinitely. We can then submit jobs to the ZooKeeper container, and the Peer's will pick them up and start running them. We can then output our data using the Onyx SQL plugin to MySQL.
 
 ### Prerequisites
 
@@ -130,36 +130,36 @@ where default is the name of your docker-machine box.
 First we will build the example app. Out of the box the lein template includes all that you would need to stream from meetup.com->Kafka->Onyx->MySQL. Run the build script (with Java 8).
 
 `./script/build.sh`
-    
-**Once** That finishes, you can run `docker-compose up` to download, configure and launch the rest of the containers. Once that completes (it will take some time), you will have a fully configured Onyx cluster. This cluster (of one physical node, and default 6 peers) is fully able to receive jobs. Let's try to submit one. 
+
+**Once** That finishes, you can run `docker-compose up` to download, configure and launch the rest of the containers. Once that completes (it will take some time), you will have a fully configured Onyx cluster. This cluster (of one physical node, and default 6 peers) is fully able to receive jobs. Let's try to submit one.
 
 ##### Setup MySQL database
 
-In order to persist this to the `:sql/table` specified in the `:write-lines` catalog entry (:recentMeetups), we need to first create the table and load a schema in MySQL. 
+In order to persist this to the `:sql/table` specified in the `:write-lines` catalog entry (:recentMeetups), we need to first create the table and load a schema in MySQL.
 
-Connect to the MySQL instance with: : 
+Connect to the MySQL instance with: :
 
-`mysql -h $(echo $DOCKER_HOST|cut -d ':' -f 2|sed "s/\/\///g") -P3306 -uroot`. 
+`mysql -h $(echo $DOCKER_HOST|cut -d ':' -f 2|sed "s/\/\///g") -P3306 -uroot`.
 
 Then, use the following SQL to setup the table and schema.
 
 ```
     use meetup;
-    create table recentMeetups (id int PRIMARY KEY AUTO_INCREMENT, 
-                                groupId VARCHAR(32), 
-                                groupCity VARCHAR(32), 
+    create table recentMeetups (id int PRIMARY KEY AUTO_INCREMENT,
+                                groupId VARCHAR(32),
+                                groupCity VARCHAR(32),
                                 category VARCHAR(32));
 ```
-                                
+
 Now with everything configured, we can finally submit to the cluster.
 
 ##### Submitting the Job
 
-**Submitting** a job is done using the `onyx.api/submit-job` function. It takes a [peer config](http://www.onyxplatform.org/cheat-sheet.html#/peer-config) and a job description map (such as the one generated by `{{app-name}}.jobs.sample-submit-job/build-job`), and submits the job to the specified Onyx cluster. 
+**Submitting** a job is done using the `onyx.api/submit-job` function. It takes a [peer config](http://www.onyxplatform.org/docs/cheat-sheet/0.8.8/#/peer-config) and a job description map (such as the one generated by `{{app-name}}.jobs.sample-submit-job/build-job`), and submits the job to the specified Onyx cluster.
 
 `({{app-name}}.jobs.sample-submit-job/-main)` will build and submit a job to the cluster for you. What this job does is use the `:extract-meetup-info` catalog entry to walk through the value from meetup.com, and transform it to a segment of the shape
-    
-    {"groupId" ... "groupCity" ... "category" ...} 
+
+    {"groupId" ... "groupCity" ... "category" ...}
 
 Note, you will need to start your repl with the ZOOKEEPER environment variable set to your docker host, or edit `resources/config.edn` to configure the zookeeper string.
 
