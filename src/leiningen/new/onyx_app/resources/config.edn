@@ -1,4 +1,14 @@
-{:peer-config
+{:env-config
+ {:onyx/id #cond {:default #env ONYX_ID
+                  :dev "1"}
+  :onyx.bookkeeper/server? true
+  :onyx.bookkeeper/delete-server-data? true
+  :zookeeper/address #cond {:default #env [ZOOKEEPER "zk:2181"]
+                            :test #env [ZOOKEEPER "127.0.0.1:2181"]}
+  :zookeeper/server? #cond {:default false
+                            :test true}
+  :zookeeper.server/port 2181}
+ :peer-config
  {:onyx/id                               #cond {:default #env ONYX_ID
                                                 :dev "1"}
   :zookeeper/address                     #cond {:default #env [ZOOKEEPER "zk:2181"]
