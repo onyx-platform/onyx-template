@@ -2,8 +2,7 @@
     (:require [clojure.core.async :refer [chan sliding-buffer >!!]]
               [onyx.plugin.core-async :refer [take-segments!]]
               [taoensso.timbre :refer [info]]
-              [clojure.set :refer [join]]
-              [cheshire.core :as json]))
+              [clojure.set :refer [join]]))
 
 (def channels (atom {}))
 
