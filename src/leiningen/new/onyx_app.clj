@@ -30,6 +30,7 @@
            "src/onyx_app/tasks/file_input.clj"
            "src/onyx_app/tasks/sql.clj"
            "src/onyx_app/tasks/core_async.clj"
+           "src/onyx_app/utils/job.clj"
            "test/onyx_app/jobs/sample_job_test.clj"
            "script/build.sh"]
     (docker? opts) (conj "Dockerfile"
@@ -51,7 +52,7 @@
   (let [path (name-to-path name)
 	data {:name name
 	      ;; The formatting here matters
-	      :onyx-version "0.8.8"
+	      :onyx-version "0.8.9"
 	      :onyx-sql-minor "0"
 	      :onyx-kafka-minor "0"
 	      :onyx-metrics-minor "0"

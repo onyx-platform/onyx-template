@@ -1,13 +1,14 @@
 (ns {{app-name}}.jobs.sample-submit-job
     (:require [{{app-name}}.catalogs.sample-catalog :refer [build-catalog]]
               [{{app-name}}.tasks.kafka :refer [add-kafka-input add-kafka-output]]
-              [{{app-name}}.tasks.core-async :refer [add-core-async-input add-core-async-output]]
+              [{{app-name}}.tasks.core-async :as core-async-task]
               [{{app-name}}.tasks.sql :refer [add-sql-partition-input add-sql-insert-output]]
               [{{app-name}}.tasks.file-input :refer [add-seq-file-input]]
               [{{app-name}}.lifecycles.sample-lifecycle :refer [build-lifecycles]]
               [{{app-name}}.lifecycles.metrics :refer [add-metrics]]
               [{{app-name}}.lifecycles.logging :refer [add-logging]]
               [{{app-name}}.workflows.sample-workflow :refer [build-workflow]]
+              [{{app-name}}.utils.job :as ju]
               [aero.core :refer [read-config]]
               [onyx.api]))
 
@@ -28,7 +29,7 @@
                   :workflow (build-workflow {:mode mode})
                   :task-scheduler :onyx.task-scheduler/balanced}]
     (cond-> base-job
-      (= :dev mode) (add-core-async-output :write-lines {:onyx/batch-size batch-size})
+      (= :dev mode) (ju/add-task (core-async-task/output-task :write-lines {:onyx/batch-size batch-size}))
       (= :dev mode) (add-seq-file-input :read-lines {:onyx/batch-size batch-size
                                                      :filename "resources/sample_input.edn"})
       (= :prod mode) (add-kafka-input :read-lines {:onyx/batch-size batch-size
