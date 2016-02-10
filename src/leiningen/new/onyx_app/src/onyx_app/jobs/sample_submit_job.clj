@@ -1,9 +1,9 @@
 (ns {{app-name}}.jobs.sample-submit-job
     (:require [{{app-name}}.catalogs.sample-catalog :refer [build-catalog]]
-              [{{app-name}}.tasks.kafka :refer [add-kafka-input add-kafka-output]]
+              [{{app-name}}.tasks.kafka :as kafka-task]
               [{{app-name}}.tasks.core-async :as core-async-task]
-              [{{app-name}}.tasks.sql :refer [add-sql-partition-input add-sql-insert-output]]
-              [{{app-name}}.tasks.file-input :refer [add-seq-file-input]]
+              [{{app-name}}.tasks.sql :as sql-task]
+              [{{app-name}}.tasks.file-input :as file-input-task]
               [{{app-name}}.lifecycles.sample-lifecycle :refer [build-lifecycles]]
               [{{app-name}}.lifecycles.metrics :refer [add-metrics]]
               [{{app-name}}.lifecycles.logging :refer [add-logging]]
@@ -30,22 +30,24 @@
                   :task-scheduler :onyx.task-scheduler/balanced}]
     (cond-> base-job
       (= :dev mode) (ju/add-task (core-async-task/output-task :write-lines {:onyx/batch-size batch-size}))
-      (= :dev mode) (add-seq-file-input :read-lines {:onyx/batch-size batch-size
-                                                     :filename "resources/sample_input.edn"})
-      (= :prod mode) (add-kafka-input :read-lines {:onyx/batch-size batch-size
-                                                   :onyx/max-peers 1
-                                                   :kafka/topic "meetup"
-                                                   :kafka/group-id "onyx-consumer"
-                                                   :kafka/zookeeper "zk:2181"
-                                                   :kafka/deserializer-fn :{{app-name}}.tasks.kafka/deserialize-message-json
-                                                   :kafka/offset-reset :smallest})
-      (= :prod mode) (add-sql-insert-output :write-lines {:onyx/batch-size batch-size
-                                                          :sql/classname "com.mysql.jdbc.Driver"
-                                                          :sql/subprotocol "mysql"
-                                                          :sql/subname "//db:3306/meetup"
-                                                          :sql/user "onyx"
-                                                          :sql/password "onyx"
-                                                          :sql/table :recentMeetups})
+      (= :dev mode) (ju/add-task (file-input-task/input-task :read-lines {:onyx/batch-size batch-size
+                                                                          :filename "resources/sample_input.edn"}))
+      (= :prod mode) (ju/add-task (kafka-task/input-task :read-lines
+                                                         {:onyx/batch-size batch-size
+                                                          :onyx/max-peers 1
+                                                          :kafka/topic "meetup"
+                                                          :kafka/group-id "onyx-consumer"
+                                                          :kafka/zookeeper "zk:2181"
+                                                          :kafka/deserializer-fn :newapp.tasks.kafka/deserialize-message-json
+                                                          :kafka/offset-reset :smallest}))
+      (= :prod mode) (ju/add-task (sql-task/insert-output :write-lines
+                                                          {:onyx/batch-size batch-size
+                                                           :sql/classname "com.mysql.jdbc.Driver"
+                                                           :sql/subprotocol "mysql"
+                                                           :sql/subname "//db:3306/meetup"
+                                                           :sql/user "onyx"
+                                                           :sql/password "onyx"
+                                                           :sql/table :recentMeetups}))
       {{#metrics?}}true (add-metrics :write-lines {:metrics/buffer-capacity 10000
                                                    :metrics/workflow-name "meetup-workflow"
                                                    :metrics/sender-fn :onyx.lifecycle.metrics.timbre/timbre-sender}){{/metrics?}}
