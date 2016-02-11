@@ -1,17 +1,12 @@
 (ns {{app-name}}.launcher.launch-prod-peers
-  (:require [clojure.core.async :refer [<!! chan]]
-            [aero.core :refer [read-config]]
-            {{#docker?}}[taoensso.timbre :as t]{{/docker?}}
+  (:gen-class)
+  (:require [aero.core :refer [read-config]]
+            [clojure.core.async :refer [<!! chan]]
+            [{{app-name}}.jobs.sample-submit-job]
             [onyx.plugin.kafka]
             [onyx.plugin.sql]
-            [onyx.plugin.core-async]
-            [onyx.plugin.seq]
-            {{#metrics?}}[onyx.lifecycle.metrics.timbre]{{/metrics?}}
             {{#metrics?}}[onyx.lifecycle.metrics.metrics]{{/metrics?}}
-            [{{app-name}}.functions.sample-functions]
-            [{{app-name}}.jobs.sample-submit-job]
-            [{{app-name}}.lifecycles.sample-lifecycle])
-  (:gen-class))
+            {{#metrics?}}[onyx.lifecycle.metrics.timbre]{{/metrics?}}))
 
 (defn -main [n & args]
   (let [n-peers (Integer/parseInt n)

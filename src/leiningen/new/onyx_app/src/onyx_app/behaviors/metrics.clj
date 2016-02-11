@@ -1,4 +1,4 @@
-(ns {{app-name}}.lifecycles.metrics)
+(ns {{app-name}}.behaviors.metrics)
 
 (defn add-metrics
   "Add's throughput and latency metrics to a task"

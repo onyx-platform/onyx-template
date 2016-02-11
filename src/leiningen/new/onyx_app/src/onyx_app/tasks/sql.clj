@@ -1,6 +1,5 @@
 (ns {{app-name}}.tasks.sql
   (:require [schema.core :as s]
-            [taoensso.timbre :refer [info]]
             [onyx.schema :as os]))
 
 ;; TODO, add read-rows function task

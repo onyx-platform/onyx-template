@@ -1,6 +1,5 @@
 (ns {{app-name}}.tasks.kafka
-    (:require [taoensso.timbre :refer [info]]
-              [cheshire.core :as json]
+    (:require [cheshire.core :as json]
               [schema.core :as s]
               [onyx.schema :as os]))
 

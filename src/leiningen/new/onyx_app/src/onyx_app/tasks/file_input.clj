@@ -1,6 +1,5 @@
 (ns {{app-name}}.tasks.file-input
-    (:require [taoensso.timbre :refer [info]]
-              [schema.core :as s]
+    (:require [schema.core :as s]
               [onyx.schema :as os]))
 
 (defn inject-in-reader [event lifecycle]
@@ -21,6 +20,7 @@
                             :onyx/type :input
                             :onyx/medium :seq
                             :onyx/max-peers 1
+                            :onyx/batch-size 1
                             :onyx/doc "Reads segments from seq"}
                            opts)
           :lifecycles [{:lifecycle/task task-name

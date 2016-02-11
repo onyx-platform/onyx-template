@@ -1,31 +1,27 @@
 (ns {{app-name}}.tasks.core-async
-    (:require [clojure.core.async :refer [chan sliding-buffer >!!]]
-              [onyx.plugin.core-async :refer [take-segments!]]
-              [taoensso.timbre :refer [info]]
-              [onyx.schema :as os]
-              [schema.core :as s]
-              [clojure.set :refer [join]]))
+  (:require [clojure.core.async :refer [chan]]
+            [clojure.set :refer [join]]
+            [onyx.schema :as os]
+            [schema.core :as s]))
 
 (def channels (atom {}))
 
 (def default-channel-size 1000)
 
 (defn get-channel
-  ([id] (get-channel id nil))
+  ([id] (get-channel id default-channel-size))
   ([id size]
    (if-let [id (get @channels id)]
      id
-     (do (swap! channels assoc id (chan (or size default-channel-size)))
+     (do (swap! channels assoc id (chan size))
          (get-channel id)))))
 
 (defn inject-in-ch
   [_ lifecycle]
-  {:core.async/chan (get-channel (:core.async/id lifecycle)
-                                 (or (:core.async/size lifecycle) default-channel-size))})
+  {:core.async/chan (get-channel (:core.async/id lifecycle))})
 (defn inject-out-ch
   [_ lifecycle]
-  {:core.async/chan (get-channel (:core.async/id lifecycle)
-                                 (or (:core.async/size lifecycle) default-channel-size))})
+  {:core.async/chan (get-channel (:core.async/id lifecycle))})
 
 (def in-calls
   {:lifecycle/before-task-start inject-in-ch})
@@ -41,7 +37,7 @@
                      (:onyx/name item)
                      (get-channel (:core.async/id item)))) {} (filter :core.async/id lifecycle-catalog-join))))
 
-(s/defn input-task 
+(s/defn input-task
   ([task-name :- s/Keyword opts]
    (input-task task-name opts default-channel-size))
   ([task-name :- s/Keyword opts chan-size]
@@ -53,15 +49,15 @@
                              :onyx/doc "Reads segments from a core.async channel"}
                             opts)
            :lifecycles [{:lifecycle/task task-name
-                         :lifecycle/calls ::in-calls
                          :core.async/id (java.util.UUID/randomUUID)
-                         :core.async/size chan-size}
+                         :core.async/size chan-size
+                         :lifecycle/calls ::in-calls}
                         {:lifecycle/task task-name
                          :lifecycle/calls :onyx.plugin.core-async/reader-calls}]}
     :schema {:task-map os/TaskMap
              :lifecycles [os/Lifecycle]}}))
 
-(s/defn output-task 
+(s/defn output-task
   ([task-name :- s/Keyword opts]
    (output-task task-name opts default-channel-size))
   ([task-name :- s/Keyword opts chan-size]

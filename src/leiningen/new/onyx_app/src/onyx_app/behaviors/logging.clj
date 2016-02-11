@@ -1,4 +1,6 @@
-(ns {{app-name}}.lifecycles.logging
+(ns {{app-name}}.behaviors.logging
+    "Behaviors allow you to instrument tasks with special tooling for logging,
+  metrics, debugging etc."
     (:require [taoensso.timbre :refer [info]]))
 
 (defn log-batch [event lifecycle]
