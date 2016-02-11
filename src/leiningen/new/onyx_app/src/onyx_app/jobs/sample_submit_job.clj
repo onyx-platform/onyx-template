@@ -1,8 +1,8 @@
 (ns {{app-name}}.jobs.sample-submit-job
     (:require [aero.core :refer [read-config]]
               [{{app-name}}.behaviors
-               [logging :as logging-behavior]
-               [metrics :as metrics-behavior]]
+               {{#metrics?}}[metrics :as metrics-behavior]{{/metrics?}}
+               [logging :as logging-behavior]]
               [{{app-name}}.tasks
                [core-async :as core-async-task]
                [file-input :as file-input-task]
@@ -58,7 +58,7 @@
   [job mode opts]
   (cond-> job
     true (logging-behavior/add-logging :write-lines)
-    (= :prod mode) (metrics-behavior/add-metrics :read-lines)))
+    {{#metrics?}}(= :prod mode) (metrics-behavior/add-metrics :read-lines){{/metrics?}}))
 
 (defn build-job [mode]
   (let [batch-size 10
