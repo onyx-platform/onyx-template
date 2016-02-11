@@ -13,9 +13,8 @@
   {:lifecycle/after-batch log-batch})
 
 (defn add-logging
-  "Add's logging output to a tasks output-batch. "
+  "Add's logging output to a task's output-batch."
   [job task]
-  (if-let [entry (first (filter #(= (:onyx/name %) task) (:catalog job)))]
-    (-> job
-        (update-in [:lifecycles] conj {:lifecycle/task task
-                                       :lifecycle/calls ::log-calls}))))
+  (-> job
+      (update-in [:lifecycles] conj {:lifecycle/task task
+                                     :lifecycle/calls ::log-calls})))

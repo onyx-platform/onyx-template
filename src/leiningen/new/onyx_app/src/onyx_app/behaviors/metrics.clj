@@ -1,7 +1,7 @@
 (ns {{app-name}}.behaviors.metrics)
 
 (defn add-metrics
-  "Add's throughput and latency metrics to a task"
+  "Adds throughput and latency metrics to a task"
   ([job task] (add-metrics job task {}))
   ([job task opts]
    (-> job
