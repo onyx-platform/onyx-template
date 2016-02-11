@@ -3,7 +3,7 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[aero "0.1.3"]
+  :dependencies [[aero "0.1.5" :exclusions [prismatic/schema]]
                  [cheshire "5.5.0"]
                  [mysql/mysql-connector-java "5.1.18"]
                  [org.clojure/clojure "1.7.0"]
