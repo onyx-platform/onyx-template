@@ -27,18 +27,18 @@
 (s/defn partition-input
   [task-name :- s/Keyword opts :- SqlPartitionInput]
   {:task {:task-map (merge
-                     {:onyx/name task-name
-                      :onyx/plugin :onyx.plugin.sql/partition-keys
-                      :onyx/type :input
-                      :onyx/medium :sql
-                      :sql/columns [:*]
-                      :sql/rows-per-segment 500
-                      :onyx/max-pending 1000
-                      :onyx/max-peers 1
-                      :onyx/doc "Partitions a range of primary keys into subranges"}
-                     opts)}
-   :lifecycles [{:lifecycle/task task-name
-                 :lifecycle/calls :onyx.plugin.sql/read-rows-calls}]
+                      {:onyx/name task-name
+                       :onyx/plugin :onyx.plugin.sql/partition-keys
+                       :onyx/type :input
+                       :onyx/medium :sql
+                       :sql/columns [:*]
+                       :sql/rows-per-segment 500
+                       :onyx/max-pending 1000
+                       :onyx/max-peers 1
+                       :onyx/doc "Partitions a range of primary keys into subranges"}
+                      opts)
+          :lifecycles [{:lifecycle/task task-name
+                        :lifecycle/calls :onyx.plugin.sql/read-rows-calls}]}
    :schema {:task-map (merge os/TaskMap SqlPartitionInput)
             :lifecycles [os/Lifecycle]}})
 
@@ -60,6 +60,5 @@
                      opts)
           :lifecycles [{:lifecycle/task task-name
                         :lifecycle/calls :onyx.plugin.sql/write-rows-calls}]}
-
    :schema {:task-map (merge os/TaskMap SqlInsertOutput)
             :lifecycles [os/Lifecycle]}})
