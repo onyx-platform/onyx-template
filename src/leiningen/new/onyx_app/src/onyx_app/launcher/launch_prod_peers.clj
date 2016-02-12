@@ -6,6 +6,7 @@
             [onyx.plugin.kafka]
             [onyx.plugin.sql]
             {{#docker?}}[taoensso.timbre :as t]{{/docker?}}
+            {{#docker?}}[taoensso.timbre.appenders.3rd-party.rotor :as rotor]{{/docker?}}
             {{#metrics?}}[onyx.lifecycle.metrics.metrics]{{/metrics?}}
             {{#metrics?}}[onyx.lifecycle.metrics.timbre]{{/metrics?}}))
 
@@ -20,6 +21,11 @@
         config (read-config (clojure.java.io/resource "config.edn") {:profile :default})
         peer-config (-> (:peer-config config)
                         {{#docker?}}(assoc :onyx.log/config {:appenders
+                                                             :rotor (-> (rotor/rotor-appender
+                                                                          {:path "onyx.log"
+                                                                           :max-size (* 512 102400)
+                                                                           :backlog 5})
+                                                                        (assoc :min-level :info))
                                                              {:standard-out
                                                               {:enabled? true
                                                                :async? false
