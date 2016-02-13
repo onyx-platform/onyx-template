@@ -40,7 +40,7 @@
    (s/optional-key :kafka/request-size) s/Num})
 
 (s/defn input-task
-  [task-name :- s/Keyword opts :- KafkaInputTask]
+  [task-name :- s/Keyword opts]
   {:task {:task-map (merge {:onyx/name task-name
                             :onyx/plugin :onyx.plugin.kafka/read-messages
                             :onyx/type :input
@@ -53,7 +53,7 @@
             :lifecycles [os/Lifecycle]}})
 
 (s/defn output-task
-  [task-name :- s/Keyword opts :- KafkaOutputTask]
+  [task-name :- s/Keyword opts]
   {:task {:task-map (merge {:onyx/name task-name
                             :onyx/plugin :onyx.plugin.kafka/write-messages
                             :onyx/type :output

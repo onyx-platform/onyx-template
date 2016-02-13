@@ -14,7 +14,7 @@
    (s/optional-key :seq/checkpoint?) s/Bool})
 
 (s/defn input-task
-  [task-name :- s/Keyword opts :- SeqInputTask]
+  [task-name :- s/Keyword opts]
   {:task {:task-map (merge {:onyx/name task-name
                             :onyx/plugin :onyx.plugin.seq/input
                             :onyx/type :input
