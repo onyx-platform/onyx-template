@@ -1,13 +1,16 @@
 (ns {{app-name}}.jobs.sample-job-test
-    (:require [clojure.test :refer [deftest is]]
+    (:require [clojure.test :refer [deftest is use-fixtures]]
               [{{app-name}}.jobs.sample-submit-job :refer [build-job]]
               [{{app-name}}.tasks.core-async :refer [get-core-async-channels]]
               [onyx api
                [test-helper :refer [feedback-exception! load-config validate-enough-peers! with-test-env]]]
               [onyx.plugin.core-async :refer [take-segments!]]
               [onyx.plugin.seq]
+              [schema.test]
               {{#metrics?}}[onyx.lifecycle.metrics.metrics]{{/metrics?}}
               {{#metrics?}}[onyx.lifecycle.metrics.timbre]{{/metrics?}}))
+ 
+(use-fixtures :once schema.test/validate-schemas)
 
 (deftest onyx-dev-job-test
   (let [id (java.util.UUID/randomUUID)
