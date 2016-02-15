@@ -49,7 +49,7 @@
     :onyx/type :function}])
 
 (s/defschema BatchSettings
-  {(s/required-key :onxy/batch-size) s/Num
+  {(s/required-key :onyx/batch-size) s/Num
    (s/required-key :onyx/batch-timeout) s/Num})
 
 (s/defn meetup-tasks [opts :- BatchSettings]
