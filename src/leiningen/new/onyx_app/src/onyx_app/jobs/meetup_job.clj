@@ -1,4 +1,4 @@
-(ns {{app-name}}.jobs.sample-submit-job
+(ns {{app-name}}.jobs.meetup-job
     (:require [aero.core :refer [read-config]]
               [{{app-name}}.behaviors
                {{#metrics?}}[metrics :as metrics-behavior]{{/metrics?}}

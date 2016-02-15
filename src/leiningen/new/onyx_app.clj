@@ -19,7 +19,7 @@
            "resources/sample_input.edn"
            "src/onyx_app/launcher/launch_prod_peers.clj"
            "src/onyx_app/launcher/aeron_media_driver.clj"
-           "src/onyx_app/jobs/sample_submit_job.clj"
+           "src/onyx_app/jobs/meetup_job.clj"
            "src/onyx_app/tasks/kafka.clj"
            "src/onyx_app/tasks/file_input.clj"
            "src/onyx_app/tasks/sql.clj"
@@ -27,7 +27,7 @@
            "src/onyx_app/tasks/meetup_tasks.clj"
            "src/onyx_app/behaviors/logging.clj"
            "src/onyx_app/utils/job.clj"
-           "test/onyx_app/jobs/sample_job_test.clj"
+           "test/onyx_app/jobs/meetup_job_test.clj"
            "script/build.sh"]
     (metrics? opts) (conj "src/onyx_app/behaviors/metrics.clj")
     (docker? opts) (conj "Dockerfile"

@@ -1,6 +1,6 @@
-(ns {{app-name}}.jobs.sample-job-test
+(ns {{app-name}}.jobs.meetup-job-test
     (:require [clojure.test :refer [deftest is use-fixtures]]
-              [{{app-name}}.jobs.sample-submit-job :refer [build-job]]
+              [{{app-name}}.jobs.meetup-job :refer [build-job]]
               [{{app-name}}.tasks.core-async :refer [get-core-async-channels]]
               [onyx api
                [test-helper :refer [feedback-exception! load-config validate-enough-peers! with-test-env]]]
@@ -9,7 +9,7 @@
               [schema.test]
               {{#metrics?}}[onyx.lifecycle.metrics.metrics]{{/metrics?}}
               {{#metrics?}}[onyx.lifecycle.metrics.timbre]{{/metrics?}}))
- 
+
 (use-fixtures :once schema.test/validate-schemas)
 
 (deftest onyx-dev-job-test

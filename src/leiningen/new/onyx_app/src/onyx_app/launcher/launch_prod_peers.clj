@@ -2,7 +2,7 @@
   (:gen-class)
   (:require [aero.core :refer [read-config]]
             [clojure.core.async :refer [<!! chan]]
-            [{{app-name}}.jobs.sample-submit-job]
+            [{{app-name}}.jobs.meetup-job]
             [onyx.plugin.kafka]
             [onyx.plugin.sql]
             {{#docker?}}[taoensso.timbre :as t]{{/docker?}}
