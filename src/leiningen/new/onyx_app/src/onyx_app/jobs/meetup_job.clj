@@ -1,14 +1,13 @@
 (ns {{app-name}}.jobs.meetup-job
     (:require [aero.core :refer [read-config]]
-              [{{app-name}}.behaviors
-               {{#metrics?}}[metrics :as metrics-behavior]{{/metrics?}}
-               [logging :as logging-behavior]]
               [{{app-name}}.tasks
                [core-async :as core-async-task]
                [file-input :as file-input-task]
                [kafka :as kafka-task]
                [meetup-tasks :as meetup]
-               [sql :as sql-task]]
+               [sql :as sql-task]
+               [logging :as logging-behavior]
+               {{#metrics?}}[metrics :as metrics-behavior]{{/metrics?}}]
               [{{app-name}}.utils.job :refer [add-task add-tasks]]
               [onyx.api]))
 
@@ -50,13 +49,7 @@
                                                       :sql/subname "//db:3306/meetup"
                                                       :sql/user "onyx"
                                                       :sql/password "onyx"
-                                                      :sql/table :recentMeetups}))))
-
-(defn add-behaviors
-  "Add's behaviors to tasks based on job mode. This is where you would add behaviors
-  such as logging in development but not in production."
-  [job mode opts]
-  (cond-> job
+                                                      :sql/table :recentMeetups}))
     true (logging-behavior/add-logging :write-lines)
     {{#metrics?}}(= :prod mode) (metrics-behavior/add-metrics :read-lines){{/metrics?}}))
 
@@ -64,8 +57,7 @@
   (let [batch-size 10
         batch-timeout 1000]
     (-> (build-base-job {:batch-size batch-size :batch-timeout batch-timeout})
-        (configure-job mode {:batch-size batch-size :batch-timeout batch-timeout})
-        (add-behaviors mode {:batch-size batch-size :batch-timeout batch-timeout}))))
+        (configure-job mode {:batch-size batch-size :batch-timeout batch-timeout}))))
 
 (defn -main [& args]
   (let [config (read-config (clojure.java.io/resource "config.edn") {:profile :dev})

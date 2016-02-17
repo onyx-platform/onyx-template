@@ -19,7 +19,6 @@
 (defn transform-segment-shape
   "Recursively restructures a segment {:new-key [paths...]}"
   [paths segment]
-
   (try (let [f (fn [[k v]]
                  (if (vector? v)
                    [k (get-in segment v)]

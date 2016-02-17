@@ -25,11 +25,11 @@
            "src/onyx_app/tasks/sql.clj"
            "src/onyx_app/tasks/core_async.clj"
            "src/onyx_app/tasks/meetup_tasks.clj"
-           "src/onyx_app/behaviors/logging.clj"
+           "src/onyx_app/tasks/logging.clj"
            "src/onyx_app/utils/job.clj"
            "test/onyx_app/jobs/meetup_job_test.clj"
            "script/build.sh"]
-    (metrics? opts) (conj "src/onyx_app/behaviors/metrics.clj")
+    (metrics? opts) (conj "src/onyx_app/tasks/metrics.clj")
     (docker? opts) (conj "Dockerfile"
                          "script/run_peers.sh"
                          "script/run_aeron.sh"
