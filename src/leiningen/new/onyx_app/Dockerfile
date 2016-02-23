@@ -1,6 +1,8 @@
 FROM phusion/baseimage:0.9.17
 MAINTAINER Excellent Person <fill@me.in>
 
+CMD ["/sbin/my_init"]
+
 RUN sudo apt-get install software-properties-common \
 && add-apt-repository -y ppa:webupd8team/java \
 && apt-get update \
@@ -20,4 +22,4 @@ ADD script/run_aeron.sh /etc/service/aeron/run
 EXPOSE 40200/tcp
 EXPOSE 40200/udp
 
-CMD ["/sbin/my_init"]
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
