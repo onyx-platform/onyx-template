@@ -19,19 +19,17 @@
            "resources/sample_input.edn"
            "src/onyx_app/launcher/launch_prod_peers.clj"
            "src/onyx_app/launcher/aeron_media_driver.clj"
-           "src/onyx_app/workflows/sample_workflow.clj"
-           "src/onyx_app/catalogs/sample_catalog.clj"
-           "src/onyx_app/functions/sample_functions.clj"
-           "src/onyx_app/lifecycles/sample_lifecycle.clj"
-           "src/onyx_app/lifecycles/metrics.clj"
-           "src/onyx_app/lifecycles/logging.clj"
-           "src/onyx_app/jobs/sample_submit_job.clj"
+           "src/onyx_app/jobs/meetup_job.clj"
            "src/onyx_app/tasks/kafka.clj"
            "src/onyx_app/tasks/file_input.clj"
            "src/onyx_app/tasks/sql.clj"
            "src/onyx_app/tasks/core_async.clj"
-           "test/onyx_app/jobs/sample_job_test.clj"
+           "src/onyx_app/tasks/meetup_tasks.clj"
+           "src/onyx_app/tasks/logging.clj"
+           "src/onyx_app/utils/job.clj"
+           "test/onyx_app/jobs/meetup_job_test.clj"
            "script/build.sh"]
+    (metrics? opts) (conj "src/onyx_app/tasks/metrics.clj")
     (docker? opts) (conj "Dockerfile"
                          "script/run_peers.sh"
                          "script/run_aeron.sh"
@@ -51,7 +49,7 @@
   (let [path (name-to-path name)
 	data {:name name
 	      ;; The formatting here matters
-	      :onyx-version "0.8.6"
+	      :onyx-version "0.8.9"
 	      :onyx-sql-minor "0"
 	      :onyx-kafka-minor "0"
 	      :onyx-metrics-minor "0"
@@ -65,11 +63,11 @@
 	render-instructions (render-files files name data)]
     (main/info "Generating fresh Onyx app.")
     (apply ->files data render-instructions)
-    (run! (fn [file] 
+    (run! (fn [file]
             (sh "chmod" "+x" (str name file)))
-          ["/script/build.sh"]) 
+          ["/script/build.sh"])
     (when (docker? args)
-      (run! (fn [file] 
+      (run! (fn [file]
               (sh "chmod" "+x" (str name file)))
             ["/script/run_peers.sh" "/script/run_aeron.sh" "/script/kafka-meetup-streamer/script.sh"]))
     (main/info (str "Building a new onyx app with: " args))))

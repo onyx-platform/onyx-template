@@ -1,14 +1,15 @@
 FROM phusion/baseimage:0.9.17
 MAINTAINER Excellent Person <fill@me.in>
 
-RUN add-apt-repository -y ppa:webupd8team/java
-RUN apt-get install -y software-properties-common
-RUN apt-get update
+CMD ["/sbin/my_init"]
 
-# Auto-accept the Oracle JDK license
-RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
-
-RUN apt-get install -y oracle-java8-installer
+RUN sudo apt-get install software-properties-common \
+&& add-apt-repository -y ppa:webupd8team/java \
+&& apt-get update \
+&& echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections \
+&& apt-get install -y \
+software-properties-common \
+oracle-java8-installer
 
 RUN mkdir /etc/service/onyx_peer
 RUN mkdir /etc/service/aeron
@@ -21,4 +22,4 @@ ADD script/run_aeron.sh /etc/service/aeron/run
 EXPOSE 40200/tcp
 EXPOSE 40200/udp
 
-CMD ["/sbin/my_init"]
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

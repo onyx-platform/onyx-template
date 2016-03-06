@@ -1,16 +1,16 @@
-(ns {{app-name}}.jobs.sample-job-test
-    (:require [clojure.test :refer [deftest is]]
-              [onyx api
-              [test-helper :refer [feedback-exception! validate-enough-peers! load-config with-test-env]]]
-              [{{app-name}}.jobs.sample-submit-job :refer [build-job]]
+(ns {{app-name}}.jobs.meetup-job-test
+    (:require [clojure.test :refer [deftest is use-fixtures]]
+              [{{app-name}}.jobs.meetup-job :refer [build-job]]
               [{{app-name}}.tasks.core-async :refer [get-core-async-channels]]
-              {{#metrics?}}[onyx.lifecycle.metrics.metrics]{{/metrics?}}
-              {{#metrics?}}[onyx.lifecycle.metrics.timbre]{{/metrics?}}
+              [onyx api
+               [test-helper :refer [feedback-exception! load-config validate-enough-peers! with-test-env]]]
               [onyx.plugin.core-async :refer [take-segments!]]
-              ; Make the plugins load
-              [onyx.plugin.kafka]
               [onyx.plugin.seq]
-              [onyx.plugin.sql]))
+              [schema.test]
+              {{#metrics?}}[onyx.lifecycle.metrics.metrics]{{/metrics?}}
+              {{#metrics?}}[onyx.lifecycle.metrics.timbre]{{/metrics?}}))
+
+(use-fixtures :once schema.test/validate-schemas)
 
 (deftest onyx-dev-job-test
   (let [id (java.util.UUID/randomUUID)

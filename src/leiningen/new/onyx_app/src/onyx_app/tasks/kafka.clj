@@ -1,6 +1,7 @@
 (ns {{app-name}}.tasks.kafka
-    (:require [taoensso.timbre :refer [info]]
-              [cheshire.core :as json]))
+    (:require [cheshire.core :as json]
+              [schema.core :as s]
+              [onyx.schema :as os]))
 
 (defn deserialize-message-json [bytes]
   (try
@@ -20,44 +21,46 @@
 (defn serialize-message-edn [segment]
   (.getBytes segment))
 
-(defn add-kafka-input
-  "Instrument a job with Kafka lifecycles and catalog entries."
-  [job task opts]
-  (-> job
-      (update :catalog conj (merge {:onyx/name task
-                                    :onyx/plugin :onyx.plugin.kafka/read-messages
-                                    :onyx/type :input
-                                    :onyx/medium :kafka
-                                    ;:kafka/topic "topic"
-                                    ;:kafka/group-id "group-id"
-                                    :kafka/fetch-size 307200
-                                    :kafka/chan-capacity 1000
-                                    ;:kafka/zookeeper "zookeeper-addr"
-                                    :kafka/offset-reset :smallest
-                                    ;:kafka/force-reset? true
-                                    :kafka/empty-read-back-off 500
-                                    :kafka/commit-interval 500
-                                    ;:kafka/deserializer-fn ::deserialize-message-json
-                                    ;:onyx/batch-size 100
-                                    :onyx/doc "Reads messages from a Kafka topic"}
-                                   opts))
-      (update :lifecycles conj {:lifecycle/task task
-                                :lifecycle/calls :onyx.plugin.kafka/read-messages-calls})))
+(s/defschema KafkaInputTask
+  {(s/required-key :kafka/topic) s/Str
+   (s/required-key :kafka/group-id) s/Str
+   (s/required-key :kafka/zookeeper) s/Str
+   (s/required-key :kafka/offset-reset) (s/enum :smallest :largest)
+   (s/required-key :kafka/force-reset?) s/Bool
+   (s/required-key :kafka/deserializer-fn) os/NamespacedKeyword
+   (s/optional-key :kafka/chan-capacity) s/Num
+   (s/optional-key :kafka/fetch-size) s/Num
+   (s/optional-key :kafka/empty-read-back-off) s/Num
+   (s/optional-key :kafka/commit-interval) s/Num})
 
-(defn add-kafka-output
-  "Instrument a job with Kafka lifecycles and catalog entries."
-  [job task opts]
-  (-> job
-      (update :catalog conj (merge {:onyx/name task
-                                    :onyx/plugin :onyx.plugin.kafka/write-messages
-                                    :onyx/type :output
-                                    :onyx/medium :kafka
-                                    ;:onyx/batch-size batch-size
-                                    ;:kafka/topic topic
-                                    ;:kafka/zookeeper zookeeper-addr
-                                    ;:kafka/serializer-fn (expand-serializer-fn serializer-fn)
-                                    :kafka/request-size 307200
-                                    :onyx/doc "Writes messages to a Kafka topic"}
-                                   opts))
-      (update :lifecycles conj {:lifecycle/task task
-                                :lifecycle/calls :onyx.plugin.kafka/write-messages-calls})))
+(s/defschema KafkaOutputTask
+  {(s/required-key :kafka/topic) s/Str
+   (s/required-key :kafka/zookeeper) s/Str
+   (s/required-key :kafak/serializer-fn) os/NamespacedKeyword
+   (s/optional-key :kafka/request-size) s/Num})
+
+(s/defn input-task
+  [task-name :- s/Keyword opts]
+  {:task {:task-map (merge {:onyx/name task-name
+                            :onyx/plugin :onyx.plugin.kafka/read-messages
+                            :onyx/type :input
+                            :onyx/medium :kafka
+                            :onyx/doc "Reads messages from a Kafka topic"}
+                           opts)
+          :lifecycles [{:lifecycle/task task-name
+                        :lifecycle/calls :onyx.plugin.kafka/read-messages-calls}]}
+   :schema {:task-map (merge os/TaskMap KafkaInputTask)
+            :lifecycles [os/Lifecycle]}})
+
+(s/defn output-task
+  [task-name :- s/Keyword opts]
+  {:task {:task-map (merge {:onyx/name task-name
+                            :onyx/plugin :onyx.plugin.kafka/write-messages
+                            :onyx/type :output
+                            :onyx/medium :kafka
+                            :onyx/doc "Writes messages to a Kafka topic"}
+                           opts)
+          :lifecycles [{:lifecycle/task task-name
+                        :lifecycle/calls :onyx.plugin.kafka/write-messages-calls}]}
+   :schema {:task-map (merge os/TaskMap KafkaOutputTask)
+            :lifecycles [os/Lifecycle]}})
