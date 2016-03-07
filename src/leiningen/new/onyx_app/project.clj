@@ -15,7 +15,8 @@
                  {{#metrics?}}[org.onyxplatform/onyx-metrics "{{onyx-version}}.{{onyx-metrics-minor}}"]{{/metrics?}}]
 
   :profiles {:uberjar {:aot [{{app-name}}.launcher.aeron-media-driver
-                             {{app-name}}.launcher.launch-prod-peers]}
+                             {{app-name}}.launcher.launch-prod-peers]
+                       :uberjar-name "{{app-name}}-standalone.jar"}
              :dev {:dependencies [[org.clojure/tools.namespace "0.2.11"]
                                   [lein-project-version "0.1.0"]]
                    :source-paths ["src"]}})
