@@ -29,12 +29,12 @@
         config (read-config (clojure.java.io/resource "config.edn") {:profile :default})
         peer-config (-> (:peer-config config)
                         {{#docker?}}(assoc :onyx.log/config {:appenders
-                                                             :rotor (-> (rotor/rotor-appender
-                                                                          {:path "onyx.log"
-                                                                           :max-size (* 512 102400)
-                                                                           :backlog 5})
-                                                                        (assoc :min-level :info))
-                                                             {:standard-out
+                                                             {:rotor (-> (rotor/rotor-appender
+                                                                           {:path "onyx.log"
+                                                                            :max-size (* 512 102400)
+                                                                            :backlog 5})
+                                                                         (assoc :min-level :info))
+                                                              :standard-out
                                                               {:enabled? true
                                                                :async? false
                                                                :output-fn t/default-output-fn
