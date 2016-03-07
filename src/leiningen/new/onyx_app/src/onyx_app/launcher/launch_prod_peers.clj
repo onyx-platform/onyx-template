@@ -16,6 +16,14 @@
   (let [{:keys [output-fn]} data]
     (println (output-fn data))))
 
+{{#docker?}}
+(defn standard-out-logger
+  "Logger to output on std-out, for use with docker-compose"
+  [data]
+  (let [{:keys [output-fn]} data]
+    (println (output-fn data))))
+{{/docker?}}
+
 (defn -main [n & args]
   (let [n-peers (Integer/parseInt n)
         config (read-config (clojure.java.io/resource "config.edn") {:profile :default})
