@@ -3,6 +3,8 @@
                   :dev "1"}
   :onyx.bookkeeper/server? true
   :onyx.bookkeeper/delete-server-data? true
+  :onyx.bookkeeper/local-quorum? true
+  :onyx.bookkeeper/local-quorum-ports [3196 3197 3198]
   :zookeeper/address #cond {:default #env [ZOOKEEPER "zk:2181"]
                             :test #env [ZOOKEEPER "127.0.0.1:2181"]}
   :zookeeper/server? #cond {:default false
