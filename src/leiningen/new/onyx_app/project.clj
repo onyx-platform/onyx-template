@@ -8,11 +8,11 @@
                  [mysql/mysql-connector-java "5.1.18"]
                  [org.clojure/clojure "1.7.0"]
                  [org.clojure/tools.cli "0.3.3"]
-                 [org.onyxplatform/onyx "{{onyx-version}}"]
-                 [org.onyxplatform/onyx-kafka "{{onyx-version}}.{{onyx-kafka-minor}}"]
-                 [org.onyxplatform/onyx-seq "{{onyx-version}}.{{onyx-seq-minor}}"]
-                 [org.onyxplatform/onyx-sql "{{onyx-version}}.{{onyx-sql-minor}}"]
-                 {{#metrics?}}[org.onyxplatform/onyx-metrics "{{onyx-version}}.{{onyx-metrics-minor}}"]{{/metrics?}}]
+                 [org.onyxplatform/onyx "{{onyx-version}}{{onyx-version-post}}"]
+                 [org.onyxplatform/onyx-kafka "{{onyx-version}}.{{onyx-kafka-minor}}{{onyx-version-post}}"]
+                 [org.onyxplatform/onyx-seq "{{onyx-version}}.{{onyx-seq-minor}}{{onyx-version-post}}"]
+                 [org.onyxplatform/onyx-sql "{{onyx-version}}.{{onyx-sql-minor}}{{onyx-version-post}}"]
+                 {{#metrics?}}[org.onyxplatform/onyx-metrics "{{onyx-version}}.{{onyx-metrics-minor}}{{onyx-version-post}}"]{{/metrics?}}]
 
   :profiles {:uberjar {:aot [{{app-name}}.launcher.aeron-media-driver
                              {{app-name}}.launcher.launch-prod-peers]
