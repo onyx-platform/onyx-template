@@ -20,8 +20,8 @@ map suitable for development.
     ```
     (let [id (java.util.UUID/randomUUID)
           config (load-config)
-          env-config (assoc (:env-config config) :onyx/id id)
-          peer-config (assoc (:peer-config config) :onyx/id id)]
+          env-config (assoc (:env-config config) :onyx/tenancy-id id)
+          peer-config (assoc (:peer-config config) :onyx/tenancy-id id)]
     ```
 2. The `(with-test-env)` macro will setup and tear-down a full fledged
 test environment for running your job (or jobs) locally. It handles the
