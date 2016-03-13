@@ -57,6 +57,7 @@ git push origin master
 
 # Merge artifacts into release branch.
 git checkout -b $release_branch || git checkout $release_branch
+git pull
 git merge -m "Merge branch 'master' into $release_branch" master -X theirs
 git push -u origin $release_branch
 
