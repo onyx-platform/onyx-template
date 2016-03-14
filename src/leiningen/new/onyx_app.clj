@@ -52,7 +52,7 @@
 	      :onyx-version "0.8.11"
               :onyx-version-post ""
 	      :onyx-sql-minor "0"
-	      :onyx-kafka-minor "0"
+	      :onyx-kafka-minor "1"
 	      :onyx-metrics-minor "0"
 	      :onyx-seq-minor "0"
 	      :app-name name
