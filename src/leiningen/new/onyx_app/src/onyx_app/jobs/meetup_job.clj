@@ -51,7 +51,7 @@
                                                       :sql/password "onyx"
                                                       :sql/table :recentMeetups}))
     true (logging-behavior/add-logging :write-lines)
-    {{#metrics?}}(= :prod mode) (metrics-behavior/add-metrics :read-lines){{/metrics?}}))
+    {{#metrics?}}(= :prod mode) (metrics-behavior/add-timbre-metrics :read-lines){{/metrics?}}))
 
 (defn build-job [mode]
   (let [batch-size 10
