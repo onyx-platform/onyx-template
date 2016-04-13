@@ -6,7 +6,7 @@
   :dependencies [[aero "0.1.5" :exclusions [prismatic/schema]]
                  [cheshire "5.5.0"]
                  [mysql/mysql-connector-java "5.1.18"]
-                 [org.clojure/clojure "1.7.0"]
+                 [org.clojure/clojure "1.8.0"]
                  [org.clojure/tools.cli "0.3.3"]
                  [org.onyxplatform/onyx "{{onyx-version}}{{onyx-version-post}}"]
                  [org.onyxplatform/onyx-kafka "{{onyx-version}}.{{onyx-kafka-minor}}{{onyx-version-post}}"]
