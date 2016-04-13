@@ -33,7 +33,7 @@ then
 elif [[ "$new_version" == *[.]*[.]* ]];
 then
     core_version=$new_version
-    sed -i -e  "s/\(:onyx-version \).*/\1\"$core_version\"/" src/leiningen/new/onyx_app.clj
+    echo "$core_version" > resources/onyx_version
     if [[ "$version_type" == "$new_version" ]]; then
         new_plugin_version=$version_base".0"
     else
