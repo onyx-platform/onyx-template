@@ -11,7 +11,8 @@
                              :username :env
                              :password :env
                              :sign-releases false}}
-  :dependencies [^{:voom {:repo "git@github.com:onyx-platform/onyx.git" :branch "master"}}
+  :dependencies [[org.clojure/clojure "1.7.0"]
+                 ^{:voom {:repo "git@github.com:onyx-platform/onyx.git" :branch "master"}}
                  [org.onyxplatform/onyx "0.9.4"]]
   :plugins [[lein-set-version "0.4.1"]]
   :profiles {:dev {:plugins [[lein-set-version "0.4.1"]
