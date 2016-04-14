@@ -1,15 +1,15 @@
 (ns {{app-name}}.jobs.meetup-job
-    (:require [aero.core :refer [read-config]]
-              [{{app-name}}.tasks
-               [core-async :as core-async-task]
-               [file-input :as file-input-task]
-               [kafka :as kafka-task]
-               [meetup-tasks :as meetup]
-               [sql :as sql-task]
-               [logging :as logging-behavior]
-               {{#metrics?}}[metrics :as metrics-behavior]{{/metrics?}}]
-              [{{app-name}}.utils.job :refer [add-task add-tasks]]
-              [onyx.api]))
+  (:require [aero.core :refer [read-config]]
+            [{{app-name}}.tasks
+             [core-async :as core-async-task]
+             [file-input :as file-input-task]
+             [kafka :as kafka-task]
+             [meetup-tasks :as meetup]
+             [sql :as sql-task]
+             [logging :as logging-behavior]
+             {{#metrics?}}[metrics :as metrics-behavior]{{/metrics?}}]
+            [{{app-name}}.utils.job :refer [add-task add-tasks]]
+            [onyx.api]))
 
  (defn build-base-job
   "Build up the base job that will be shared in every environment configuration.
