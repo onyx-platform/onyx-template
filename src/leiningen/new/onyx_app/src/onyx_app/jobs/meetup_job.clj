@@ -15,7 +15,7 @@
   "Build up the base job that will be shared in every environment configuration.
   Here you will build the workflow. Also build catalog entries, flow conditions,
   and lifecycles that apply to your business logic. The idea is to keep this
-  clean of enviornment specific settings."
+  clean of environment specific settings."
   [{:keys [batch-size batch-timeout] :as opts}]
   (-> {:workflow [[:read-lines  :extract-meetup-info]
                   [:extract-meetup-info :prepare-rows]
@@ -27,9 +27,9 @@
                                        :onyx/batch-timeout batch-timeout}))))
 
 (defn configure-job
-  "Configures the job to use either the :dev or :prod enviornments.
+  "Configures the job to use either the :dev or :prod environments.
   This is where you will typically switch out your input/output plugins
-  or enviornment specific settings like pinned tasks."
+  or environment specific settings like pinned tasks."
   [job mode {:keys [batch-size] :as opts}]
   (cond-> job
     (= :dev mode) (add-task (core-async-task/output-task :write-lines {:onyx/batch-size batch-size}))
