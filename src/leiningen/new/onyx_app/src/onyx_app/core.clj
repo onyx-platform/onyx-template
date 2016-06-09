@@ -3,7 +3,9 @@
   (:require [aero.core :refer [read-config]]
             [clojure.java.io :as io]
             [clojure.tools.cli :refer [parse-opts]]
+            [lib-onyx.peer :as peer]
             [onyx.job]
+            [onyx.api]
             ;; Load plugin classes on peer start
             [onyx.plugin [core-async]]
             ;; Load our tasks
