@@ -17,7 +17,8 @@
   (testing "That we can have a basic in-out workflow run through Onyx"
     (let [{:keys [env-config
                   peer-config]} (read-config (io/resource "config.edn"))
-          job ({{app-name}}.jobs.basic/build-job 10 1000)
+          job ({{app-name}}.jobs.basic/basic-job {:onyx/batch-size 10
+                                                  :onyx/batch-timeout 1000})
           {:keys [in out]} (get-core-async-channels job)]
       (with-test-env [test-env [3 env-config peer-config]]
         (onyx.test-helper/validate-enough-peers! test-env job)
