@@ -6,7 +6,8 @@
   :dependencies [[aero "1.0.0-beta2"]
                  [org.clojure/clojure "1.8.0"]
                  [org.clojure/tools.cli "0.3.5"]
-                 [org.onyxplatform/onyx "0.9.7-SNAPSHOT"]]
+                 [org.onyxplatform/onyx "{{onyx-version}}{{onyx-version-post}}"]
+                 {{#docker?}}[org.onyxplatform/lib-onyx "{{onyx-version}}.{{lib-onyx-minor}}"]{{/docker?}}]
   :source-paths ["src"]
   :profiles {:dev {:jvm-opts ["-XX:-OmitStackTraceInFastThrow"]}
              :dependencies [[org.clojure/tools.namespace "0.2.11"]
