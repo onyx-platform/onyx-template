@@ -40,6 +40,7 @@
               :onyx-version-post ".7-SNAPSHOT"
               :lib-onyx-minor "0.1"
               :app-name name
+              :app-name-underscore (clojure.string/replace name #"-" "_")
               :sanitized path
               :docker? (fn [block] (if (docker? args) block ""))}
 
