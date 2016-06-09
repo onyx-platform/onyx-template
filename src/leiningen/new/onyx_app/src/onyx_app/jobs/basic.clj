@@ -1,5 +1,5 @@
 (ns {{app-name}}.jobs.basic
-  (:require [onyx.job :refer [add-task]]
+  (:require [onyx.job :refer [add-task register-job]]
             [onyx.tasks.core-async :as core-async-task]
             [{{app-name}}.tasks.math :as math]))
 
