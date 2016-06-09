@@ -9,7 +9,6 @@ To get an application template with a sample job:
 ```text
 lein new onyx-app my-app-name
 ```
-Then read the instructions on the `README.md` in your fresh project.
 
 ### Options
 The template also supports the following options
@@ -18,15 +17,8 @@ The template also supports the following options
 lein new onyx-app my-app-name -- +docker
 ```
 
-`+docker` adds a containerized onyx example that will stream meetup.com data
-through a single node kafka cluster, a simple onyx workflow, and write to a
-MySQL database.
-
-```
-lein new onyx-app my-app-name -- +docker +metrics
-```
-For adding the ability to instrument any step in a workflow with latency and
-throughput metrics. It is highly recommended that this option is applied.
+`+docker` adds a `Dockerfile` and `docker-compose.yaml` that will demonstrate
+launching an Onyx cluster with a Zookeeper image.
 
 ## License
 
