@@ -1,0 +1,13 @@
+peer:
+  image: peerimage
+  environment:
+    ONYX_ID: 1
+    NPEERS: 8
+  shm_size: "512mb"
+  links:
+    - zookeeper:zookeeper
+
+zookeeper:
+  image: 'wurstmeister/zookeeper'
+  ports:
+    - '2181:2181'
