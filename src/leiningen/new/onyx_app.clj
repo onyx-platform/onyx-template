@@ -48,11 +48,10 @@
         render-instructions (render-files files name data)]
     (main/info "Generating fresh Onyx app.")
     (apply ->files data render-instructions)
-    (run! (fn [file]
-            (sh "chmod" "+x" (str name file)))
-          ["/script/build.sh"])
     (when (docker? args)
       (run! (fn [file]
               (sh "chmod" "+x" (str name file)))
-            ["/script/run_peers.sh" "/script/run_aeron.sh" "/script/kafka-meetup-streamer/script.sh"]))
+            ["/scripts/finish_media_driver.sh"
+             "/scripts/run_media_driver.sh"
+             "/scripts/run_peer.sh"]))
     (main/info (str "Building a new onyx app with: " args))))
