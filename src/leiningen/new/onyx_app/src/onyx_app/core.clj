@@ -6,6 +6,7 @@
             [lib-onyx.peer :as peer]
             [onyx.job]
             [onyx.api]
+            [onyx.test-helper]
             ;; Load plugin classes on peer start
             [onyx.plugin [core-async]]
             ;; Load our tasks
@@ -84,5 +85,6 @@
                                                         (onyx.job/register-job job-name config)))]
                        (println "Successfully submitted job: " job-id)
                        (println "Blocking on job completion...")
+                       (onyx.test-helper/feedback-exception! peer-config job-id)
                        (onyx.api/await-job-completion peer-config job-id)
                        (exit 0 "Job Completed"))))))
