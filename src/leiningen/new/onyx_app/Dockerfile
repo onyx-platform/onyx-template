@@ -1,4 +1,4 @@
-FROM anapsix/alpine-java:jre8
+FROM java:8-jre-alpine
 MAINTAINER Gardner Vickers <gardner@vickers.me>
 
 ADD https://github.com/just-containers/s6-overlay/releases/download/v1.11.0.1/s6-overlay-amd64.tar.gz /tmp/
