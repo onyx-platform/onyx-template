@@ -11,7 +11,7 @@
   :source-paths ["src"]
 
   :profiles {:dev {:jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
-                   :global-vars {*assert* false}}
+                   :global-vars {*assert* true}}
              :dependencies [[org.clojure/tools.namespace "0.2.11"]
                             [lein-project-version "0.1.0"]]
              :uberjar {:aot [lib-onyx.media-driver
