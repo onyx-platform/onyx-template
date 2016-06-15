@@ -20,9 +20,10 @@
                                :docker "zookeeper:2181"}
   :onyx.peer/job-scheduler :onyx.job-scheduler/greedy
   :onyx.peer/zookeeper-timeout 60000
-  :onyx.messaging/allow-short-circuit? false
+  :onyx.messaging/allow-short-circuit? #profile {:default false
+                                                 :docker true}
   :onyx.messaging/impl :aeron
-  :onyx.messaging/bind-addr "localhost"
+  :onyx.messaging/bind-addr #or [#env BIND_ADDR "localhost"]
   :onyx.messaging/peer-port 40200
   :onyx.messaging.aeron/embedded-driver? #profile {:default true
                                                    :docker false}
