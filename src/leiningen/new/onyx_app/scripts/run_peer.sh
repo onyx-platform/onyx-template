@@ -12,8 +12,8 @@ XMX=$(awk '{printf("%d",$1*$2/1024^2)}' <<< " ${MEM} ${JVM_PEER_HEAP_RATIO} ")
 # knows to collect before it's hard-stopped by the container environment,
 # causing OOM exception.
 
-/opt/jdk/bin/java $PEER_JAVA_OPTS \
-                  "-Xmx${XMX}m" \
-                  -XX:+UseG1GC \
-                  -cp /opt/peer.jar \
-                  {{app-name-underscore}}.core start-peers "$NPEERS" -p :docker
+/usr/bin/java $PEER_JAVA_OPTS \
+              "-Xmx${XMX}m" \
+              -XX:+UseG1GC \
+              -cp /opt/peer.jar \
+              {{app-name-underscore}}.core start-peers "$NPEERS" -p :docker
