@@ -1,8 +1,8 @@
 (defproject onyx-app/lein-template "0.9.0.10-SNAPSHOT"
   :description "Onyx Leiningen application template"
   :url "https://github.com/onyx-platform/onyx-template"
-  :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :license {:name "MIT License"
+            :url "http://choosealicense.com/licenses/mit/#"}
   :repositories {"snapshots" {:url "https://clojars.org/repo"
                               :username :env
                               :password :env
