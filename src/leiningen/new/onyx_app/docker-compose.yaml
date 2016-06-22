@@ -1,8 +1,14 @@
 peer:
   image: peerimage
   environment:
+    # Set your Onyx tenancy id, used to run multiple clusters on the same ZK ensemble
     ONYX_ID: 1
+    # Number of Onyx peers (execution units) to run inside this container
     NPEERS: 8
+    # JVM options for the media driver, defaults to '-server'
+    MEDIA_DRIVER_JAVA_OPTS: ''
+    # JVM options of the peer, defaults to '-server -G1GC'
+    PEER_JAVA_OPTS: ''
   shm_size: "512mb"
   links:
     - zookeeper:zookeeper
