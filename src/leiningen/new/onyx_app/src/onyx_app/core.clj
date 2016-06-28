@@ -86,5 +86,4 @@
                        (println "Successfully submitted job: " job-id)
                        (println "Blocking on job completion...")
                        (onyx.test-helper/feedback-exception! peer-config job-id)
-                       (onyx.api/await-job-completion peer-config job-id)
                        (exit 0 "Job Completed"))))))
