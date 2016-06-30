@@ -12,6 +12,14 @@ XMX=$(awk '{printf("%d",$1*$2/1024^2)}' <<< " ${MEM} ${JVM_PEER_HEAP_RATIO} ")
 # knows to collect before it's hard-stopped by the container environment,
 # causing OOM exception.
 
+## Default BIND_ADDR to the machines hostname
+: ${BIND_ADDR:=$(hostname)}
+## For use when running a peer with access to the hosts eth0 interface
+#: ${BIND_ADDR:=$(ifconfig eth0 | grep "inet addr:" | cut -d : -f 2 | cut -d " " -f 1)}
+## For use when running a peer on AWS, where the routeable address is different
+### from the address bound to eth0
+#: ${BIND_ADDR:=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)}
+
 : ${PEER_JAVA_OPTS:='-XX:+UseG1GC -server'}
 
 /usr/bin/java $PEER_JAVA_OPTS \
