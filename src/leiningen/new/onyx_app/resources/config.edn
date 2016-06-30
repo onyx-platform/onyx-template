@@ -28,12 +28,4 @@
   :onyx.messaging.aeron/embedded-driver? #profile {:default true
                                                    :docker false}
   :onyx.log/config #profile {:default nil
-                             :docker {:level :info}}}
- :joplin-config
- {:databases {:sql {:type :sql
-                    :url #profile{:default "jdbc:mysql://192.168.99.100:3306/onyx?user=admin&password=mypass"
-                                  :docker "jdbc:mysql://mysql:3306/onyx?user=admin&password=mypass"}
-                    :migrations-table "ragtime_migrations"}}
-  :migrators {:sql-migrator "resources/migrators/sql"}
-  :environments {:dev [{:db ^:ref [:joplin-config :databases :sql]
-                        :migrator ^:ref [:joplin-config :migrators :sql-migrator]}]}}}
+                             :docker {:level :info}}}}
