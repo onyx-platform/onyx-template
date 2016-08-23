@@ -18,7 +18,7 @@
                              :docker #env ONYX_ID}
   :zookeeper/address #profile {:default "127.0.0.1:2188"
                                :docker "zookeeper:2181"}
-  :onyx.peer/job-scheduler :onyx.job-scheduler/greedy
+  :onyx.peer/job-scheduler :onyx.job-scheduler/balanced
   :onyx.peer/zookeeper-timeout 60000
   :onyx.messaging/allow-short-circuit? #profile {:default false
                                                  :docker true}
