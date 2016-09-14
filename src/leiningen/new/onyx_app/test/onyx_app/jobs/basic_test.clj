@@ -22,8 +22,9 @@
           {:keys [in out]} (get-core-async-channels job)]
       (with-test-env [test-env [3 env-config peer-config]]
         (onyx.test-helper/validate-enough-peers! test-env job)
-        (onyx.api/submit-job peer-config job)
-        (doseq [segment segments]
-          (>!! in segment))
+        (let [job-id (:job-id (onyx.api/submit-job peer-config job))]
+          (doseq [segment segments]
+            (>!! in segment))
+          (onyx.test-helper/feedback-exception! peer-config job-id))
         (is (= (set (take-segments! out))
                (set [{:n 2} {:n 3} {:n 4} {:n 5} {:n 6} :done])))))))
