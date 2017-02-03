@@ -3,7 +3,7 @@
   :url ""
   :license {:name ""
             :url ""}
-  :dependencies [[aero "1.0.0-beta2"]
+  :dependencies [[aero "1.0.3"]
                  [org.clojure/clojure "1.8.0"]
                  [org.clojure/tools.cli "0.3.5"]
                  [org.onyxplatform/onyx "{{onyx-version}}{{onyx-version-post}}"]
