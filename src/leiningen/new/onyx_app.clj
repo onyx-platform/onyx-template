@@ -37,7 +37,7 @@
         data {:name name
               ;; The formatting here matters
               :onyx-version "0.10"
-              :onyx-version-post ".0"
+              :onyx-version-post ".0-alpha1"
               :lib-onyx-minor "0.0"
               :app-name name
               :app-name-underscore (clojure.string/replace name #"-" "_")

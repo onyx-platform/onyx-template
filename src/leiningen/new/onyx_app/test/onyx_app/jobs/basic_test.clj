@@ -1,6 +1,6 @@
 (ns {{app-name}}.jobs.basic-test
     (:require [aero.core :refer [read-config]]
-              [clojure.core.async :refer [>!!]]
+              [clojure.core.async :refer [>!! close!]]
               [clojure.java.io :as io]
               [clojure.test :refer [deftest is testing]]
               [onyx api
@@ -11,7 +11,7 @@
               {{app-name}}.tasks.math
               onyx.tasks.core-async))
 
-(def segments [{:n 1} {:n 2} {:n 3} {:n 4} {:n 5} :done])
+(def segments [{:n 1} {:n 2} {:n 3} {:n 4} {:n 5}])
 
 (deftest basic-test
   (testing "That we can have a basic in-out workflow run through Onyx"
@@ -26,6 +26,7 @@
           (is (:success? job))
           (doseq [segment segments]
             (>!! in segment))
+          (close! in)
           (onyx.test-helper/feedback-exception! peer-config (:job-id job)))
-        (is (= (set (take-segments! out))
+        (is (= (set (take-segments! out 50))
                (set [{:n 2} {:n 3} {:n 4} {:n 5} {:n 6} :done])))))))
