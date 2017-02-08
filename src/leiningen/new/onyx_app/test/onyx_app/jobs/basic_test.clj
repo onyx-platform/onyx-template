@@ -29,4 +29,4 @@
           (close! in)
           (onyx.test-helper/feedback-exception! peer-config (:job-id job)))
         (is (= (set (take-segments! out 50))
-               (set [{:n 2} {:n 3} {:n 4} {:n 5} {:n 6} :done])))))))
+               (set [{:n 2} {:n 3} {:n 4} {:n 5} {:n 6}])))))))
