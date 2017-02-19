@@ -1,4 +1,4 @@
-(defproject onyx-app/lein-template "0.10.0.0-beta4"
+(defproject onyx-app/lein-template "0.10.0.0-SNAPSHOT"
   :description "Onyx Leiningen application template"
   :url "https://github.com/onyx-platform/onyx-template"
   :license {:name "MIT License"
