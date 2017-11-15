@@ -36,7 +36,7 @@
   (let [path (name-to-path name)
         data {:name name
               ;; The formatting here matters
-              :onyx-version "0.10"
+              :onyx-version "0.12"
               :onyx-version-post ".0"
               :lib-onyx-minor "0.0"
               :app-name name
