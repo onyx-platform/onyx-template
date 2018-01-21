@@ -3,6 +3,10 @@ MAINTAINER Gardner Vickers <gardner@vickers.me>
 
 ADD https://github.com/just-containers/s6-overlay/releases/download/v1.11.0.1/s6-overlay-amd64.tar.gz /tmp/
 
+RUN cp -r /tmp/etc/* /etc
+RUN cp -r /tmp/usr/* /usr
+RUN mv /tmp/init /
+
 RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C /
 RUN apk add --update libgcc libstdc++ bash
 
