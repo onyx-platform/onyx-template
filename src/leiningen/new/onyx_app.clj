@@ -30,14 +30,22 @@
                 (fn [file-path] (render file-path data)))
           files)))
 
+
+(defn onyx-version []
+  (map #(Integer/parseInt %)
+       (-> (slurp (clojure.java.io/resource "onyx_version"))
+           (clojure.string/replace #"\n$" "")
+           (clojure.string/split #"[.]"))))
+
 (defn onyx-app
   "Creates a new Onyx application template"
   [name & args]
   (let [path (name-to-path name)
+        [major minor patch] (onyx-version)
         data {:name name
               ;; The formatting here matters
-              :onyx-version "0.12"
-              :onyx-version-post ".3"
+              :onyx-version (str major "." minor)
+              :onyx-version-post (str "." patch)
               :lib-onyx-minor "0.0"
               :app-name name
               :app-name-underscore (clojure.string/replace name #"-" "_")
