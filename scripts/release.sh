@@ -48,7 +48,7 @@ fi
 lein set-version $new_plugin_version
 
 sed -i.bak "s/$current_version/$new_plugin_version/g" README.md
-git add README.md project.clj
+git add README.md project.clj resources/onyx_version
 
 git commit -m "Release version $new_plugin_version."
 git tag $new_plugin_version
