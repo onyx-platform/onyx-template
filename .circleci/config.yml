@@ -1,7 +1,7 @@
 version: 2
 executorType: docker
 jobs:
-  build:
+  test:
     docker:
       - image: circleci/clojure:lein-2.8.1
     working_directory: ~/repo
@@ -11,9 +11,6 @@ jobs:
           keys:
           - v1-dependencies-{{ .Branch }}-{{ .Revision }}
 
-      - run: 
-          command: lein deploy
-           
       - run: lein set-version 99.99.99 
       - run: lein install
       - run: lein new onyx-app test-app-docker -- +docker
@@ -21,9 +18,32 @@ jobs:
       - run: lein new onyx-app test-app-bare
       - run: cd test-app-bare && lein test && cd ..
       - run: git reset HEAD --hard 
-      - run: lein deploy
 
       - save_cache:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ .Branch }}-{{ .Revision }}
+
+  release:
+    docker:
+      - image: circleci/clojure:lein-2.8.1
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ .Branch }}-{{ .Revision }}
+
+      - run: lein deploy
+
+workflows:
+  version: 2
+  test-build-deploy:
+    jobs:
+      - test
+      - release:
+          requires:
+            - test
+          filters:
+             branches:
+               only: master
