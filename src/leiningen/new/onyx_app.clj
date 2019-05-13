@@ -11,6 +11,7 @@
 (defn files-to-render [opts]
   (cond-> ["README.md"
            ".gitignore"
+           ".projectile"
            "LICENSE"
            "project.clj"
            "resources/config.edn"
@@ -27,7 +28,9 @@
 (defn render-files [files name data]
   (let [name (clojure.string/replace name #"-" "_")]
     (mapv (juxt (fn [path] (clojure.string/replace path #"onyx_app" name))
-                (fn [file-path] (render file-path data)))
+                (comp
+                  (fn [path] (render path data))
+                  (fn [path] (clojure.string/replace path #"^\.(.*)", "$1"))))
           files)))
 
 
