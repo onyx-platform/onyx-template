@@ -28,6 +28,10 @@ Blocking on job completion...
 
 ```
 
+Please note that this is only an example for submitting the job into the Onyx peergroup. There's no simply way to submit data to the `:in` on the core.async basic-job & it won't complete after submission.
+
+In order to leverage a "real" job, use an [Onyx plugin](https://github.com/onyx-platform/onyx-kafka) to read from external datasource such as [Kafka.](https://kafka.apache.org/)
+
 ### Running tests
 
 ```
